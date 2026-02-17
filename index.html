@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FY26 Budget-Cut Scenario Planner</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --c1: #57068c; --c2: #8900e1; --c3: #330662; --c4: #702b9d;
+    --c5: #7b5aa6; --c6: #ab82c5; --c7: #eee6f3; --c8: #ffffff;
+  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f8f5fb; color: #1a1a2e; line-height: 1.5; }
+  .dashboard { max-width: 1320px; margin: 0 auto; padding: 32px 24px; }
+
+  /* Tabs */
+  .tab-bar { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 2px solid var(--c7); overflow-x: auto; }
+  .tab-btn { padding: 12px 24px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; background: transparent; color: var(--c5); border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--c2); }
+  .tab-btn.active { color: var(--c1); border-bottom-color: var(--c2); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Header */
+  .tab-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+  .tab-header h1 { font-size: 24px; font-weight: 700; color: var(--c3); letter-spacing: -0.5px; }
+  .tab-header p { font-size: 13px; color: var(--c5); margin-top: 4px; }
+  .acct-badge { display: inline-block; background: var(--c7); color: var(--c1); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 4px; margin-top: 6px; letter-spacing: 0.3px; }
+
+  /* KPI Cards */
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .kpi-card { background: var(--c8); border-radius: 12px; padding: 20px; box-shadow: 0 1px 4px rgba(51,6,98,0.08); border-top: 3px solid var(--c2); }
+  .kpi-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--c5); margin-bottom: 6px; }
+  .kpi-card .value { font-size: 24px; font-weight: 700; color: var(--c3); }
+  .kpi-card .sub { font-size: 12px; color: var(--c4); margin-top: 4px; }
+  .kpi-card.cut .value { color: #b91c1c; }
+  .kpi-card.remaining .value { color: var(--c1); }
+  .kpi-card.spent-card .value { color: #b45309; }
+
+  /* Controls */
+  .controls { background: var(--c8); border-radius: 12px; padding: 22px 26px; margin-bottom: 28px; box-shadow: 0 1px 4px rgba(51,6,98,0.08); }
+  .controls h2 { font-size: 15px; font-weight: 600; color: var(--c3); margin-bottom: 14px; }
+  .control-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .toggle-group { display: inline-flex; border-radius: 8px; overflow: hidden; border: 1px solid var(--c6); }
+  .toggle-btn { padding: 7px 18px; font-size: 13px; border: none; cursor: pointer; background: var(--c8); color: var(--c4); font-weight: 500; transition: all 0.2s; }
+  .toggle-btn.active { background: var(--c1); color: var(--c8); }
+  .control-input { display: flex; align-items: center; gap: 8px; }
+  .control-input label { font-size: 13px; color: var(--c4); font-weight: 500; }
+  .control-input input[type=number] { width: 150px; padding: 7px 12px; border: 1px solid var(--c6); border-radius: 8px; font-size: 15px; color: var(--c3); outline: none; }
+  .control-input input[type=number]:focus { border-color: var(--c2); box-shadow: 0 0 0 3px rgba(137,0,225,0.12); }
+  .control-input input[type=range] { width: 220px; accent-color: var(--c2); }
+  .range-val { font-size: 14px; font-weight: 600; color: var(--c1); min-width: 50px; }
+
+  /* Chart */
+  .chart-section { background: var(--c8); border-radius: 12px; padding: 22px 26px; margin-bottom: 28px; box-shadow: 0 1px 4px rgba(51,6,98,0.08); }
+  .chart-section h2 { font-size: 15px; font-weight: 600; color: var(--c3); margin-bottom: 14px; }
+  .chart-wrap { position: relative; height: 280px; }
+
+  /* Tiles */
+  .tiles-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 12px; }
+  .tiles-header h2 { font-size: 15px; font-weight: 600; color: var(--c3); }
+  .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--c6); background: var(--c8); color: var(--c4); font-size: 11px; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+  .filter-btn.active { background: var(--c1); color: var(--c8); border-color: var(--c1); }
+  .add-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 8px; border: 1px dashed var(--c6); background: var(--c7); color: var(--c4); font-size: 12px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+  .add-btn:hover { border-color: var(--c2); color: var(--c2); }
+
+  .tiles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .tile { background: var(--c8); border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(51,6,98,0.07); border-left: 4px solid var(--c2); cursor: grab; transition: box-shadow 0.2s, transform 0.15s; user-select: none; position: relative; }
+  .tile:hover { box-shadow: 0 4px 12px rgba(51,6,98,0.12); }
+  .tile.dragging { opacity: 0.5; transform: scale(0.97); }
+  .tile.drag-over { box-shadow: 0 0 0 2px var(--c2); }
+  .tile .cat-badge { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--c5); background: var(--c7); padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
+  .tile .tile-name { font-size: 13px; font-weight: 600; color: var(--c3); margin-bottom: 5px; outline: none; min-height: 18px; }
+  .tile .tile-amount-input { font-size: 18px; font-weight: 700; color: var(--c1); border: none; background: transparent; width: 100%; outline: none; font-family: inherit; }
+  .tile .tile-amount-input:focus { border-bottom: 2px solid var(--c2); }
+  .tile .spent-line { font-size: 11px; color: #b45309; margin-top: 3px; }
+  .tile .spent-bar-bg { height: 4px; background: var(--c7); border-radius: 2px; margin-top: 5px; overflow: hidden; }
+  .tile .spent-bar { height: 100%; background: #b45309; border-radius: 2px; transition: width 0.3s; }
+  .tile .tile-actions { position: absolute; top: 6px; right: 8px; display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+  .tile:hover .tile-actions { opacity: 1; }
+  .tile .tile-actions button { border: none; background: none; cursor: pointer; color: var(--c6); font-size: 15px; padding: 2px; border-radius: 4px; }
+  .tile .tile-actions button:hover { color: #b91c1c; background: #fef2f2; }
+  .tile.excluded { opacity: 0.45; border-left-color: var(--c6); }
+  .tile .toggle-include { font-size: 10px; color: var(--c5); cursor: pointer; margin-top: 5px; display: inline-block; }
+  .tile .toggle-include:hover { color: var(--c2); }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(51,6,98,0.3); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--c8); border-radius: 14px; padding: 26px 30px; width: 380px; max-width: 90vw; box-shadow: 0 12px 40px rgba(51,6,98,0.2); }
+  .modal h3 { font-size: 17px; color: var(--c3); margin-bottom: 18px; }
+  .modal label { display: block; font-size: 12px; color: var(--c4); margin-bottom: 4px; font-weight: 500; }
+  .modal input, .modal select { width: 100%; padding: 7px 12px; border: 1px solid var(--c6); border-radius: 8px; font-size: 13px; margin-bottom: 14px; outline: none; }
+  .modal input:focus, .modal select:focus { border-color: var(--c2); }
+  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+  .modal-btns button { padding: 7px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; border: none; font-weight: 500; }
+  .btn-cancel { background: var(--c7); color: var(--c4); }
+  .btn-save { background: var(--c1); color: var(--c8); }
+  .btn-save:hover { background: var(--c2); }
+
+  @media (max-width: 640px) {
+    .dashboard { padding: 16px 12px; }
+    .kpi-card .value { font-size: 20px; }
+    .control-row { flex-direction: column; align-items: flex-start; }
+    .chart-wrap { height: 200px; }
+    .tab-btn { padding: 10px 14px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="dashboard">
+
+  <!-- Tab Navigation -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab(0)">Current FY26 &mdash; Acct 10-01006</button>
+    <button class="tab-btn" onclick="switchTab(1)">Budget Split SaOD (Wil)</button>
+    <button class="tab-btn" onclick="switchTab(2)">Budget Split (Chris)</button>
+  </div>
+
+  <!-- ===================== TAB 0: Current FY26 ===================== -->
+  <div class="tab-content active" id="tab-0">
+    <div class="tab-header">
+      <div>
+        <h1>Current FY26 Budget &mdash; Account 10-01006</h1>
+        <p>All programs and expenses currently housed in Account 10-01006, despite upcoming changes on the horizon.</p>
+        <span class="acct-badge">Chartfield: 10-01006 (OGI) &amp; Sub-accounts</span>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="label">Baseline Budget</div><div class="value">$1,091,000</div><div class="sub">FY26 Total Allocation</div></div>
+      <div class="kpi-card spent-card"><div class="label">Already Spent</div><div class="value" id="t0-kpi-spent">$208,244</div><div class="sub" id="t0-kpi-spent-pct">19.1% of baseline</div></div>
+      <div class="kpi-card cut"><div class="label">Proposed Reduction</div><div class="value" id="t0-kpi-cut">$0</div><div class="sub" id="t0-kpi-cut-pct">0% of baseline</div></div>
+      <div class="kpi-card remaining"><div class="label">Available After Cuts</div><div class="value" id="t0-kpi-adj">$882,756</div><div class="sub" id="t0-kpi-adj-pct">Remaining minus spent</div></div>
+      <div class="kpi-card"><div class="label">Active Items</div><div class="value" id="t0-kpi-items">0</div><div class="sub" id="t0-kpi-items-sub">of 0 total</div></div>
+    </div>
+    <div class="controls">
+      <h2>Scenario Controls</h2>
+      <div class="control-row">
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-tab="0" data-mode="dollar" onclick="setMode(0,'dollar')">Dollar Amount</button>
+          <button class="toggle-btn" data-tab="0" data-mode="percent" onclick="setMode(0,'percent')">Percentage</button>
+        </div>
+        <div class="control-input" id="t0-dollar-input">
+          <label>Reduce by $</label>
+          <input type="number" id="t0-cut-dollar" value="0" min="0" max="1091000" step="500" oninput="onDollarChange(0, this.value)">
+        </div>
+        <div class="control-input" id="t0-percent-input" style="display:none;">
+          <label>Reduce by</label>
+          <input type="range" id="t0-cut-range" min="0" max="100" value="0" step="0.5" oninput="onPercentChange(0, this.value)">
+          <span class="range-val" id="t0-pct-display">0%</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-section">
+      <h2>Budget Comparison by Category</h2>
+      <div class="chart-wrap"><canvas id="chart-0"></canvas></div>
+    </div>
+    <div class="tiles-header">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <h2>Budget Line Items</h2>
+        <div class="filter-group" id="t0-cat-filters"></div>
+      </div>
+      <button class="add-btn" onclick="openModal(0)">+ Add Tile</button>
+    </div>
+    <div class="tiles-grid" id="t0-tiles-grid"></div>
+  </div>
+
+  <!-- ===================== TAB 1: SaOD Wil ===================== -->
+  <div class="tab-content" id="tab-1">
+    <div class="tab-header">
+      <div>
+        <h1>Budget Split SaOD (Wil)</h1>
+        <p>Baseline Budget: $533,067 &middot; Post-split allocation for SaOD under Wilnelia Gutierrez</p>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="label">Baseline Budget</div><div class="value">$533,067</div><div class="sub">SaOD (Wil) Split</div></div>
+      <div class="kpi-card cut"><div class="label">Proposed Reduction</div><div class="value" id="t1-kpi-cut">$0</div><div class="sub" id="t1-kpi-cut-pct">0% of baseline</div></div>
+      <div class="kpi-card remaining"><div class="label">Adjusted Budget</div><div class="value" id="t1-kpi-adj">$533,067</div><div class="sub" id="t1-kpi-adj-pct">100% of baseline</div></div>
+      <div class="kpi-card"><div class="label">Active Items</div><div class="value" id="t1-kpi-items">0</div><div class="sub" id="t1-kpi-items-sub">of 0 total</div></div>
+    </div>
+    <div class="controls">
+      <h2>Scenario Controls</h2>
+      <div class="control-row">
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-tab="1" data-mode="dollar" onclick="setMode(1,'dollar')">Dollar Amount</button>
+          <button class="toggle-btn" data-tab="1" data-mode="percent" onclick="setMode(1,'percent')">Percentage</button>
+        </div>
+        <div class="control-input" id="t1-dollar-input">
+          <label>Reduce by $</label>
+          <input type="number" id="t1-cut-dollar" value="0" min="0" max="533067" step="500" oninput="onDollarChange(1, this.value)">
+        </div>
+        <div class="control-input" id="t1-percent-input" style="display:none;">
+          <label>Reduce by</label>
+          <input type="range" id="t1-cut-range" min="0" max="100" value="0" step="0.5" oninput="onPercentChange(1, this.value)">
+          <span class="range-val" id="t1-pct-display">0%</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-section">
+      <h2>Budget Comparison by Category</h2>
+      <div class="chart-wrap"><canvas id="chart-1"></canvas></div>
+    </div>
+    <div class="tiles-header">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <h2>Budget Line Items</h2>
+        <div class="filter-group" id="t1-cat-filters"></div>
+      </div>
+      <button class="add-btn" onclick="openModal(1)">+ Add Tile</button>
+    </div>
+    <div class="tiles-grid" id="t1-tiles-grid"></div>
+  </div>
+
+  <!-- ===================== TAB 2: Chris ===================== -->
+  <div class="tab-content" id="tab-2">
+    <div class="tab-header">
+      <div>
+        <h1>Budget Split (Chris)</h1>
+        <p>Baseline Budget: $1,974,194 &middot; Post-split allocation for Chris Woods (Centers + UL CC)</p>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="label">Baseline Budget</div><div class="value">$1,974,194</div><div class="sub">Chris Split</div></div>
+      <div class="kpi-card cut"><div class="label">Proposed Reduction</div><div class="value" id="t2-kpi-cut">$0</div><div class="sub" id="t2-kpi-cut-pct">0% of baseline</div></div>
+      <div class="kpi-card remaining"><div class="label">Adjusted Budget</div><div class="value" id="t2-kpi-adj">$1,974,194</div><div class="sub" id="t2-kpi-adj-pct">100% of baseline</div></div>
+      <div class="kpi-card"><div class="label">Active Items</div><div class="value" id="t2-kpi-items">0</div><div class="sub" id="t2-kpi-items-sub">of 0 total</div></div>
+    </div>
+    <div class="controls">
+      <h2>Scenario Controls</h2>
+      <div class="control-row">
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-tab="2" data-mode="dollar" onclick="setMode(2,'dollar')">Dollar Amount</button>
+          <button class="toggle-btn" data-tab="2" data-mode="percent" onclick="setMode(2,'percent')">Percentage</button>
+        </div>
+        <div class="control-input" id="t2-dollar-input">
+          <label>Reduce by $</label>
+          <input type="number" id="t2-cut-dollar" value="0" min="0" max="1974194" step="500" oninput="onDollarChange(2, this.value)">
+        </div>
+        <div class="control-input" id="t2-percent-input" style="display:none;">
+          <label>Reduce by</label>
+          <input type="range" id="t2-cut-range" min="0" max="100" value="0" step="0.5" oninput="onPercentChange(2, this.value)">
+          <span class="range-val" id="t2-pct-display">0%</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-section">
+      <h2>Budget Comparison by Category</h2>
+      <div class="chart-wrap"><canvas id="chart-2"></canvas></div>
+    </div>
+    <div class="tiles-header">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <h2>Budget Line Items</h2>
+        <div class="filter-group" id="t2-cat-filters"></div>
+      </div>
+      <button class="add-btn" onclick="openModal(2)">+ Add Tile</button>
+    </div>
+    <div class="tiles-grid" id="t2-tiles-grid"></div>
+  </div>
+
+</div>
+
+<!-- Add Tile Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>Add New Line Item</h3>
+    <label>Program / Expense Name</label>
+    <input type="text" id="new-name" placeholder="e.g., New Initiative">
+    <label>Category</label>
+    <select id="new-cat">
+      <option>Centers</option><option>Co-Sponsorships</option><option>Ed/Culture</option><option>Operating</option><option>Programs/Initiatives</option>
+    </select>
+    <label>Budget Amount ($)</label>
+    <input type="number" id="new-amount" placeholder="0" min="0">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="addTile()">Add</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   FULLY ISOLATED TAB STATE — 3 TABS
+   ============================================================ */
+const TABS = [
+  /* ---- TAB 0: Current FY26 Account 10-01006 ---- */
+  {
+    id: 0, baseline: 1091000, hasSpent: true, totalSpent: 208244.25,
+    mode: 'dollar', cutDollar: 0, activeFilter: 'All', nextId: 100, dragSrcId: null, chart: null,
+    cats: ['Centers','Co-Sponsorships','Ed/Culture','Operating','Programs/Initiatives'],
+    data: [
+      {id:1,cat:"Centers",name:"Disability Inclusive Culture",amount:125000,spent:2344.60,included:true},
+      {id:2,cat:"Co-Sponsorships",name:"Cosponsorship (Internal)",amount:50000,spent:7500.00,included:true},
+      {id:3,cat:"Co-Sponsorships",name:"Cosponsorship (External)",amount:10000,spent:0,included:true},
+      {id:4,cat:"Ed/Culture",name:"GILMI/Executive Education",amount:32000,spent:0,included:true},
+      {id:5,cat:"Ed/Culture",name:"Inclusive Dialogue Institute",amount:30000,spent:10793.62,included:true},
+      {id:6,cat:"Ed/Culture",name:"Misc - Education & Training",amount:2500,spent:0,included:true},
+      {id:7,cat:"Ed/Culture",name:"Educational Partnership Initiatives",amount:12000,spent:11550.00,included:true},
+      {id:8,cat:"Operating",name:"Marketing/Promotion",amount:25000,spent:9515.50,included:true},
+      {id:9,cat:"Operating",name:"Org Tools/Subscriptions",amount:20000,spent:8063.12,included:true},
+      {id:10,cat:"Operating",name:"Misc - Comms/Design",amount:2500,spent:0,included:true},
+      {id:11,cat:"Operating",name:"Capital Improvement Projects",amount:25000,spent:0,included:true},
+      {id:12,cat:"Operating",name:"Captioning & Translation",amount:2500,spent:0,included:true},
+      {id:13,cat:"Operating",name:"Consultants/Contractors",amount:5000,spent:0,included:true},
+      {id:14,cat:"Operating",name:"Contingency",amount:54500,spent:0,included:true},
+      {id:15,cat:"Operating",name:"General/Misc Operating",amount:10000,spent:439.67,included:true},
+      {id:16,cat:"Operating",name:"Global Site/Location Travel",amount:75000,spent:58731.55,included:true},
+      {id:17,cat:"Operating",name:"IT/Technology",amount:15000,spent:108.86,included:true},
+      {id:18,cat:"Operating",name:"Memberships",amount:5000,spent:0,included:true},
+      {id:19,cat:"Operating",name:"Office Supplies",amount:5000,spent:1943.71,included:true},
+      {id:20,cat:"Operating",name:"Professional Development",amount:35000,spent:173.08,included:true},
+      {id:21,cat:"Operating",name:"Team Engagement/Development",amount:25000,spent:428.32,included:true},
+      {id:22,cat:"Programs/Initiatives",name:"OGI Central Programs/Events",amount:40000,spent:0,included:true},
+      {id:23,cat:"Programs/Initiatives",name:"University Life Council",amount:80000,spent:11232.77,included:true},
+      {id:24,cat:"Programs/Initiatives",name:"Global Program/Initiative Fund",amount:25000,spent:0,included:true},
+      {id:25,cat:"Programs/Initiatives",name:"NYU Women Lead",amount:10000,spent:0,included:true},
+      {id:26,cat:"Programs/Initiatives",name:"Misc Programs/Events",amount:20000,spent:1824.83,included:true},
+      {id:27,cat:"Programs/Initiatives",name:"Expanding CMEP Leadership",amount:15000,spent:0,included:true},
+      {id:28,cat:"Programs/Initiatives",name:"Interfaith Supper Club",amount:35000,spent:0,included:true},
+      {id:29,cat:"Programs/Initiatives",name:"NYU Portraits",amount:120000,spent:123.48,included:true},
+      {id:30,cat:"Programs/Initiatives",name:"SLPCCs",amount:50000,spent:0,included:true},
+      {id:31,cat:"Programs/Initiatives",name:"MLK Week",amount:130000,spent:83471.14,included:true},
+    ]
+  },
+  /* ---- TAB 1: Budget Split SaOD (Wil) ---- */
+  {
+    id: 1, baseline: 533067, hasSpent: false, totalSpent: 0,
+    mode: 'dollar', cutDollar: 0, activeFilter: 'All', nextId: 200, dragSrcId: null, chart: null,
+    cats: ['Co-Sponsorships','Ed/Culture','Operating','Programs/Initiatives'],
+    data: [
+      {id:101,cat:"Co-Sponsorships",name:"Cosponsorship (Internal)",amount:50000,spent:0,included:true},
+      {id:102,cat:"Co-Sponsorships",name:"Cosponsorship (External)",amount:10000,spent:0,included:true},
+      {id:103,cat:"Ed/Culture",name:"GILMI/Executive Education",amount:32000,spent:0,included:true},
+      {id:104,cat:"Ed/Culture",name:"Inclusive Dialogue Institute",amount:30000,spent:0,included:true},
+      {id:105,cat:"Ed/Culture",name:"Misc - Education & Training",amount:2500,spent:0,included:true},
+      {id:106,cat:"Ed/Culture",name:"Educational Partnership Initiatives",amount:12000,spent:0,included:true},
+      {id:107,cat:"Operating",name:"Marketing/Promotion",amount:36000,spent:0,included:true},
+      {id:108,cat:"Operating",name:"Org Tools/Subscriptions",amount:16001,spent:0,included:true},
+      {id:109,cat:"Operating",name:"Misc - Comms/Design",amount:2500,spent:0,included:true},
+      {id:110,cat:"Operating",name:"Capital Improvement Projects",amount:25000,spent:0,included:true},
+      {id:111,cat:"Operating",name:"Captioning & Translation",amount:2500,spent:0,included:true},
+      {id:112,cat:"Operating",name:"Consultants/Contractors",amount:8322,spent:0,included:true},
+      {id:113,cat:"Operating",name:"Contingency",amount:20000,spent:0,included:true},
+      {id:114,cat:"Operating",name:"General/Misc Operating",amount:10000,spent:0,included:true},
+      {id:115,cat:"Operating",name:"Global Site/Location Travel",amount:50000,spent:0,included:true},
+      {id:116,cat:"Operating",name:"IT/Technology",amount:15000,spent:0,included:true},
+      {id:117,cat:"Operating",name:"Office Supplies",amount:5738,spent:0,included:true},
+      {id:118,cat:"Operating",name:"Professional Development",amount:30000,spent:0,included:true},
+      {id:119,cat:"Operating",name:"Team Engagement/Development",amount:20506,spent:0,included:true},
+      {id:120,cat:"Programs/Initiatives",name:"University Life Council (ULC)",amount:80000,spent:0,included:true},
+      {id:121,cat:"Programs/Initiatives",name:"Global Program/Initiative Fund",amount:25000,spent:0,included:true},
+      {id:122,cat:"Programs/Initiatives",name:"UL Central Programs/Events/Initiatives",amount:50000,spent:0,included:true},
+    ]
+  },
+  /* ---- TAB 2: Budget Split (Chris) ---- */
+  {
+    id: 2, baseline: 1974194, hasSpent: false, totalSpent: 0,
+    mode: 'dollar', cutDollar: 0, activeFilter: 'All', nextId: 300, dragSrcId: null, chart: null,
+    cats: ['Centers','Operating','Programs/Initiatives'],
+    data: [
+      {id:201,cat:"Centers",name:"CMEP Budget Allocation 2025\u20132026",amount:275727,spent:0,included:true},
+      {id:202,cat:"Centers",name:"Center for Student Life (CSL)",amount:275727,spent:0,included:true},
+      {id:203,cat:"Centers",name:"GSL FY26 Budget File",amount:73372,spent:0,included:true},
+      {id:204,cat:"Centers",name:"GSL: Islamic Center",amount:275727,spent:0,included:true},
+      {id:205,cat:"Centers",name:"GSL: Bronfman Center",amount:275727,spent:0,included:true},
+      {id:206,cat:"Centers",name:"LGBTQ+ Center Budget (2025\u20132026)",amount:220414,spent:0,included:true},
+      {id:207,cat:"Centers",name:"Disability Inclusive Culture",amount:125000,spent:0,included:true},
+      {id:208,cat:"Operating",name:"Org Tools/Subscriptions",amount:7500,spent:0,included:true},
+      {id:209,cat:"Operating",name:"Contingency",amount:10000,spent:0,included:true},
+      {id:210,cat:"Operating",name:"Global Site/Location Travel",amount:35000,spent:0,included:true},
+      {id:211,cat:"Operating",name:"Memberships",amount:5000,spent:0,included:true},
+      {id:212,cat:"Operating",name:"Professional Development",amount:10000,spent:0,included:true},
+      {id:213,cat:"Operating",name:"Team Engagement/Development",amount:10000,spent:0,included:true},
+      {id:214,cat:"Programs/Initiatives",name:"Community Engagement Programs/Events",amount:30000,spent:0,included:true},
+      {id:215,cat:"Programs/Initiatives",name:"Expanding CMEP Leadership Programs",amount:15000,spent:0,included:true},
+      {id:216,cat:"Programs/Initiatives",name:"Interfaith Supper Club",amount:35000,spent:0,included:true},
+      {id:217,cat:"Programs/Initiatives",name:"NYU Portraits",amount:120000,spent:0,included:true},
+      {id:218,cat:"Programs/Initiatives",name:"SLPCCs",amount:45000,spent:0,included:true},
+      {id:219,cat:"Programs/Initiatives",name:"MLK Week",amount:130000,spent:0,included:true},
+    ]
+  }
+];
+
+let activeTab = 0;
+let modalTab = 0;
+const fmt = v => '$' + Math.round(v).toLocaleString('en-US');
+const fmtD = v => '$' + v.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+/* ---- Tab Switching ---- */
+function switchTab(idx) {
+  activeTab = idx;
+  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', i === idx));
+  const t = TABS[idx];
+  if (t.chart) setTimeout(() => t.chart.resize(), 50);
+}
+
+/* ---- Chart ---- */
+function initChart(ti) {
+  const t = TABS[ti];
+  const ctx = document.getElementById('chart-' + ti).getContext('2d');
+  const datasets = [
+    { label: 'Baseline', data: [], backgroundColor: '#57068c', borderRadius: 4, barPercentage: 0.55 },
+    { label: 'Adjusted', data: [], backgroundColor: '#ab82c5', borderRadius: 4, barPercentage: 0.55 }
+  ];
+  if (t.hasSpent) datasets.push({ label: 'Spent', data: [], backgroundColor: '#b45309', borderRadius: 4, barPercentage: 0.55 });
+  t.chart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: t.cats, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { usePointStyle: true, padding: 16, font: { size: 11 } } },
+        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => '$' + (v >= 1000 ? (v/1000) + 'K' : v), font: { size: 10 } }, grid: { color: '#eee6f3' } },
+        x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+function updateChart(ti) {
+  const t = TABS[ti];
+  const baseByCat = {}, adjByCat = {}, spentByCat = {};
+  t.cats.forEach(c => { baseByCat[c] = 0; adjByCat[c] = 0; spentByCat[c] = 0; });
+  t.data.forEach(d => {
+    if (baseByCat[d.cat] !== undefined) baseByCat[d.cat] += d.amount;
+    if (d.included && adjByCat[d.cat] !== undefined) adjByCat[d.cat] += d.amount;
+    if (t.hasSpent && spentByCat[d.cat] !== undefined) spentByCat[d.cat] += (d.spent || 0);
+  });
+  const totalIncluded = t.data.filter(d => d.included).reduce((s, d) => s + d.amount, 0);
+  const adjTotal = t.baseline - t.cutDollar;
+  const ratio = totalIncluded > 0 ? Math.max(0, adjTotal) / totalIncluded : 0;
+  t.chart.data.datasets[0].data = t.cats.map(c => baseByCat[c]);
+  t.chart.data.datasets[1].data = t.cats.map(c => adjByCat[c] * (t.cutDollar > 0 ? ratio : 1));
+  if (t.hasSpent) t.chart.data.datasets[2].data = t.cats.map(c => spentByCat[c]);
+  t.chart.update();
+}
+
+/* ---- Mode Toggle ---- */
+function setMode(ti, m) {
+  const t = TABS[ti];
+  t.mode = m;
+  document.getElementById('tab-' + ti).querySelectorAll('.toggle-btn[data-tab="' + ti + '"]').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+  document.getElementById('t' + ti + '-dollar-input').style.display = m === 'dollar' ? 'flex' : 'none';
+  document.getElementById('t' + ti + '-percent-input').style.display = m === 'percent' ? 'flex' : 'none';
+  if (m === 'dollar') {
+    document.getElementById('t' + ti + '-cut-dollar').value = t.cutDollar;
+  } else {
+    const pct = ((t.cutDollar / t.baseline) * 100).toFixed(1);
+    document.getElementById('t' + ti + '-cut-range').value = pct;
+    document.getElementById('t' + ti + '-pct-display').textContent = pct + '%';
+  }
+}
+function onDollarChange(ti, v) { TABS[ti].cutDollar = Math.max(0, Math.min(TABS[ti].baseline, parseFloat(v) || 0)); refresh(ti); }
+function onPercentChange(ti, v) {
+  const pct = parseFloat(v) || 0;
+  document.getElementById('t' + ti + '-pct-display').textContent = pct + '%';
+  TABS[ti].cutDollar = Math.round(TABS[ti].baseline * pct / 100);
+  refresh(ti);
+}
+
+/* ---- KPIs ---- */
+function updateKPIs(ti) {
+  const t = TABS[ti];
+  const totalSpent = t.data.reduce((s, d) => s + (d.spent || 0), 0);
+  const adj = Math.max(0, t.baseline - t.cutDollar);
+  const available = adj - totalSpent;
+  const pctCut = ((t.cutDollar / t.baseline) * 100).toFixed(1);
+  const included = t.data.filter(d => d.included).length;
+
+  if (t.hasSpent) {
+    document.getElementById('t0-kpi-spent').textContent = fmtD(totalSpent);
+    document.getElementById('t0-kpi-spent-pct').textContent = ((totalSpent / t.baseline) * 100).toFixed(1) + '% of baseline';
+    document.getElementById('t' + ti + '-kpi-adj').textContent = fmt(available);
+    document.getElementById('t' + ti + '-kpi-adj-pct').textContent = 'Budget minus spent & cuts';
+  } else {
+    document.getElementById('t' + ti + '-kpi-adj').textContent = fmt(adj);
+    document.getElementById('t' + ti + '-kpi-adj-pct').textContent = ((adj / t.baseline) * 100).toFixed(1) + '% of baseline';
+  }
+  document.getElementById('t' + ti + '-kpi-cut').textContent = fmt(t.cutDollar);
+  document.getElementById('t' + ti + '-kpi-cut-pct').textContent = pctCut + '% of baseline';
+  document.getElementById('t' + ti + '-kpi-items').textContent = included;
+  document.getElementById('t' + ti + '-kpi-items-sub').textContent = 'of ' + t.data.length + ' total';
+}
+
+/* ---- Tiles ---- */
+function renderTiles(ti) {
+  const t = TABS[ti];
+  const grid = document.getElementById('t' + ti + '-tiles-grid');
+  grid.innerHTML = '';
+  const filtered = t.activeFilter === 'All' ? t.data : t.data.filter(d => d.cat === t.activeFilter);
+  filtered.forEach(d => {
+    const tile = document.createElement('div');
+    tile.className = 'tile' + (d.included ? '' : ' excluded');
+    tile.draggable = true;
+    tile.dataset.id = d.id;
+    const spentPct = d.amount > 0 ? Math.min(100, (d.spent / d.amount) * 100) : 0;
+    let spentHTML = '';
+    if (t.hasSpent) {
+      spentHTML = `<div class="spent-line">Spent: ${fmtD(d.spent)} of ${fmt(d.amount)} (${spentPct.toFixed(1)}%)</div>
+        <div class="spent-bar-bg"><div class="spent-bar" style="width:${spentPct}%"></div></div>`;
+    }
+    tile.innerHTML = `
+      <div class="tile-actions"><button onclick="removeTile(${ti},${d.id})" title="Remove">&times;</button></div>
+      <span class="cat-badge">${d.cat}</span>
+      <div class="tile-name" contenteditable="true" onblur="renameTile(${ti},${d.id},this.textContent)">${d.name}</div>
+      <input class="tile-amount-input" type="text" value="${fmt(d.amount)}" onfocus="this.value=String(${d.amount})" onblur="updateAmount(${ti},${d.id},this.value)">
+      ${spentHTML}
+      <span class="toggle-include" onclick="toggleInclude(${ti},${d.id})">${d.included ? 'Exclude from budget' : 'Include in budget'}</span>
+    `;
+    tile.addEventListener('dragstart', e => { t.dragSrcId = d.id; tile.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    tile.addEventListener('dragend', () => { tile.classList.remove('dragging'); t.dragSrcId = null; grid.querySelectorAll('.tile').forEach(x => x.classList.remove('drag-over')); });
+    tile.addEventListener('dragover', e => { e.preventDefault(); tile.classList.add('drag-over'); });
+    tile.addEventListener('dragleave', () => tile.classList.remove('drag-over'));
+    tile.addEventListener('drop', e => {
+      e.preventDefault(); tile.classList.remove('drag-over');
+      if (t.dragSrcId === null || t.dragSrcId === d.id) return;
+      const srcIdx = t.data.findIndex(x => x.id === t.dragSrcId);
+      const tgtIdx = t.data.findIndex(x => x.id === d.id);
+      if (srcIdx < 0 || tgtIdx < 0) return;
+      const [item] = t.data.splice(srcIdx, 1);
+      t.data.splice(tgtIdx, 0, item);
+      renderTiles(ti);
+    });
+    grid.appendChild(tile);
+  });
+}
+
+function renderFilters(ti) {
+  const t = TABS[ti];
+  const cats = ['All', ...new Set(t.data.map(d => d.cat))];
+  const group = document.getElementById('t' + ti + '-cat-filters');
+  group.innerHTML = '';
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (t.activeFilter === c ? ' active' : '');
+    btn.textContent = c;
+    btn.onclick = () => { t.activeFilter = c; renderFilters(ti); renderTiles(ti); };
+    group.appendChild(btn);
+  });
+}
+
+function renameTile(ti, id, name) { const d = TABS[ti].data.find(x => x.id === id); if (d) d.name = name.trim(); }
+function updateAmount(ti, id, val) {
+  const d = TABS[ti].data.find(x => x.id === id);
+  if (d) { d.amount = Math.max(0, parseFloat(val.replace(/[^0-9.]/g, '')) || 0); refresh(ti); }
+}
+function toggleInclude(ti, id) { const d = TABS[ti].data.find(x => x.id === id); if (d) { d.included = !d.included; refresh(ti); } }
+function removeTile(ti, id) { TABS[ti].data = TABS[ti].data.filter(x => x.id !== id); refresh(ti); }
+
+/* ---- Modal ---- */
+function openModal(ti) { modalTab = ti; document.getElementById('modal').classList.add('open'); document.getElementById('new-name').focus(); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); document.getElementById('new-name').value = ''; document.getElementById('new-amount').value = ''; }
+function addTile() {
+  const name = document.getElementById('new-name').value.trim();
+  const cat = document.getElementById('new-cat').value;
+  const amount = parseFloat(document.getElementById('new-amount').value) || 0;
+  if (!name) { document.getElementById('new-name').focus(); return; }
+  const t = TABS[modalTab];
+  t.data.push({ id: t.nextId++, cat, name, amount, spent: 0, included: true });
+  closeModal();
+  refresh(modalTab);
+}
+
+/* ---- Refresh ---- */
+function refresh(ti) { updateKPIs(ti); updateChart(ti); renderFilters(ti); renderTiles(ti); }
+
+/* ---- Init ---- */
+TABS.forEach((t, i) => { initChart(i); refresh(i); });
+</script>
+</body>
+</html>
