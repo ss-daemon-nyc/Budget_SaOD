@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FY26 Budget Detail YTD — Office of Global Inclusion</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    color-scheme: light;
+    --page:           #f9f9f7;
+    --surface-1:      #fcfcfb;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --series-1:       #2a78d6;   /* Posted to GL */
+    --series-2:       #008300;   /* Encumbered */
+    --chip-active-bg: #0b0b0b;
+    --chip-active-fg: #fcfcfb;
+    --hover-wash:     rgba(11,11,11,0.045);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page:           #0d0d0d;
+      --surface-1:      #1a1a19;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --series-1:       #3987e5;
+      --series-2:       #008300;
+      --chip-active-bg: #ffffff;
+      --chip-active-fg: #0b0b0b;
+      --hover-wash:     rgba(255,255,255,0.06);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page:           #0d0d0d;
+    --surface-1:      #1a1a19;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --grid:           #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --series-1:       #3987e5;
+    --series-2:       #008300;
+    --chip-active-bg: #ffffff;
+    --chip-active-fg: #0b0b0b;
+    --hover-wash:     rgba(255,255,255,0.06);
+  }
+
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--page);
+    color: var(--text-primary);
+    line-height: 1.5;
+    font-size: 14px;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 24px 48px; }
+
+  /* Header */
+  .page-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+  .page-head h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+  .page-head .sub { font-size: 13px; color: var(--text-secondary); margin-top: 4px; max-width: 720px; }
+  .theme-btn {
+    flex: none; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary);
+    border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit;
+  }
+  .theme-btn:hover { background: var(--hover-wash); }
+
+  /* Filter row */
+  .filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .filters .filter-label { font-size: 12px; color: var(--text-muted); margin-right: 2px; }
+  .chip {
+    border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary);
+    border-radius: 999px; padding: 5px 14px; font-size: 12.5px; font-weight: 500; cursor: pointer; font-family: inherit;
+    transition: background 0.15s;
+  }
+  .chip:hover { background: var(--hover-wash); }
+  .chip[aria-pressed="true"] { background: var(--chip-active-bg); color: var(--chip-active-fg); border-color: transparent; font-weight: 600; }
+
+  /* KPI row */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .tile .label { font-size: 12px; color: var(--text-secondary); }
+  .tile .value { font-size: 26px; font-weight: 600; margin-top: 2px; letter-spacing: -0.3px; }
+  .tile .subv { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+  /* Cards */
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px 14px; margin-bottom: 20px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 4px; }
+  .card h2 { font-size: 15px; font-weight: 600; }
+  .card .desc { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+  .legend { display: flex; gap: 16px; align-items: center; flex: none; }
+  .legend .key { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .legend .swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .swatch.s1 { background: var(--series-1); }
+  .swatch.s2 { background: var(--series-2); }
+
+  .chart-scroll { overflow-x: auto; }
+  svg { display: block; }
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .seg-gl  { fill: var(--series-1); }
+  .seg-enc { fill: var(--series-2); }
+  .gridline { stroke: var(--grid); stroke-width: 1; }
+  .axisline { stroke: var(--baseline); stroke-width: 1; }
+  .tick-label { fill: var(--text-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .row-label { fill: var(--text-primary); font-size: 12px; }
+  .row-label .code { fill: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .end-label { fill: var(--text-secondary); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .col-label { fill: var(--text-secondary); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .hit { fill: transparent; cursor: default; outline: none; }
+  g.brow:hover .seg, g.brow:focus-within .seg,
+  g.bcol:hover .seg, g.bcol:focus-within .seg { filter: brightness(1.12); }
+  g.brow:focus-within .hit, g.bcol:focus-within .hit { stroke: var(--text-muted); stroke-width: 1; stroke-dasharray: none; }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed; z-index: 50; pointer-events: none; max-width: 320px;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.14); padding: 10px 12px; font-size: 12px;
+  }
+  .tooltip .tt-title { font-weight: 600; color: var(--text-primary); margin-bottom: 1px; }
+  .tooltip .tt-sub { color: var(--text-muted); font-size: 11px; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+  .tooltip .tt-row { display: flex; align-items: center; gap: 7px; margin-top: 3px; }
+  .tooltip .tt-key { width: 10px; height: 3px; border-radius: 2px; flex: none; }
+  .tooltip .tt-key.none { background: transparent; }
+  .tooltip .tt-val { font-weight: 600; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+  .tooltip .tt-lbl { color: var(--text-secondary); }
+  .tooltip .tt-div { border-top: 1px solid var(--grid); margin-top: 7px; padding-top: 4px; }
+
+  /* Table */
+  .tbl-tools { flex: none; }
+  .tbl-tools input {
+    border: 1px solid var(--border); background: var(--page); color: var(--text-primary);
+    border-radius: 8px; padding: 6px 12px; font-size: 12.5px; width: 220px; font-family: inherit; outline: none;
+  }
+  .tbl-tools input:focus { border-color: var(--text-muted); }
+  .table-wrap { overflow-x: auto; margin-top: 8px; }
+  table { border-collapse: collapse; width: 100%; min-width: 880px; font-size: 12px; }
+  thead th {
+    text-align: right; font-weight: 600; color: var(--text-secondary); font-size: 11.5px;
+    padding: 7px 8px; border-bottom: 1px solid var(--baseline); white-space: nowrap; cursor: pointer; user-select: none;
+  }
+  thead th.txt { text-align: left; }
+  thead th:hover { color: var(--text-primary); }
+  thead th .arrow { font-size: 9px; margin-left: 3px; }
+  tbody td { padding: 6px 8px; border-bottom: 1px solid var(--grid); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tbody td.txt { text-align: left; font-variant-numeric: normal; }
+  tbody td.code { color: var(--text-muted); font-variant-numeric: tabular-nums; text-align: left; }
+  tbody td.cat { color: var(--text-muted); font-size: 11.5px; text-align: left; }
+  tbody tr:hover { background: var(--hover-wash); }
+  tbody td.neg { color: var(--text-secondary); }
+  tfoot td { padding: 7px 8px; font-weight: 600; text-align: right; border-top: 1px solid var(--baseline); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tfoot td.txt { text-align: left; }
+
+  .footnotes { font-size: 11.5px; color: var(--text-muted); margin-top: 12px; line-height: 1.6; }
+  .footnotes p { margin-top: 2px; }
+  footer.src { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 20px 14px 36px; }
+    .page-head h1 { font-size: 19px; }
+    .tile .value { font-size: 22px; }
+    .tbl-tools input { width: 100%; }
+  }
+  @media print {
+    .theme-btn { display: none; }
+    .card, .tile { border-color: #bbb; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-head">
+    <div>
+      <h1>Where the Money Is Going — FY26 Year to Date</h1>
+      <p class="sub">Office of Global Inclusion (Org 01006) · Fund 10 – Operating · Activity Sep 1, 2025 – Jul 15, 2026 ·
+        Expenses posted to the general ledger plus open encumbrances, by account.</p>
+    </div>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle color theme">◐ Theme</button>
+  </header>
+
+  <nav class="filters" aria-label="Expense category filter">
+    <span class="filter-label">Category</span>
+    <button class="chip" data-cat="all" aria-pressed="true" type="button">All expenses</button>
+    <button class="chip" data-cat="Personnel Expense" aria-pressed="false" type="button">Personnel</button>
+    <button class="chip" data-cat="OTPS" aria-pressed="false" type="button">OTPS</button>
+    <button class="chip" data-cat="Uncontrollable OTPS" aria-pressed="false" type="button">Uncontrollable OTPS</button>
+  </nav>
+
+  <section class="kpis" id="kpis" aria-label="Summary figures"></section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Top accounts by committed spend</h2>
+      <div class="legend" aria-hidden="false">
+        <span class="key"><span class="swatch s1"></span>Posted to GL</span>
+        <span class="key"><span class="swatch s2"></span>Encumbered</span>
+      </div>
+    </div>
+    <p class="desc" id="barDesc">Largest expense accounts by posted + encumbered dollars; remaining accounts are folded into one bar. Full detail in the table below.</p>
+    <div class="chart-scroll"><div id="barChart" role="img" aria-label="Horizontal stacked bar chart of top expense accounts by posted and encumbered dollars"></div></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Posted to GL by month</h2>
+    </div>
+    <p class="desc">Fiscal year runs September through August. July is partial (activity through Jul 15); August has no postings yet.</p>
+    <div class="chart-scroll"><div id="monthChart" role="img" aria-label="Column chart of monthly expense dollars posted to the general ledger"></div></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>All expense accounts</h2>
+      <div class="tbl-tools"><input id="tblSearch" type="search" placeholder="Filter by code or description…" aria-label="Filter table rows"></div>
+    </div>
+    <div class="table-wrap">
+      <table id="tbl">
+        <thead><tr id="tblHead"></tr></thead>
+        <tbody id="tblBody"></tbody>
+        <tfoot><tr id="tblFoot"></tr></tfoot>
+      </table>
+    </div>
+    <div class="footnotes">
+      <p>Committed = posted to GL + encumbrances. Available = revised budget − posted − encumbered − pre-encumbered. Negative amounts are credits, refunds, or reversals. Accounts with no budget line show “—” for % used.</p>
+      <p>The report also contains one revenue line, excluded above: 40180 · Transfers from SGH01, $177.00 posted to GL.</p>
+    </div>
+  </section>
+
+  <footer class="src" id="srcNote"></footer>
+</div>
+
+<div class="tooltip" id="tip" hidden></div>
+
+<script>
+"use strict";
+const DATA = {"accounts":[{"c":"51100","d":"Salaries - Admin. Mgmt FT","t":"E","k":"Personnel Expense","gl":474893.3,"enc":105500.41,"pre":73333.34,"bud":569873.0},{"c":"51170","d":"Fringe Benefits-Composite Rate","t":"E","k":"Personnel Expense","gl":186538.99,"enc":38430.94,"pre":24200.0,"bud":253798.84},{"c":"77005","d":"Transfers to Fund 10","t":"E","k":"OTPS","gl":135957.64,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"51106","d":"Salaries- FT Office/Clerical","t":"E","k":"Personnel Expense","gl":60344.77,"enc":10956.96,"pre":0.0,"bud":71265.4},{"c":"65510","d":"Travel & Living - Domestic","t":"E","k":"OTPS","gl":70343.23,"enc":0.0,"pre":0.0,"bud":98322.0},{"c":"60120","d":"Honorariums","t":"E","k":"OTPS","gl":64000.0,"enc":0.0,"pre":0.0,"bud":139100.0},{"c":"64135","d":"Internal Expense - Events","t":"E","k":"OTPS","gl":34878.45,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"60455","d":"Prof Svc - Other -On Site","t":"E","k":"OTPS","gl":26604.18,"enc":5188.69,"pre":0.0,"bud":272200.0},{"c":"63275","d":"Expendable Furn & Equip","t":"E","k":"OTPS","gl":22330.36,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"65160","d":"Events","t":"E","k":"OTPS","gl":19818.0,"enc":0.0,"pre":0.0,"bud":119700.0},{"c":"65315","d":"One-time Space Rental","t":"E","k":"OTPS","gl":14569.5,"enc":0.0,"pre":0.0,"bud":33900.0},{"c":"63110","d":"Office Supplies Changed","t":"E","k":"OTPS","gl":2135.82,"enc":11202.41,"pre":0.0,"bud":22200.0},{"c":"65140","d":"Awards & Prizes","t":"E","k":"OTPS","gl":13300.0,"enc":0.0,"pre":0.0,"bud":43600.0},{"c":"65182","d":"Food Expense","t":"E","k":"OTPS","gl":12276.21,"enc":588.0,"pre":0.0,"bud":71000.0},{"c":"64125","d":"Internal Expense- Catering","t":"E","k":"OTPS","gl":11753.45,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"51119","d":"Salaries- Casual Student Emp","t":"E","k":"Personnel Expense","gl":11291.42,"enc":0.0,"pre":0.0,"bud":20705.0},{"c":"65111","d":"Advertising","t":"E","k":"OTPS","gl":9794.18,"enc":0.0,"pre":0.0,"bud":8300.0},{"c":"51219","d":"GS Regular-Student Hourly","t":"E","k":"Personnel Expense","gl":9319.9,"enc":0.0,"pre":0.0,"bud":107244.0},{"c":"77050","d":"Transfers to Fund 20","t":"E","k":"OTPS","gl":8800.0,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"62147","d":"Computer Software","t":"E","k":"OTPS","gl":8608.64,"enc":0.0,"pre":0.0,"bud":20000.0},{"c":"51302","d":"Academic Additional Compensati","t":"E","k":"Personnel Expense","gl":6779.07,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"63220","d":"Educat Suppl - Operating Etc","t":"E","k":"OTPS","gl":6338.84,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"65186","d":"TEAM DINNER MEETINGS","t":"E","k":"OTPS","gl":6330.03,"enc":0.0,"pre":0.0,"bud":24900.0},{"c":"65310","d":"Space Rental","t":"E","k":"Uncontrollable OTPS","gl":5332.5,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"64325","d":"R/E Tenant Alter","t":"E","k":"OTPS","gl":0.0,"enc":5250.0,"pre":0.0,"bud":0.0},{"c":"63109","d":"Internal Exp - Copy & Printing","t":"E","k":"OTPS","gl":5228.63,"enc":0.0,"pre":0.0,"bud":16000.0},{"c":"63108","d":"Campus Media Costs","t":"E","k":"OTPS","gl":3340.0,"enc":0.0,"pre":0.0,"bud":7700.0},{"c":"62141","d":"Internal Exp - Desktop Support","t":"E","k":"OTPS","gl":2976.0,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"65561","d":"Cell Phone Expense","t":"E","k":"OTPS","gl":2556.46,"enc":0.0,"pre":0.0,"bud":13000.0},{"c":"51310","d":"Extra Payment Personnel","t":"E","k":"Personnel Expense","gl":2531.29,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"63410","d":"Books / Periodicals","t":"E","k":"OTPS","gl":2310.0,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"60176","d":"Misc other expenses","t":"E","k":"OTPS","gl":1915.62,"enc":0.0,"pre":0.0,"bud":10000.0},{"c":"64210","d":"Rental of Office Equip","t":"E","k":"OTPS","gl":1306.1,"enc":590.9,"pre":0.0,"bud":4000.0},{"c":"65291","d":"Membership Dues","t":"E","k":"OTPS","gl":1750.0,"enc":0.0,"pre":0.0,"bud":119000.0},{"c":"65550","d":"Travel - Local (Bus,Taxi,etc.)","t":"E","k":"OTPS","gl":1088.62,"enc":0.0,"pre":0.0,"bud":6000.0},{"c":"65130","d":"Employee Moving","t":"E","k":"OTPS","gl":0.0,"enc":1065.0,"pre":0.0,"bud":0.0},{"c":"65112","d":"Promotions","t":"E","k":"OTPS","gl":1000.0,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"63130","d":"Courier Services","t":"E","k":"OTPS","gl":763.16,"enc":0.0,"pre":0.0,"bud":5000.0},{"c":"63420","d":"Periodical Subscriptions","t":"E","k":"OTPS","gl":164.38,"enc":278.94,"pre":0.0,"bud":0.0},{"c":"65520","d":"Travel & Living - Foreign","t":"E","k":"OTPS","gl":407.9,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"65170","d":"Convention Reg & Membership","t":"E","k":"OTPS","gl":395.0,"enc":0.0,"pre":0.0,"bud":7000.0},{"c":"65117","d":"Internal Exp - Media Productio","t":"E","k":"OTPS","gl":330.0,"enc":0.0,"pre":0.0,"bud":16900.0},{"c":"63445","d":"Tickets","t":"E","k":"OTPS","gl":262.5,"enc":0.0,"pre":0.0,"bud":5000.0},{"c":"65183","d":"Alcoholic Beverages","t":"E","k":"OTPS","gl":251.79,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"55295","d":"Relocation-Immigration Fees","t":"E","k":"Personnel Expense","gl":210.2,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"40180","d":"Transfers from SGH01","t":"R","k":"Revenue","gl":177.0,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"63113","d":"Copier Paper","t":"E","k":"OTPS","gl":112.17,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"51218","d":"GS Federal Work Study","t":"E","k":"Personnel Expense","gl":110.0,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"64100","d":"Internal Expense - M&O","t":"E","k":"OTPS","gl":70.0,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"65710","d":"Bank Fees","t":"E","k":"Uncontrollable OTPS","gl":38.78,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"63210","d":"Lab Supply","t":"E","k":"OTPS","gl":19.99,"enc":-0.38,"pre":0.0,"bud":0.0},{"c":"63120","d":"Internal Exp - Postage","t":"E","k":"OTPS","gl":2.17,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"60480","d":"Prof Svc - IT","t":"E","k":"OTPS","gl":0.0,"enc":0.0,"pre":0.0,"bud":18000.0},{"c":"65563","d":"Telecomm One-Time Costs","t":"E","k":"OTPS","gl":0.0,"enc":0.0,"pre":0.0,"bud":4000.0},{"c":"60178","d":"A/P - Discount Earned","t":"E","k":"OTPS","gl":-5.4,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"60460","d":"Prof Svc - Temp Agency Service","t":"E","k":"OTPS","gl":-422.8,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"64300","d":"R/E Maint Bldg","t":"E","k":"OTPS","gl":-1367.96,"enc":0.0,"pre":0.0,"bud":0.0},{"c":"62140","d":"Computer Hardware","t":"E","k":"OTPS","gl":-13361.63,"enc":64.5,"pre":0.0,"bud":5000.0}],"monthly":[{"m":"Sep","c":{"Personnel Expense":71092.4,"OTPS":-21064.07}},{"m":"Oct","c":{"Personnel Expense":70540.13,"OTPS":11335.49}},{"m":"Nov","c":{"Personnel Expense":70808.92,"OTPS":7127.19,"Uncontrollable OTPS":1.92}},{"m":"Dec","c":{"Personnel Expense":74402.97,"OTPS":16339.65}},{"m":"Jan","c":{"Personnel Expense":70689.23,"OTPS":71351.28}},{"m":"Feb","c":{"Personnel Expense":70923.7,"OTPS":41396.52,"Uncontrollable OTPS":2443.5}},{"m":"Mar","c":{"Personnel Expense":76489.21,"OTPS":96083.36}},{"m":"Apr","c":{"Personnel Expense":75486.96,"OTPS":95236.02,"Uncontrollable OTPS":36.86}},{"m":"May","c":{"Personnel Expense":84981.83,"OTPS":108067.65}},{"m":"Jun","c":{"Personnel Expense":86603.59,"OTPS":12205.77,"Uncontrollable OTPS":2889.0}},{"m":"Jul","c":{"OTPS":40852.37}},{"m":"Aug","c":{}}]};
+
+const META = {
+  source: "Budget_Detail_YTD_Report_Non_PDF.xlsx",
+  generated: "July 16, 2026",
+  fy: "FY26"
+};
+
+const state = { cat: "all", q: "", sortKey: "com", sortDir: -1 };
+const CAT_SHORT = { "Personnel Expense": "Personnel", "OTPS": "OTPS", "Uncontrollable OTPS": "Uncontrollable" };
+
+/* ---------- formatting ---------- */
+const fmtInt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+const fmtCents = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function money(v)  { return (v < 0 ? "−$" : "$") + fmtCents.format(Math.abs(v)); }
+function moneyInt(v){ return (v < 0 ? "−$" : "$") + fmtInt.format(Math.abs(v)); }
+function compact(v) {
+  const a = Math.abs(v), sign = v < 0 ? "−" : "";
+  if (a >= 1e6) return sign + "$" + (a / 1e6).toFixed(2) + "M";
+  if (a >= 1e3) return sign + "$" + (a / 1e3).toFixed(1) + "K";
+  return sign + "$" + fmtInt.format(Math.round(a));
+}
+function pct(part, whole) { return whole ? (100 * part / whole).toFixed(1) + "%" : "—"; }
+
+/* ---------- DOM helpers (textContent only for data strings) ---------- */
+function h(tag, attrs, ...kids) {
+  const n = document.createElement(tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v; else n.setAttribute(k, v);
+  }
+  for (const k of kids) n.append(k);
+  return n;
+}
+const SVGNS = "http://www.w3.org/2000/svg";
+function s(tag, attrs, text) {
+  const n = document.createElementNS(SVGNS, tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (text !== undefined) n.textContent = text;
+  return n;
+}
+function roundedRight(x, y, w, hgt, r) {
+  r = Math.min(r, w / 2, hgt / 2);
+  return `M${x},${y} h${w - r} a${r},${r} 0 0 1 ${r},${r} v${hgt - 2 * r} a${r},${r} 0 0 1 ${-r},${r} h${-(w - r)} z`;
+}
+function roundedTop(x, y, w, hgt, r) {
+  r = Math.min(r, w / 2, hgt / 2);
+  return `M${x},${y + hgt} v${-(hgt - r)} a${r},${r} 0 0 1 ${r},${-r} h${w - 2 * r} a${r},${r} 0 0 1 ${r},${r} v${hgt - r} z`;
+}
+function niceTicks(max, target) {
+  if (max <= 0) return [0, 1];
+  const raw = max / target, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(st => max / st <= target) || 10 * mag;
+  const ticks = [];
+  for (let v = 0; v <= max + 1e-9; v += step) ticks.push(v);
+  if (ticks[ticks.length - 1] < max) ticks.push(ticks[ticks.length - 1] + step);
+  return ticks;
+}
+
+/* ---------- data scope ---------- */
+function scopeAccounts() {
+  return DATA.accounts.filter(a => a.t === "E" && (state.cat === "all" || a.k === state.cat));
+}
+function scopeMonthly() {
+  return DATA.monthly.map(mm => ({
+    m: mm.m,
+    v: Object.entries(mm.c).reduce((sum, [k, v]) => sum + ((state.cat === "all" || k === state.cat) ? v : 0), 0)
+  }));
+}
+
+/* ---------- tooltip ---------- */
+const tip = document.getElementById("tip");
+function tipRow(colorVar, valueText, labelText) {
+  const key = h("span", { class: "tt-key" + (colorVar ? "" : " none") });
+  if (colorVar) key.style.background = `var(${colorVar})`;
+  return h("div", { class: "tt-row" }, key, h("span", { class: "tt-val" }, valueText), h("span", { class: "tt-lbl" }, labelText));
+}
+function showTip(builder, x, y) {
+  tip.replaceChildren(...builder());
+  tip.hidden = false;
+  const r = tip.getBoundingClientRect();
+  let left = x + 14, top = y + 14;
+  if (left + r.width > window.innerWidth - 8) left = x - r.width - 14;
+  if (top + r.height > window.innerHeight - 8) top = y - r.height - 14;
+  tip.style.left = Math.max(8, left) + "px";
+  tip.style.top = Math.max(8, top) + "px";
+}
+function hideTip() { tip.hidden = true; }
+function bindTip(el, builder) {
+  el.addEventListener("pointermove", e => showTip(builder, e.clientX, e.clientY));
+  el.addEventListener("pointerleave", hideTip);
+  el.addEventListener("focus", () => {
+    const r = el.getBoundingClientRect();
+    showTip(builder, r.left + r.width / 2, r.top + r.height / 2);
+  });
+  el.addEventListener("blur", hideTip);
+}
+
+/* ---------- KPI row ---------- */
+function renderKpis() {
+  const A = scopeAccounts();
+  const gl  = A.reduce((t, a) => t + a.gl, 0);
+  const enc = A.reduce((t, a) => t + a.enc, 0);
+  const pre = A.reduce((t, a) => t + a.pre, 0);
+  const bud = A.reduce((t, a) => t + a.bud, 0);
+  const avail = bud - gl - enc - pre;
+  const tiles = [
+    ["Revised budget", bud, "FY26 · " + A.length + " expense accounts"],
+    ["Posted to GL", gl, money(gl) + (bud ? " · " + pct(gl, bud) + " of budget" : "")],
+    ["Encumbered", enc, money(enc) + (bud ? " · " + pct(enc, bud) + " of budget" : "")],
+    ["Pre-encumbered", pre, money(pre) + (bud ? " · " + pct(pre, bud) + " of budget" : "")],
+    ["Available balance", avail, money(avail) + (bud ? " · " + pct(avail, bud) + " of budget" : "")]
+  ];
+  document.getElementById("kpis").replaceChildren(...tiles.map(([label, v, sub]) =>
+    h("div", { class: "tile" },
+      h("div", { class: "label" }, label),
+      h("div", { class: "value" }, compact(v)),
+      h("div", { class: "subv" }, sub))));
+}
+
+/* ---------- top-accounts bar chart ---------- */
+function renderBars() {
+  const host = document.getElementById("barChart");
+  const A = scopeAccounts().map(a => ({ ...a, com: a.gl + a.enc })).sort((x, y) => y.com - x.com);
+  const top = A.filter(a => a.com > 0).slice(0, 15);
+  const rest = A.filter(a => !top.includes(a));
+  const rows = top.map(a => ({ ...a, label: a.d, code: a.c }));
+  if (rest.length) {
+    rows.push({
+      label: "All other accounts (" + rest.length + ")", code: "",
+      gl: rest.reduce((t, a) => t + a.gl, 0), enc: rest.reduce((t, a) => t + a.enc, 0),
+      bud: rest.reduce((t, a) => t + a.bud, 0), pre: rest.reduce((t, a) => t + a.pre, 0), other: true
+    });
+    rows[rows.length - 1].com = rows[rows.length - 1].gl + rows[rows.length - 1].enc;
+  }
+  if (!rows.length) { host.replaceChildren(h("p", { class: "desc" }, "No expense activity in this category.")); return; }
+
+  const width = Math.max(640, Math.min(host.parentNode.clientWidth || 940, 1140));
+  const gutter = 248, rightPad = 74, topPad = 6, band = 30, barH = 18, axisBand = 26;
+  const plotW = width - gutter - rightPad;
+  const height = topPad + rows.length * band + axisBand;
+  const maxV = Math.max(...rows.map(r => Math.max(r.com, 0)), 1);
+  const ticks = niceTicks(maxV, 5);
+  const scaleMax = ticks[ticks.length - 1];
+  const x = v => gutter + (v / scaleMax) * plotW;
+
+  const svg = s("svg", { width, height, viewBox: `0 0 ${width} ${height}` });
+
+  for (const t of ticks) {
+    svg.append(s("line", { x1: x(t), x2: x(t), y1: topPad, y2: height - axisBand, class: t === 0 ? "axisline" : "gridline" }));
+    svg.append(s("text", { x: x(t), y: height - axisBand + 16, "text-anchor": "middle", class: "tick-label" }, compact(t)));
+  }
+
+  rows.forEach((r, i) => {
+    const y = topPad + i * band + (band - barH) / 2;
+    const g = s("g", { class: "brow" });
+
+    const lbl = s("text", { x: gutter - 10, y: y + barH / 2 + 4, "text-anchor": "end", class: "row-label" });
+    const maxChars = 30;
+    const txt = r.label.length > maxChars ? r.label.slice(0, maxChars - 1) + "…" : r.label;
+    if (r.code) {
+      const tc = s("tspan", { class: "code" }, r.code + "  ");
+      lbl.append(tc, document.createTextNode(txt));
+    } else lbl.textContent = txt;
+    g.append(lbl);
+
+    const glW = r.gl > 0 ? x(r.gl) - x(0) : 0;
+    const encW = r.enc > 0 ? x(r.enc) - x(0) : 0;
+    if (glW > 0 && encW > 0) {
+      g.append(s("rect", { x: x(0), y, width: Math.max(glW - 1, 0.5), height: barH, class: "seg seg-gl" }));
+      g.append(s("path", { d: roundedRight(x(0) + glW + 1, y, Math.max(encW - 1, 1), barH, 4), class: "seg seg-enc" }));
+    } else if (glW > 0) {
+      g.append(s("path", { d: roundedRight(x(0), y, glW, barH, 4), class: "seg seg-gl" }));
+    } else if (encW > 0) {
+      g.append(s("path", { d: roundedRight(x(0), y, encW, barH, 4), class: "seg seg-enc" }));
+    }
+    if (r.com > 0) {
+      g.append(s("text", { x: x(r.com) + 8, y: y + barH / 2 + 4, class: "end-label" }, compact(r.com)));
+    }
+
+    const hit = s("rect", { x: 0, y: topPad + i * band, width, height: band, class: "hit", tabindex: 0, rx: 4 });
+    hit.append(s("title", {}, r.label));
+    g.append(hit);
+    bindTip(hit, () => {
+      const kids = [
+        h("div", { class: "tt-title" }, r.label),
+        h("div", { class: "tt-sub" }, r.other ? "Sum of accounts outside the top 15" : "Account " + r.code + " · " + (r.k || "")),
+        tipRow("--series-1", money(r.gl), "Posted to GL"),
+        tipRow("--series-2", money(r.enc), "Encumbered")
+      ];
+      const d = h("div", { class: "tt-div" },
+        tipRow(null, money(r.com), "Committed"),
+        tipRow(null, money(r.bud), "Revised budget"));
+      kids.push(d);
+      return kids;
+    });
+    svg.append(g);
+  });
+
+  host.replaceChildren(svg);
+}
+
+/* ---------- monthly column chart ---------- */
+function renderMonths() {
+  const host = document.getElementById("monthChart");
+  const M = scopeMonthly();
+  const width = Math.max(560, Math.min(host.parentNode.clientWidth || 940, 1140));
+  const leftPad = 56, rightPad = 12, topPad = 14, plotH = 210, axisBand = 26;
+  const height = topPad + plotH + axisBand;
+  const plotW = width - leftPad - rightPad;
+  const maxV = Math.max(...M.map(m => m.v), 1);
+  const ticks = niceTicks(maxV, 4);
+  const scaleMax = ticks[ticks.length - 1];
+  const y = v => topPad + plotH - (v / scaleMax) * plotH;
+  const band = plotW / M.length;
+  const colW = Math.min(24, band * 0.55);
+  const maxIdx = M.reduce((best, m, i) => (m.v > M[best].v ? i : best), 0);
+
+  const svg = s("svg", { width, height, viewBox: `0 0 ${width} ${height}` });
+  for (const t of ticks) {
+    svg.append(s("line", { x1: leftPad, x2: width - rightPad, y1: y(t), y2: y(t), class: t === 0 ? "axisline" : "gridline" }));
+    svg.append(s("text", { x: leftPad - 8, y: y(t) + 4, "text-anchor": "end", class: "tick-label" }, compact(t)));
+  }
+
+  M.forEach((m, i) => {
+    const cx = leftPad + i * band + band / 2;
+    const g = s("g", { class: "bcol" });
+    if (m.v > 0) {
+      g.append(s("path", { d: roundedTop(cx - colW / 2, y(m.v), colW, y(0) - y(m.v), 4), class: "seg seg-gl" }));
+    }
+    if (i === maxIdx && m.v > 0) {
+      g.append(s("text", { x: cx, y: y(m.v) - 6, "text-anchor": "middle", class: "col-label" }, compact(m.v)));
+    }
+    g.append(s("text", { x: cx, y: topPad + plotH + 17, "text-anchor": "middle", class: "tick-label" }, m.m));
+    const hit = s("rect", { x: leftPad + i * band, y: topPad, width: band, height: plotH + axisBand, class: "hit", tabindex: 0, rx: 4 });
+    g.append(hit);
+    bindTip(hit, () => [
+      h("div", { class: "tt-title" }, m.m + " · FY26"),
+      tipRow("--series-1", money(m.v), "Posted to GL" + (m.m === "Jul" ? " (through Jul 15)" : ""))
+    ]);
+    svg.append(g);
+  });
+
+  host.replaceChildren(svg);
+}
+
+/* ---------- table ---------- */
+const COLS = [
+  { key: "c",    label: "Code",             txt: true },
+  { key: "d",    label: "Account description", txt: true },
+  { key: "k",    label: "Category",         txt: true },
+  { key: "gl",   label: "Posted to GL" },
+  { key: "enc",  label: "Encumbered" },
+  { key: "pre",  label: "Pre-enc." },
+  { key: "com",  label: "Committed" },
+  { key: "pct",  label: "Share" },
+  { key: "bud",  label: "Budget" },
+  { key: "avail",label: "Available" }
+];
+
+function renderTable() {
+  const q = state.q.trim().toLowerCase();
+  let rows = scopeAccounts().map(a => ({
+    ...a, com: a.gl + a.enc, avail: a.bud - a.gl - a.enc - a.pre
+  }));
+  const totalCom = rows.reduce((t, r) => t + r.com, 0);
+  rows.forEach(r => { r.pct = totalCom ? r.com / totalCom : 0; });
+  if (q) rows = rows.filter(r => r.c.toLowerCase().includes(q) || r.d.toLowerCase().includes(q));
+  const dir = state.sortDir, k = state.sortKey;
+  rows.sort((a, b) => {
+    const va = a[k], vb = b[k];
+    if (typeof va === "string") return dir * va.localeCompare(vb);
+    return dir * (va - vb);
+  });
+
+  const head = document.getElementById("tblHead");
+  head.replaceChildren(...COLS.map(col => {
+    const th = h("th", { class: col.txt ? "txt" : "", scope: "col" }, col.label);
+    if (state.sortKey === col.key) {
+      th.append(h("span", { class: "arrow" }, state.sortDir === -1 ? "▼" : "▲"));
+      th.setAttribute("aria-sort", state.sortDir === -1 ? "descending" : "ascending");
+    }
+    th.addEventListener("click", () => {
+      if (state.sortKey === col.key) state.sortDir *= -1;
+      else { state.sortKey = col.key; state.sortDir = col.txt ? 1 : -1; }
+      renderTable();
+    });
+    return th;
+  }));
+
+  const body = document.getElementById("tblBody");
+  body.replaceChildren(...rows.map(r => h("tr", null,
+    h("td", { class: "code" }, r.c),
+    h("td", { class: "txt" }, r.d),
+    h("td", { class: "cat" }, CAT_SHORT[r.k] || r.k),
+    h("td", { class: r.gl < 0 ? "neg" : "" }, money(r.gl)),
+    h("td", { class: r.enc < 0 ? "neg" : "" }, money(r.enc)),
+    h("td", null, r.pre ? money(r.pre) : "—"),
+    h("td", { class: r.com < 0 ? "neg" : "" }, money(r.com)),
+    h("td", null, totalCom ? (100 * r.pct).toFixed(1) + "%" : "—"),
+    h("td", null, r.bud ? money(r.bud) : "—"),
+    h("td", { class: r.avail < 0 ? "neg" : "" }, r.bud ? money(r.avail) : "—")
+  )));
+
+  const sum = key => rows.reduce((t, r) => t + r[key], 0);
+  const foot = document.getElementById("tblFoot");
+  foot.replaceChildren(
+    h("td", { class: "txt", colspan: 3 }, "Total (" + rows.length + " accounts)"),
+    h("td", null, money(sum("gl"))),
+    h("td", null, money(sum("enc"))),
+    h("td", null, money(sum("pre"))),
+    h("td", null, money(sum("com"))),
+    h("td", null, totalCom ? pct(sum("com"), totalCom) : "—"),
+    h("td", null, money(sum("bud"))),
+    h("td", null, money(sum("avail")))
+  );
+}
+
+/* ---------- wiring ---------- */
+function renderAll() { renderKpis(); renderBars(); renderMonths(); renderTable(); }
+
+document.querySelectorAll(".chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    state.cat = chip.dataset.cat;
+    document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c === chip)));
+    renderAll();
+  });
+});
+
+document.getElementById("tblSearch").addEventListener("input", e => { state.q = e.target.value; renderTable(); });
+
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const root = document.documentElement;
+  const osDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const cur = root.dataset.theme || (osDark ? "dark" : "light");
+  root.dataset.theme = cur === "dark" ? "light" : "dark";
+});
+
+let rTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(rTimer);
+  rTimer = setTimeout(() => { renderBars(); renderMonths(); }, 150);
+});
+
+document.getElementById("srcNote").textContent =
+  "Source: " + META.source + " (814 journal lines) · Prepared " + META.generated + " · Figures are FY26 year-to-date.";
+
+renderAll();
+</script>
+</body>
+</html>
