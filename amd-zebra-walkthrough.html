@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMD Zebra Bench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    color-scheme: light;
+    --ground:    #EDF0F2;
+    --grid:      #DBE2E7;
+    --surface:   #FFFFFF;
+    --surface-2: #F5F8F9;
+    --sunken:    #E7ECEF;
+    --ink:       #101C26;
+    --ink-2:     #48606F;
+    --ink-3:     #7C8F9C;
+    --rule:      #D3DCE1;
+    --rule-2:    #BFCCD4;
+    --accent:    #2B3A67;
+    --accent-so: #E4E8F3;
+    --long:      #2a78d6;
+    --short:     #eb6834;
+    --ref:       #1baf7a;
+    --danger:    #B4341F;
+    --danger-so: #FBEAE6;
+    --ok:        #1B7A4B;
+    --ok-so:     #E6F3EC;
+    --warn-so:   #FDF1E6;
+    --shadow:    0 1px 2px rgba(16,28,38,.06), 0 8px 24px -14px rgba(16,28,38,.28);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground:    #0E1519;
+      --grid:      #17222A;
+      --surface:   #141D23;
+      --surface-2: #1A252C;
+      --sunken:    #0F171C;
+      --ink:       #E8EEF1;
+      --ink-2:     #A3B5BF;
+      --ink-3:     #6F8593;
+      --rule:      #263640;
+      --rule-2:    #33454F;
+      --accent:    #9DB0E0;
+      --accent-so: #1C2740;
+      --long:      #3987e5;
+      --short:     #d95926;
+      --ref:       #199e70;
+      --danger:    #E4705A;
+      --danger-so: #2C1A17;
+      --ok:        #4BA97A;
+      --ok-so:     #14251C;
+      --warn-so:   #2A1F16;
+      --shadow:    0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.7);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground:    #0E1519;
+    --grid:      #17222A;
+    --surface:   #141D23;
+    --surface-2: #1A252C;
+    --sunken:    #0F171C;
+    --ink:       #E8EEF1;
+    --ink-2:     #A3B5BF;
+    --ink-3:     #6F8593;
+    --rule:      #263640;
+    --rule-2:    #33454F;
+    --accent:    #9DB0E0;
+    --accent-so: #1C2740;
+    --long:      #3987e5;
+    --short:     #d95926;
+    --ref:       #199e70;
+    --danger:    #E4705A;
+    --danger-so: #2C1A17;
+    --ok:        #4BA97A;
+    --ok-so:     #14251C;
+    --warn-so:   #2A1F16;
+    --shadow:    0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.7);
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--ground);
+    background-image:
+      linear-gradient(to right, var(--grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 96px; }
+
+  /* ---------- type ---------- */
+  h1, h2, h3, h4 { font-family: Archivo, ui-sans-serif, system-ui, sans-serif; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 700; letter-spacing: -.028em; line-height: 1.04; }
+  h2 { font-size: clamp(21px, 2.4vw, 27px); font-weight: 700; letter-spacing: -.02em; line-height: 1.14; }
+  h3 { font-size: 17px; font-weight: 600; letter-spacing: -.008em; }
+  p  { margin: 0; max-width: 68ch; }
+  a  { color: var(--accent); }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .16em; color: var(--ink-3);
+  }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .lede { font-size: 18px; color: var(--ink-2); max-width: 66ch; }
+  .note { font-size: 14px; color: var(--ink-3); max-width: 72ch; }
+
+  /* ---------- masthead ---------- */
+  .masthead { display: grid; gap: 22px; padding-bottom: 30px; margin-bottom: 34px; border-bottom: 2px solid var(--ink); }
+  .mast-top { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .ticker-plate {
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1px solid var(--rule-2); border-radius: 3px; background: var(--surface);
+    padding: 5px 11px; font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px; font-weight: 600; letter-spacing: .05em;
+  }
+  .ticker-plate .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--short); }
+  .mast-meta { display: flex; gap: 26px; flex-wrap: wrap; }
+  .mast-meta div { display: grid; gap: 2px; }
+  .mast-meta .v { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* ---------- structure strip ---------- */
+  .legs { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 2px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
+  .leg { background: var(--surface); padding: 15px 17px; display: grid; gap: 5px; }
+  .leg .tag { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+  .leg.buy   { box-shadow: inset 3px 0 0 var(--long); }
+  .leg.sell  { box-shadow: inset 3px 0 0 var(--short); }
+  .leg.buy .tag  { color: var(--long); }
+  .leg.sell .tag { color: var(--short); }
+  .leg .desc { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .leg .why { font-size: 12.5px; color: var(--ink-3); line-height: 1.45; }
+
+  /* ---------- panels ---------- */
+  .panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 5px; box-shadow: var(--shadow); }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 15px 20px; border-bottom: 1px solid var(--rule); background: var(--surface-2); border-radius: 5px 5px 0 0; }
+  .panel-body { padding: 20px; }
+
+  section { margin-top: 52px; }
+  .sec-head { display: grid; gap: 8px; margin-bottom: 20px; }
+
+  /* ---------- bench ---------- */
+  .bench { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .bench { grid-template-columns: minmax(0, 1fr); } }
+
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px 10px; }
+  .field { display: grid; gap: 4px; }
+  .field.wide { grid-column: 1 / -1; }
+  .field label { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3); }
+  .field input, .field select {
+    width: 100%; padding: 7px 9px; border: 1px solid var(--rule-2); border-radius: 3px;
+    background: var(--sunken); color: var(--ink);
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 14px; font-weight: 500;
+    font-variant-numeric: tabular-nums; outline: none;
+  }
+  .field input:focus-visible, .field select:focus-visible { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-so); }
+  .group-label { display: flex; align-items: center; gap: 9px; margin: 18px 0 9px; }
+  .group-label:first-child { margin-top: 0; }
+  .group-label .bar { width: 3px; height: 14px; border-radius: 2px; }
+  .group-label .bar.long { background: var(--long); }
+  .group-label .bar.short { background: var(--short); }
+  .group-label .bar.neutral { background: var(--ink-3); }
+
+  /* ---------- readouts ---------- */
+  .readouts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; background: var(--rule); border-top: 1px solid var(--rule); }
+  @media (max-width: 720px) { .readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .ro { background: var(--surface); padding: 13px 15px; display: grid; gap: 3px; }
+  .ro .k { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3); }
+  .ro .v { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .ro .s { font-size: 11.5px; color: var(--ink-3); line-height: 1.35; }
+  .ro .v.neg { color: var(--danger); }
+
+  /* ---------- gauge ---------- */
+  .gauge { display: grid; gap: 7px; padding: 15px 20px; border-top: 1px solid var(--rule); }
+  .gauge-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .gauge-track { position: relative; height: 8px; border-radius: 4px; background: var(--sunken); border: 1px solid var(--rule); overflow: hidden; }
+  .gauge-band { position: absolute; inset: 0 35%; background: var(--ok-so); }
+  .gauge-mark { position: absolute; top: -3px; width: 3px; height: 14px; border-radius: 2px; background: var(--ink); transition: left .18s ease; }
+  .gauge-zero { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: var(--rule-2); }
+  .verdict { display: inline-flex; align-items: center; gap: 6px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; padding: 3px 9px; border-radius: 3px; }
+  .verdict.pass { background: var(--ok-so); color: var(--ok); }
+  .verdict.warn { background: var(--warn-so); color: var(--short); }
+  .verdict.fail { background: var(--danger-so); color: var(--danger); }
+
+  /* ---------- chart ---------- */
+  .chart-shell { padding: 16px 18px 8px; position: relative; }
+  .tip { position: absolute; pointer-events: none; opacity: 0; transform: translate(-50%, -100%); background: var(--surface); border: 1px solid var(--rule-2); border-radius: 4px; box-shadow: var(--shadow); padding: 9px 11px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11.5px; line-height: 1.6; white-space: nowrap; font-variant-numeric: tabular-nums; z-index: 5; transition: opacity .12s ease; }
+  .tip .th { font-weight: 600; color: var(--ink); border-bottom: 1px solid var(--rule); padding-bottom: 4px; margin-bottom: 4px; }
+  .tip .tr { display: flex; justify-content: space-between; gap: 14px; color: var(--ink-2); }
+  .tip .tr i { display: inline-block; width: 9px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+  #payoff { display: block; width: 100%; height: auto; touch-action: none; }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; padding: 4px 20px 18px; }
+  .legend .item { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink-2); }
+  .legend .swatch { width: 14px; height: 3px; border-radius: 2px; flex: none; }
+  .seg-toggle { display: inline-flex; border: 1px solid var(--rule-2); border-radius: 3px; overflow: hidden; }
+  .seg-toggle button {
+    border: none; background: var(--surface); color: var(--ink-2); cursor: pointer;
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; font-weight: 600;
+    letter-spacing: .05em; padding: 6px 12px;
+  }
+  .seg-toggle button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+  :root[data-theme="dark"] .seg-toggle button[aria-pressed="true"],
+  .seg-toggle button[aria-pressed="true"] { color: #fff; }
+  .seg-toggle button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  /* ---------- gates ---------- */
+  .gates { display: grid; gap: 14px; }
+  .gate { background: var(--surface); border: 1px solid var(--rule); border-radius: 5px; overflow: hidden; box-shadow: var(--shadow); }
+  .gate-head { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; width: 100%; text-align: left; padding: 16px 20px; background: none; border: none; cursor: pointer; color: inherit; font: inherit; }
+  .gate-head:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+  .gate-num { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; font-weight: 600; color: var(--ink-3); border: 1px solid var(--rule-2); border-radius: 3px; width: 30px; height: 30px; display: grid; place-items: center; flex: none; }
+  .gate[data-done="1"] .gate-num { background: var(--ok-so); border-color: var(--ok); color: var(--ok); }
+  .gate-title { display: grid; gap: 2px; min-width: 0; }
+  .gate-title .who { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .chev { color: var(--ink-3); transition: transform .2s ease; flex: none; }
+  .gate[data-open="1"] .chev { transform: rotate(90deg); }
+  .gate-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--rule); }
+  .gate[data-open="1"] .gate-body { display: block; }
+
+  .band { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 18px; padding: 16px 0; border-bottom: 1px dashed var(--rule); align-items: start; }
+  .band:last-of-type { border-bottom: none; padding-bottom: 4px; }
+  .band-key { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); padding-top: 3px; }
+  @media (max-width: 620px) { .band { grid-template-columns: minmax(0,1fr); gap: 6px; } }
+
+  .say { border-left: 3px solid var(--accent); background: var(--surface-2); padding: 12px 15px; border-radius: 0 4px 4px 0; display: grid; gap: 9px; max-width: 82ch; }
+  .say p { font-size: 15px; max-width: none; }
+  .say .q { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; font-size: 14.5px; }
+  .say .q .n { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; font-weight: 600; color: var(--accent); padding-top: 3px; }
+  .good-answer { font-size: 13px; color: var(--ink-3); }
+  .good-answer b { color: var(--ink-2); font-weight: 600; }
+
+  ul.steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
+  ul.steps li { display: grid; grid-template-columns: auto 1fr; gap: 10px; font-size: 15px; align-items: start; }
+  ul.steps li::before { content: "→"; font-family: "IBM Plex Mono", ui-monospace, monospace; color: var(--ink-3); font-size: 13px; padding-top: 2px; }
+
+  .check-row { display: grid; grid-template-columns: auto 1fr; gap: 11px; align-items: start; background: var(--sunken); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 14px; }
+  .check-row input[type=checkbox] { width: 17px; height: 17px; margin-top: 2px; accent-color: var(--ok); cursor: pointer; }
+  .check-row label { font-size: 14.5px; cursor: pointer; }
+
+  /* ---------- tables ---------- */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--rule); border-radius: 5px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 660px; font-size: 14px; }
+  th, td { text-align: left; padding: 12px 15px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .11em; text-transform: uppercase; color: var(--ink-3); background: var(--surface-2); white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.mono { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .sev { display: inline-block; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+  .sev.high { background: var(--danger-so); color: var(--danger); }
+  .sev.med  { background: var(--warn-so); color: var(--short); }
+  .sev.low  { background: var(--ok-so); color: var(--ok); }
+
+  /* ---------- script blocks ---------- */
+  .script-box { position: relative; background: var(--sunken); border: 1px solid var(--rule); border-radius: 5px; }
+  .script-box pre { margin: 0; padding: 18px 20px; overflow-x: auto; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; line-height: 1.65; white-space: pre-wrap; color: var(--ink-2); }
+  .copy-btn { position: absolute; top: 10px; right: 10px; border: 1px solid var(--rule-2); background: var(--surface); color: var(--ink-2); border-radius: 3px; cursor: pointer; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 5px 10px; }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn-inline { border: 1px solid var(--rule-2); background: var(--surface); color: var(--ink-2); border-radius: 3px; cursor: pointer; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 5px 10px; }
+  .btn-inline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-inline:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .callout { border: 1px solid var(--rule); border-left: 3px solid var(--short); background: var(--warn-so); border-radius: 0 5px 5px 0; padding: 15px 18px; display: grid; gap: 6px; }
+  .callout .eyebrow { color: var(--short); }
+  .callout p { font-size: 14.5px; color: var(--ink-2); }
+
+  footer { margin-top: 60px; padding-top: 22px; border-top: 1px solid var(--rule); display: grid; gap: 10px; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="mast-top">
+      <span class="ticker-plate"><span class="dot"></span>NASDAQ&nbsp;:&nbsp;AMD</span>
+      <span class="eyebrow">Zero Extrinsic Back Ratio &nbsp;·&nbsp; + income overlay</span>
+    </div>
+    <div>
+      <h1>Getting the AMD zebra<br>on the board, correctly</h1>
+      <p class="lede" style="margin-top:14px">A back ratio is easy to describe and easy to get wrong at the order ticket. This is the run of conversations and checks that stand between the idea and a position your broker actually margins as defined-risk &mdash; with a live bench so you can test your own strikes before you send anything.</p>
+    </div>
+    <div class="mast-meta">
+      <div><span class="eyebrow">Reference spot</span><span class="v">$456.67</span></div>
+      <div><span class="eyebrow">As of</span><span class="v">25 Aug 2026</span></div>
+      <div><span class="eyebrow">52-week range</span><span class="v">$149.22 &ndash; $584.73</span></div>
+      <div><span class="eyebrow">Dividend</span><span class="v">None</span></div>
+    </div>
+    <p class="note">Prices above are a starting reference, not a live quote &mdash; they were accurate at the timestamp shown and are stale the moment you read them. Everything on this page recomputes from whatever you type into the bench. This is a walkthrough of mechanics and process; it is not a recommendation to trade AMD or a view on where it goes.</p>
+  </header>
+
+  <!-- ============ THE SHAPE ============ -->
+  <section style="margin-top:0">
+    <div class="sec-head">
+      <span class="eyebrow">The shape</span>
+      <h2>Four legs, and every short is covered by a long beneath it</h2>
+      <p class="note">The core is a 2&ndash;1 back ratio in one expiration. The income overlay is a fifth decision layered on top, in a <em>nearer</em> expiration, sold against the second long call.</p>
+    </div>
+    <div class="legs">
+      <div class="leg buy"><span class="tag">Buy &times;2 &nbsp;/&nbsp; core</span><span class="desc" id="leg-k1">2 &times; AMD 380 C</span><span class="why">Deep ITM, ~70&Delta; each. These two are the engine &mdash; they supply the ~100 deltas.</span></div>
+      <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; core</span><span class="desc" id="leg-k2">1 &times; AMD 455 C</span><span class="why">ATM, ~50&Delta;. Its fat extrinsic pays for the extrinsic in both longs. That is the whole trick.</span></div>
+      <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; income</span><span class="desc" id="leg-k3">1 &times; AMD 520 C</span><span class="why">OTM, ~25&Delta;, nearer expiration. Covered by the second long. Rolled for recurring credit.</span></div>
+      <div class="leg buy"><span class="tag">Net result</span><span class="desc" id="leg-net">&asymp; 88&Delta; &nbsp;·&nbsp; defined risk</span><span class="why">Behaves like long stock between the strikes, but the loss stops at the debit paid.</span></div>
+    </div>
+    <p class="note">Naming: <strong>ZEBRA</strong> = <em>Zero Extrinsic Back Ratio</em>, coined on tastytrade. The &ldquo;zero extrinsic&rdquo; is the design target, not a guarantee &mdash; it holds at entry, with the short leg genuinely at the money, and it drifts as soon as AMD moves.</p>
+  </section>
+
+  <!-- ============ BENCH ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">The bench</span>
+      <h2>Type in your real chain, not these placeholders</h2>
+      <p class="note">Pull the actual marks off the option chain for the expiration you are considering. The two numbers that decide whether this is a zebra at all &mdash; net extrinsic and net delta &mdash; are computed below and will tell you plainly if your strikes are wrong.</p>
+    </div>
+
+    <div class="bench">
+      <!-- inputs -->
+      <div class="panel">
+        <div class="panel-head"><h3>Position builder</h3><button class="btn-inline" id="reset-btn" type="button">Reset</button></div>
+        <div class="panel-body">
+          <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Underlying</span></div>
+          <div class="field-grid">
+            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="456.67"></div>
+          </div>
+
+          <div class="group-label"><span class="bar long"></span><span class="eyebrow">Long &times;2 &nbsp;&middot;&nbsp; ITM call</span></div>
+          <div class="field-grid">
+            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="380"></div>
+            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="97.70"></div>
+            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.01" value="0.70"></div>
+          </div>
+
+          <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; ATM call</span></div>
+          <div class="field-grid">
+            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="455"></div>
+            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="44.00"></div>
+            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.01" value="0.52"></div>
+          </div>
+
+          <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; income overlay</span></div>
+          <div class="field-grid">
+            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="520"></div>
+            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="12.50"></div>
+            <div class="field"><label for="in-cyc">Cycles</label><input id="in-cyc" type="number" step="1" min="0" value="1"></div>
+          </div>
+
+          <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Sizing</span></div>
+          <div class="field-grid">
+            <div class="field wide"><label for="in-qty">Zebras (each = 2 long / 1 short)</label><input id="in-qty" type="number" step="1" min="1" value="1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- outputs -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Payoff at the core&rsquo;s expiration</h3>
+          <div class="seg-toggle" role="group" aria-label="Overlay expiration handling">
+            <button type="button" id="mode-same" aria-pressed="true">Same expiry</button>
+            <button type="button" id="mode-diag" aria-pressed="false">Diagonal</button>
+          </div>
+        </div>
+
+        <div class="chart-shell"><svg id="payoff" viewBox="0 0 760 380" role="img" aria-labelledby="payoff-title"><title id="payoff-title">Profit and loss at expiration across AMD prices, comparing the zebra core, the zebra with an income overlay, and 100 shares of stock.</title></svg></div>
+        <div class="legend">
+          <span class="item"><span class="swatch" style="background:var(--long)"></span>Zebra core</span>
+          <span class="item"><span class="swatch" style="background:var(--short)"></span>Core + income overlay</span>
+          <span class="item"><span class="swatch" style="background:var(--ref)"></span>100 shares (reference)</span>
+        </div>
+
+        <div class="gauge">
+          <div class="gauge-top">
+            <span class="eyebrow">Zero-extrinsic check</span>
+            <span class="verdict pass" id="ext-verdict">&mdash;</span>
+          </div>
+          <div class="gauge-track"><div class="gauge-band"></div><div class="gauge-zero"></div><div class="gauge-mark" id="ext-mark" style="left:50%"></div></div>
+          <p class="note" id="ext-note" style="font-size:13px">&mdash;</p>
+        </div>
+
+        <div class="readouts">
+          <div class="ro"><span class="k">Net debit</span><span class="v" id="ro-debit">&mdash;</span><span class="s" id="ro-debit-s">per zebra</span></div>
+          <div class="ro"><span class="k">Net delta</span><span class="v" id="ro-delta">&mdash;</span><span class="s">target 0.90&ndash;1.05</span></div>
+          <div class="ro"><span class="k">Breakeven</span><span class="v" id="ro-be">&mdash;</span><span class="s" id="ro-be-s">vs spot</span></div>
+          <div class="ro"><span class="k">Max loss</span><span class="v neg" id="ro-maxloss">&mdash;</span><span class="s" id="ro-maxloss-s">if AMD &le; long strike</span></div>
+          <div class="ro"><span class="k">Capital</span><span class="v" id="ro-cap">&mdash;</span><span class="s" id="ro-cap-s">vs shares</span></div>
+          <div class="ro"><span class="k">Upside cap</span><span class="v" id="ro-capprice">&mdash;</span><span class="s" id="ro-capprice-s">overlay strike</span></div>
+          <div class="ro"><span class="k">Income / cycle</span><span class="v" id="ro-income">&mdash;</span><span class="s" id="ro-income-s">on capital at risk</span></div>
+          <div class="ro"><span class="k">Max profit</span><span class="v" id="ro-maxprofit">&mdash;</span><span class="s" id="ro-maxprofit-s">capped by overlay</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:14px" id="mode-note"></p>
+  </section>
+
+  <!-- ============ THE TENSION ============ -->
+  <section>
+    <div class="callout">
+      <span class="eyebrow">The trade-off nobody mentions</span>
+      <p><strong>Zero extrinsic and 100 deltas pull against each other.</strong> Driving net extrinsic to zero wants your long strike shallower; driving net delta to 1.00 wants it deeper. You cannot always have both, and chasing delta by going deeper ITM quietly raises your debit &mdash; which is your max loss. When they conflict, hold the zero-extrinsic line and accept 0.88&ndash;0.95 deltas. Extrinsic is the thing that bleeds; a few deltas are not.</p>
+    </div>
+  </section>
+
+  <!-- ============ GATES ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">The sequence</span>
+      <h2>Seven gates, in order &mdash; each one is a conversation before it is a click</h2>
+      <p class="note">These are gates, not suggestions: each one produces something the next one needs. Gate 2 in particular blocks more people than any amount of strike selection. Check them off as you clear them &mdash; your progress is remembered in this browser.</p>
+    </div>
+    <div class="gates" id="gates"></div>
+  </section>
+
+  <!-- ============ SCRIPTS ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Copy &amp; paste</span>
+      <h2>The two messages worth writing out in advance</h2>
+    </div>
+
+    <div style="display:grid;gap:18px">
+      <div>
+        <div class="group-label"><span class="bar short"></span><span class="eyebrow">To your broker&rsquo;s options desk</span></div>
+        <div class="script-box">
+          <button class="copy-btn" type="button" data-copy="broker-script">Copy</button>
+          <pre id="broker-script"></pre>
+        </div>
+      </div>
+      <div>
+        <div class="group-label"><span class="bar long"></span><span class="eyebrow">To restart this in the project chat</span></div>
+        <p class="note" style="margin-bottom:9px">This thread moved into a projects folder, which means the next chat starts cold. Paste this first and the position, the constraints, and the open questions all come back at once &mdash; instead of re-deriving them.</p>
+        <div class="script-box">
+          <button class="copy-btn" type="button" data-copy="handoff-script">Copy</button>
+          <pre id="handoff-script"></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAILURE MODES ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Failure modes</span>
+      <h2>What actually goes wrong, ranked by how often</h2>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Risk</th><th>Severity</th><th>How it shows up</th><th>What removes it</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Overlay margined as a naked call</strong></td><td><span class="sev high">Blocking</span></td>
+            <td>You send the fourth leg and buying power drops by tens of thousands instead of rising by the credit. The risk engine did not pair it with your second long.</td>
+            <td>Clear it at Gate&nbsp;2 <em>before</em> funding anything. Send the overlay as a diagonal spread order referencing the long strike, never as a standalone sell.</td>
+          </tr>
+          <tr>
+            <td><strong>Overlay outlives the core</strong></td><td><span class="sev high">Blocking</span></td>
+            <td>You sell an overlay dated past the core&rsquo;s expiration. The longs expire, the short does not, and you are outright naked short AMD calls.</td>
+            <td>A hard rule with no exceptions: the overlay&rsquo;s expiration is always earlier than or equal to the core&rsquo;s.</td>
+          </tr>
+          <tr>
+            <td><strong>Gap through the cap</strong></td><td><span class="sev high">High</span></td>
+            <td>AMD prints a number and moves 9% overnight &mdash; it did exactly that on Q2&nbsp;2026 earnings, in the <em>losing</em> direction despite a beat. Your overlay is deep ITM by the open and cannot be rolled for a credit.</td>
+            <td>Decide deliberately whether an overlay cycle spans an earnings date. Sizing the overlay at 20&ndash;25&Delta; rather than 35&Delta; buys real room.</td>
+          </tr>
+          <tr>
+            <td><strong>Delta melts on the way down</strong></td><td><span class="sev med">Medium</span></td>
+            <td>AMD falls toward your long strike; the position stops tracking the stock because the long calls are shedding delta. It does not participate in the bounce the way stock would.</td>
+            <td>Understand it as designed behaviour, not a malfunction &mdash; it is the same mechanism that caps your loss. Set your &ldquo;close or hold&rdquo; rule before entry, at Gate&nbsp;6.</td>
+          </tr>
+          <tr>
+            <td><strong>Extrinsic creeps back in</strong></td><td><span class="sev med">Medium</span></td>
+            <td>The short leg stops being at the money, the offset stops balancing, and the position starts carrying real theta in one direction or the other.</td>
+            <td>Re-check the gauge periodically. Adjusting the core mid-life is usually worse than closing and rebuilding it cleanly.</td>
+          </tr>
+          <tr>
+            <td><strong>Expiration-week assignment scramble</strong></td><td><span class="sev med">Medium</span></td>
+            <td>Both core legs finish ITM, auto-exercise fires, and Monday morning you own an unplanned share position &mdash; possibly on margin.</td>
+            <td>Close or roll the core at 21&ndash;30 DTE. Do not carry a 2&ndash;1 ratio into expiration week to save a few cents of slippage.</td>
+          </tr>
+          <tr>
+            <td><strong>Early assignment on a short call</strong></td><td><span class="sev low">Low</span></td>
+            <td>You are assigned short 100 shares against your longs before expiration.</td>
+            <td>Structurally low here: the usual trigger is a dividend capture, and AMD has not historically paid one. Confirm that is still true rather than assuming it.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <span class="eyebrow">Standing assumptions</span>
+    <p class="note">Built for a bullish core view on AMD over the life of the chosen expiration, using calls throughout. Every figure is per-share unless a dollar total is labelled otherwise; one contract represents 100 shares. Commissions, assignment fees, and bid&ndash;ask slippage are excluded and are not trivial on a four-leg position &mdash; add roughly four times your per-contract cost, then again on every overlay roll. Nothing here is personalised advice; the numbers are yours to verify against your own chain and your own account.</p>
+  </footer>
+</div>
+<script>
+"use strict";
+
+/* ============================================================
+   GATE CONTENT
+   ============================================================ */
+const GATES = [
+  {
+    who: "With Claude, in the project chat",
+    title: "Reload the context the folder move dropped",
+    say: "Moving this thread into a projects folder started a cold conversation. Nothing about your strikes, expirations, or sizing carried over — so hand it all back deliberately instead of rebuilding it a question at a time.",
+    qs: [
+      { q: "Here are my four legs, the expirations, and my sizing. Restate the position back to me, and tell me what you still need that I haven’t given you.", a: "It repeats the legs correctly <b>and</b> names what’s missing — your risk cap, your thesis horizon, whether earnings lands inside the overlay cycle." },
+      { q: "What in this brief contradicts itself?", a: "A real answer catches things like an overlay dated past the core, or a delta target that can’t coexist with your extrinsic target." }
+    ],
+    steps: [
+      "Paste the handoff brief further down this page as the very first message.",
+      "Paste the actual chain rows you’re pricing from — marks and deltas, not a watchlist screenshot.",
+      "Ask for the contradictions before you ask for an opinion."
+    ],
+    check: "It can state your max loss in dollars without you having told it."
+  },
+  {
+    who: "With yourself, in writing, dated",
+    title: "Write the thesis before you touch the structure",
+    say: "A zebra is a stock replacement. Its entire reason to exist is that you already want to be long 100 shares of AMD and would rather not tie up $45k doing it. If that sentence isn’t true, the structure is just leverage on a trade you didn’t actually want.",
+    qs: [
+      { q: "If the only choice were buying 100 shares outright, would I?", a: "If the answer is no, stop here. Cheaper is not a thesis." },
+      { q: "Over what horizon does this resolve, and what specific event tells me I’m wrong?", a: "A date and an event — not “if it goes down a lot.”" },
+      { q: "Am I here because I like AMD, or because I like the structure?", a: "Honest answer only. The structure is genuinely elegant, which is exactly the problem." }
+    ],
+    steps: [
+      "One paragraph. Dated. Names the horizon and the invalidation.",
+      "Choose a core expiration comfortably longer than that horizon — never the reverse.",
+      "Write AMD’s next earnings date on the same page. It is the largest scheduled risk to the overlay."
+    ],
+    check: "Your core expiration outlasts your thesis horizon with room to spare."
+  },
+  {
+    who: "With your broker’s options desk",
+    title: "Clear the account before you price a single strike",
+    say: "This is the gate that stops people — not strike selection. A 2–1 back ratio carrying a fourth short leg in a different expiration is a shape plenty of retail risk engines model badly. Find out on a phone call, not on a funded ticket.",
+    qs: [
+      { q: "What approval level do I need for a 2-by-1 long call back ratio in a single expiration?", a: "A specific tier. If they can’t name one, you’re talking to the wrong desk." },
+      { q: "Will your risk engine pair the short ATM call against one of my two long ITM calls, or margin it as uncovered?", a: "“Paired” or “covered by the long.” Anything vaguer is a no." },
+      { q: "If I then sell a nearer-dated OTM call against my second long, is that recognised as a diagonal — and does the buying-power effect stay a credit?", a: "You want the word <b>diagonal</b> and a named order type you can actually select." },
+      { q: "What’s the initial and the maintenance requirement on the full four-leg position?", a: "Two figures. Write them down." },
+      { q: "At expiration, if every leg finishes in the money, what auto-exercises — and do I hold shares over a weekend?", a: "A description of the settlement path, including whether you wake up on margin." }
+    ],
+    steps: [
+      "Get the answers in writing, or take a ticket number.",
+      "Stage the complete four-leg ticket as a dry run and read the buying-power effect before submitting anything.",
+      "If it shows a naked-call requirement, stop. Do not try to fix it by legging in — that is how you end up genuinely uncovered between fills."
+    ],
+    check: "A staged ticket prices as defined risk, not as an uncovered short."
+  },
+  {
+    who: "With the option chain, on the bench above",
+    title: "Build the core so the extrinsic genuinely cancels",
+    say: "The name is the specification. If net extrinsic isn’t close to zero, you don’t own a zebra — you own an expensive back ratio that decays. The gauge above is the only opinion that matters here.",
+    qs: [
+      { q: "Is my short leg actually at the money, or just near it?", a: "Genuinely ATM. The offset is doing all the work; a strike or two off and it stops balancing." }
+    ],
+    steps: [
+      "Pick the expiration first — far enough out that theta isn’t the story, typically well beyond 60 days.",
+      "Long strike near 70Δ, short strike at the true ATM near 50Δ.",
+      "Read the gauge. Meaningfully negative means you’re too deep; positive means too shallow.",
+      "Move the long strike one increment at a time and re-read. Never move the short — it has to stay ATM."
+    ],
+    check: "The gauge reads PASS and net delta lands between 0.90 and 1.05."
+  },
+  {
+    who: "With your risk budget",
+    title: "Size against max loss, not against the premium",
+    say: "The debit is not a deposit and it is not margin. It is the whole amount at risk, and you lose all of it if AMD simply closes below your long strike — no crash required.",
+    qs: [
+      { q: "What exactly do I lose if AMD finishes below my long strike?", a: "Say the dollar figure out loud. If saying it is uncomfortable, you are too big." },
+      { q: "Is that inside my per-idea risk cap at this contract count?", a: "Yes, with the cap written down beforehand." },
+      { q: "Has AMD actually moved that far, that fast, recently?", a: "With a 52-week range of $149.22 to $584.73, the honest answer is yes. Size accordingly." }
+    ],
+    steps: [
+      "Set the contract count so total debit sits inside your cap. Round down, never up.",
+      "Re-read the max-loss figure on the bench at your real size, not at one contract."
+    ],
+    check: "You can state the max-loss dollar figure from memory, and you’re at peace with it."
+  },
+  {
+    who: "With the order ticket",
+    title: "Layer the income without uncovering yourself",
+    say: "The overlay is what turns a stock replacement into a stock replacement that pays you. It is also the leg most likely to blow up the whole structure, and every way that happens is preventable at the ticket.",
+    qs: [
+      { q: "Does this overlay cycle span an earnings date?", a: "A deliberate yes or a deliberate no. Fat premium across an AMD print is a decision, not a bonus." }
+    ],
+    steps: [
+      "Expiration: never later than the core’s. This rule has no exceptions — it is the difference between covered and naked.",
+      "Strike: above the core’s short strike, around 20–30Δ. Never at or below it.",
+      "Quantity: one overlay per zebra. Two long calls do not cover three shorts.",
+      "Order type: a diagonal or spread order referencing the long strike — not a standalone sell-to-open.",
+      "Confirm buying power moves up by roughly the credit before you accept the fill."
+    ],
+    check: "Buying power rose by about the credit received, and nothing was flagged as uncovered."
+  },
+  {
+    who: "With your future self, who will be worse at this than you are now",
+    title: "Write the management rules before you send the order",
+    say: "Every rule below is easy to write today and nearly impossible to invent on the day it’s needed. Write them now, while nothing is moving and you have no position to defend.",
+    qs: [
+      { q: "What do I do if AMD is 12% through my overlay strike on a Monday morning?", a: "An answer you wrote before Monday. Roll up and out for a net credit, or let it cap and take the win — decided in advance." }
+    ],
+    steps: [
+      "Roll the overlay at roughly 50% of max premium, or by 21 DTE — whichever comes first.",
+      "Through the overlay strike: roll up and out only for a net credit. Otherwise let it cap.",
+      "Collapsing toward the long strike: decide now whether you close for salvage or hold to expiry. The core’s delta shrinking on the way down is the design working, not a malfunction.",
+      "Close or roll the core at 21–30 DTE. Never carry a 2–1 ratio into expiration week.",
+      "Re-run the zero-extrinsic gauge monthly — the property drifts as AMD moves away from your short strike."
+    ],
+    check: "The rules are written, dated, and saved somewhere you will actually open."
+  }
+];
+
+/* ============================================================
+   RENDER GATES
+   ============================================================ */
+const gatesEl = document.getElementById("gates");
+let store = {};
+try { store = JSON.parse(localStorage.getItem("amd-zebra-gates") || "{}") || {}; } catch (e) { store = {}; }
+
+GATES.forEach((g, i) => {
+  const done = store["g" + i] ? "1" : "0";
+  const el = document.createElement("article");
+  el.className = "gate";
+  el.setAttribute("data-done", done);
+  el.setAttribute("data-open", i === 0 ? "1" : "0");
+  el.innerHTML =
+    '<button class="gate-head" type="button" aria-expanded="' + (i === 0) + '">' +
+      '<span class="gate-num">' + String(i + 1).padStart(2, "0") + '</span>' +
+      '<span class="gate-title"><span class="who">' + g.who + '</span><h3>' + g.title + '</h3></span>' +
+      '<svg class="chev" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    '</button>' +
+    '<div class="gate-body">' +
+      '<div class="band"><span class="band-key">Conversation</span><div class="say"><p>' + g.say + '</p>' +
+        g.qs.map(function (x) {
+          return '<div class="q"><span class="n">ASK</span><div>&ldquo;' + x.q + '&rdquo;<div class="good-answer" style="margin-top:5px"><b>A good answer:</b> ' + x.a + '</div></div></div>';
+        }).join("") +
+      '</div></div>' +
+      '<div class="band"><span class="band-key">Steps</span><ul class="steps">' + g.steps.map(function (s) { return "<li><span>" + s + "</span></li>"; }).join("") + '</ul></div>' +
+      '<div class="band"><span class="band-key">Gate check</span>' +
+        '<div class="check-row"><input type="checkbox" id="chk' + i + '"' + (done === "1" ? " checked" : "") + '><label for="chk' + i + '">' + g.check + '</label></div>' +
+      '</div>' +
+    '</div>';
+
+  const head = el.querySelector(".gate-head");
+  head.addEventListener("click", function () {
+    const open = el.getAttribute("data-open") === "1" ? "0" : "1";
+    el.setAttribute("data-open", open);
+    head.setAttribute("aria-expanded", open === "1");
+  });
+  el.querySelector("input[type=checkbox]").addEventListener("change", function (e) {
+    el.setAttribute("data-done", e.target.checked ? "1" : "0");
+    store["g" + i] = e.target.checked;
+    try { localStorage.setItem("amd-zebra-gates", JSON.stringify(store)); } catch (err) { /* private mode: progress just won't persist */ }
+  });
+  gatesEl.appendChild(el);
+});
+
+/* ============================================================
+   MATH
+   ============================================================ */
+const $ = function (id) { return document.getElementById(id); };
+const IDS = ["in-spot", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
+const DEFAULTS = { "in-spot": 456.67, "in-k1": 380, "in-p1": 97.70, "in-d1": 0.70, "in-k2": 455, "in-p2": 44.00, "in-d2": 0.52, "in-k3": 520, "in-c3": 12.50, "in-cyc": 1, "in-qty": 1 };
+let overlayMode = "same";
+
+const num = function (id) { const v = parseFloat($(id).value); return isFinite(v) ? v : 0; };
+const usd0 = function (v) { return (v < 0 ? "−$" : "$") + Math.abs(Math.round(v)).toLocaleString("en-US"); };
+const usd2 = function (v) { return (v < 0 ? "−$" : "$") + Math.abs(v).toFixed(2); };
+
+function model() {
+  const S = num("in-spot"), K1 = num("in-k1"), P1 = num("in-p1"), D1 = num("in-d1");
+  const K2 = num("in-k2"), P2 = num("in-p2"), D2 = num("in-d2");
+  const K3 = num("in-k3"), C = num("in-c3");
+  const cycles = Math.max(0, Math.round(num("in-cyc")));
+  const qty = Math.max(1, Math.round(num("in-qty")));
+
+  const debit = 2 * P1 - P2;                                   // per share, per zebra
+  const ext1 = P1 - Math.max(0, S - K1);                       // extrinsic in each long
+  const ext2 = P2 - Math.max(0, S - K2);                       // extrinsic in the short
+  const netExt = 2 * ext1 - ext2;                              // the defining number
+  const delta = 2 * D1 - D2;
+  const be = K1 + debit / 2;
+  const credit = C * cycles;
+
+  const core = function (x) {
+    if (x <= K1) return -debit;
+    if (x <= K2) return 2 * (x - K1) - debit;
+    return x - 2 * K1 + K2 - debit;
+  };
+  const withIncome = function (x) {
+    return overlayMode === "same"
+      ? core(x) + credit - Math.max(0, x - K3)
+      : core(x) + credit;
+  };
+  const shares = function (x) { return x - S; };
+
+  const maxProfit = overlayMode === "same" ? withIncome(K3) : null;
+
+  return { S: S, K1: K1, K2: K2, K3: K3, debit: debit, netExt: netExt, delta: delta,
+           be: be, credit: credit, C: C, cycles: cycles, qty: qty,
+           core: core, withIncome: withIncome, shares: shares, maxProfit: maxProfit };
+}
+
+/* ============================================================
+   READOUTS
+   ============================================================ */
+function paintReadouts(m) {
+  const per = 100 * m.qty;
+
+  $("ro-debit").textContent = usd0(m.debit * per);
+  $("ro-debit-s").textContent = usd2(m.debit) + " × 100 × " + m.qty;
+
+  $("ro-delta").textContent = m.delta.toFixed(2);
+  $("ro-delta").classList.toggle("neg", m.delta < 0.85 || m.delta > 1.10);
+
+  $("ro-be").textContent = "$" + m.be.toFixed(2);
+  const drift = m.be - m.S;
+  $("ro-be-s").textContent = (drift >= 0 ? "+" : "−") + "$" + Math.abs(drift).toFixed(2) + " vs spot";
+
+  $("ro-maxloss").textContent = usd0(m.debit * per);
+  $("ro-maxloss-s").textContent = "if AMD ≤ $" + m.K1.toFixed(0) + " at expiry";
+
+  const sharesCost = m.S * per;
+  $("ro-cap").textContent = sharesCost > 0 ? Math.round((m.debit * per / sharesCost) * 100) + "%" : "—";
+  $("ro-cap-s").textContent = "of " + usd0(sharesCost) + " in shares";
+
+  $("ro-capprice").textContent = overlayMode === "same" ? "$" + m.K3.toFixed(0) : "soft";
+  $("ro-capprice-s").textContent = overlayMode === "same" ? "gains stop above here" : "reset at each roll";
+
+  $("ro-income").textContent = usd0(m.C * 100 * m.qty);
+  const yieldPct = m.debit > 0 ? (m.C / m.debit) * 100 : 0;
+  $("ro-income-s").textContent = yieldPct.toFixed(1) + "% of capital at risk";
+
+  if (m.maxProfit === null) {
+    $("ro-maxprofit").textContent = "open";
+    $("ro-maxprofit-s").textContent = "core uncapped between rolls";
+  } else {
+    $("ro-maxprofit").textContent = usd0(m.maxProfit * per);
+    $("ro-maxprofit-s").textContent = "reached at $" + m.K3.toFixed(0) + " and above";
+  }
+
+  // zero-extrinsic gauge — scaled against the short leg's own extrinsic
+  const scale = Math.max(1, Math.abs(m.C) * 2, Math.abs(m.netExt) * 1.2);
+  const pos = Math.max(2, Math.min(98, 50 + (m.netExt / scale) * 48));
+  $("ext-mark").style.left = pos + "%";
+
+  const v = $("ext-verdict"), tol = Math.max(1.0, m.S * 0.004);
+  const a = Math.abs(m.netExt);
+  v.className = "verdict " + (a <= tol ? "pass" : a <= tol * 3 ? "warn" : "fail");
+  v.textContent = a <= tol ? "Pass" : a <= tol * 3 ? "Close" : "Not a zebra";
+  $("ext-note").innerHTML =
+    "Net extrinsic <strong>" + usd2(m.netExt) + "</strong> per share (" + usd0(m.netExt * per) + " at your size). " +
+    (a <= tol
+      ? "The two longs’ time value is paid for by the short. Theta is roughly neutral — this is the property you came for."
+      : m.netExt > 0
+        ? "You are paying more time value than you collect, so the position bleeds. Move the long strike <strong>deeper</strong> in the money."
+        : "You are collecting more time value than you pay. Not fatal, but you are short volatility here — move the long strike <strong>shallower</strong> if you want it neutral.");
+
+  // structure strip
+  $("leg-k1").textContent = "2 × AMD " + m.K1.toFixed(0) + " C";
+  $("leg-k2").textContent = "1 × AMD " + m.K2.toFixed(0) + " C";
+  $("leg-k3").textContent = "1 × AMD " + m.K3.toFixed(0) + " C";
+  $("leg-net").innerHTML = "≈ " + m.delta.toFixed(2) + "Δ &nbsp;·&nbsp; " + usd0(m.debit * per) + " at risk";
+
+  $("mode-note").innerHTML = overlayMode === "same"
+    ? "<strong>Same expiry.</strong> The overlay expires with the core, so the diagram is exact: above $" + m.K3.toFixed(0) + " the short call gives back every dollar the core makes, and the orange curve goes flat."
+    : "<strong>Diagonal.</strong> The overlay expires before the core, so this is an approximation — the orange curve shows the core lifted by " + usd0(m.credit * per) + " of credit already banked. It is drawn dashed above $" + m.K3.toFixed(0) + " because what happens there depends entirely on where and when you roll, which no static diagram can know.";
+}
+
+/* ============================================================
+   PAYOFF CHART
+   ============================================================ */
+const svg = document.getElementById("payoff");
+const VB = { w: 760, h: 380, l: 64, r: 124, t: 20, b: 44 };
+const PW = VB.w - VB.l - VB.r, PH = VB.h - VB.t - VB.b;
+const titleHTML = '<title id="payoff-title">Profit and loss at expiration across AMD prices, comparing the zebra core, the zebra with an income overlay, and 100 shares of stock.</title>';
+
+const tip = document.createElement("div");
+tip.className = "tip";
+document.querySelector(".chart-shell").appendChild(tip);
+
+let CH = null; // live chart geometry, reused by the hover layer
+
+function niceStep(span, target) {
+  const raw = span / target;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const n = raw / mag;
+  return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * mag;
+}
+
+function drawChart(m) {
+  const per = 100 * m.qty;
+  const xMin = Math.min(m.K1, m.S) * 0.88;
+  const xMax = Math.max(m.K3, m.K2, m.S) * 1.14;
+
+  const series = [
+    { key: "core",   name: "Zebra core",   color: "var(--long)",  f: m.core,       dashAbove: null },
+    { key: "income", name: "Core + income", color: "var(--short)", f: m.withIncome, dashAbove: overlayMode === "diag" ? m.K3 : null },
+    { key: "stock",  name: "100 shares",   color: "var(--ref)",   f: m.shares,     dashAbove: null }
+  ];
+
+  const N = 240;
+  const xs = [];
+  for (let i = 0; i <= N; i++) xs.push(xMin + (xMax - xMin) * (i / N));
+  // make sure every kink is sampled exactly
+  [m.K1, m.K2, m.K3, m.S, m.be].forEach(function (k) { if (k > xMin && k < xMax) xs.push(k); });
+  xs.sort(function (a, b) { return a - b; });
+
+  let lo = Infinity, hi = -Infinity;
+  series.forEach(function (s) { xs.forEach(function (x) { const v = s.f(x) * per; if (v < lo) lo = v; if (v > hi) hi = v; }); });
+  const padY = (hi - lo) * 0.10 || 1;
+  lo -= padY; hi += padY;
+
+  const X = function (v) { return VB.l + ((v - xMin) / (xMax - xMin)) * PW; };
+  const Y = function (v) { return VB.t + PH - ((v - lo) / (hi - lo)) * PH; };
+  CH = { m: m, per: per, xMin: xMin, xMax: xMax, X: X, Y: Y, series: series };
+
+  let g = titleHTML;
+
+  // transparent capture surface: without it, pointer events only land where the SVG is painted
+  g += '<rect x="' + VB.l + '" y="' + VB.t + '" width="' + PW + '" height="' + PH + '" fill="transparent" pointer-events="all"/>';
+
+  // --- grid + y axis ---
+  const yStep = niceStep(hi - lo, 5);
+  g += '<g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink-3)">';
+  for (let v = Math.ceil(lo / yStep) * yStep; v <= hi; v += yStep) {
+    const y = Y(v);
+    g += '<line x1="' + VB.l + '" y1="' + y + '" x2="' + (VB.l + PW) + '" y2="' + y + '" stroke="var(--rule)" stroke-width="1"' + (Math.abs(v) < 1e-9 ? '' : ' opacity="0.65"') + '/>';
+    g += '<text x="' + (VB.l - 9) + '" y="' + (y + 3.5) + '" text-anchor="end">' + (v < 0 ? "−" : "") + "$" + Math.abs(Math.round(v)).toLocaleString("en-US") + '</text>';
+  }
+  // --- x axis ---
+  const xStep = niceStep(xMax - xMin, 6);
+  for (let v = Math.ceil(xMin / xStep) * xStep; v <= xMax; v += xStep) {
+    g += '<text x="' + X(v) + '" y="' + (VB.t + PH + 17) + '" text-anchor="middle">$' + Math.round(v) + '</text>';
+  }
+  g += '<text x="' + (VB.l + PW / 2) + '" y="' + (VB.t + PH + 36) + '" text-anchor="middle" letter-spacing="0.12em" font-size="9.5">AMD PRICE AT EXPIRATION</text>';
+  g += '</g>';
+
+  // --- zero line ---
+  g += '<line x1="' + VB.l + '" y1="' + Y(0) + '" x2="' + (VB.l + PW) + '" y2="' + Y(0) + '" stroke="var(--ink-3)" stroke-width="1.5"/>';
+
+  // --- cap-risk shading for the diagonal case ---
+  if (overlayMode === "diag" && m.K3 > xMin && m.K3 < xMax) {
+    g += '<rect x="' + X(m.K3) + '" y="' + VB.t + '" width="' + (VB.l + PW - X(m.K3)) + '" height="' + PH + '" fill="var(--short)" opacity="0.055"/>';
+  }
+
+  // --- strike markers ---
+  const marks = [
+    { v: m.K1, label: "K1", note: "long ×2" },
+    { v: m.K2, label: "K2", note: "short ATM" },
+    { v: m.K3, label: "K3", note: "overlay" },
+    { v: m.S,  label: "SPOT", note: "" }
+  ];
+  const placed = [];
+  marks.filter(function (mk) { return mk.v > xMin && mk.v < xMax; })
+       .sort(function (a, b) { return a.v - b.v; })
+       .forEach(function (mk) {
+    const x = X(mk.v);
+    const isSpot = mk.label === "SPOT";
+    g += '<line x1="' + x + '" y1="' + VB.t + '" x2="' + x + '" y2="' + (VB.t + PH) + '" stroke="' + (isSpot ? "var(--ink-3)" : "var(--rule-2)") + '" stroke-width="1" stroke-dasharray="' + (isSpot ? "1 4" : "3 4") + '"/>';
+    // drop the label to a second row rather than letting it collide with its neighbour
+    let row = 0;
+    while (placed.some(function (p) { return p.row === row && Math.abs(p.x - x) < 34; })) row++;
+    placed.push({ x: x, row: row });
+    g += '<text x="' + (x + 4) + '" y="' + (VB.t + 11 + row * 12) + '" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="0.1em" fill="var(--ink-3)">' + mk.label + '</text>';
+  });
+
+  // --- curves ---
+  series.forEach(function (s) {
+    const solid = [], dashed = [];
+    xs.forEach(function (x) {
+      const pt = X(x).toFixed(2) + "," + Y(s.f(x) * per).toFixed(2);
+      if (s.dashAbove !== null && x >= s.dashAbove) dashed.push(pt); else solid.push(pt);
+    });
+    if (s.dashAbove !== null && solid.length && dashed.length) dashed.unshift(solid[solid.length - 1]);
+    g += '<polyline points="' + solid.join(" ") + '" fill="none" stroke="' + s.color + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    if (dashed.length > 1) {
+      g += '<polyline points="' + dashed.join(" ") + '" fill="none" stroke="' + s.color + '" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round" stroke-linecap="round" opacity="0.85"/>';
+    }
+  });
+
+  // --- breakeven dot on the core ---
+  if (m.be > xMin && m.be < xMax) {
+    g += '<circle cx="' + X(m.be) + '" cy="' + Y(0) + '" r="4.5" fill="var(--surface)" stroke="var(--long)" stroke-width="2"/>';
+    g += '<text x="' + X(m.be) + '" y="' + (Y(0) - 15) + '" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="0.08em" fill="var(--ink-2)">B/E $' + m.be.toFixed(0) + '</text>';
+  }
+
+  // --- direct labels (relief for the low-contrast series; identity via the swatch, text in ink) ---
+  const labels = series.map(function (s) { return { name: s.name, color: s.color, y: Y(s.f(xMax) * per) }; })
+                       .sort(function (a, b) { return a.y - b.y; });
+  for (let i = 1; i < labels.length; i++) {
+    if (labels[i].y - labels[i - 1].y < 15) labels[i].y = labels[i - 1].y + 15;
+  }
+  labels.forEach(function (L) {
+    const y = Math.max(VB.t + 8, Math.min(VB.t + PH, L.y));
+    const x = VB.l + PW + 10;
+    g += '<line x1="' + x + '" y1="' + y + '" x2="' + (x + 12) + '" y2="' + y + '" stroke="' + L.color + '" stroke-width="3" stroke-linecap="round"/>';
+    g += '<text x="' + (x + 18) + '" y="' + (y + 3.5) + '" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--ink-2)">' + L.name + '</text>';
+  });
+
+  g += '<g id="crosshair" opacity="0"><line y1="' + VB.t + '" y2="' + (VB.t + PH) + '" stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="2 3"/>' +
+       series.map(function (s) { return '<circle r="4" fill="' + s.color + '" stroke="var(--surface)" stroke-width="2"/>'; }).join("") + '</g>';
+
+  svg.innerHTML = g;
+}
+
+/* --- hover layer --- */
+function moveCrosshair(evt) {
+  if (!CH) return;
+  const rect = svg.getBoundingClientRect();
+  const px = ((evt.clientX - rect.left) / rect.width) * VB.w;
+  if (px < VB.l || px > VB.l + PW) { hideCrosshair(); return; }
+
+  const price = CH.xMin + ((px - VB.l) / PW) * (CH.xMax - CH.xMin);
+  const ch = svg.querySelector("#crosshair");
+  if (!ch) return;
+  ch.setAttribute("opacity", "1");
+  const line = ch.querySelector("line");
+  line.setAttribute("x1", px); line.setAttribute("x2", px);
+
+  const dots = ch.querySelectorAll("circle");
+  let rows = "";
+  CH.series.forEach(function (s, i) {
+    const v = s.f(price) * CH.per;
+    dots[i].setAttribute("cx", px);
+    dots[i].setAttribute("cy", CH.Y(v));
+    rows += '<div class="tr"><span><i style="background:' + s.color + '"></i>' + s.name + '</span><span>' + usd0(v) + '</span></div>';
+  });
+  tip.innerHTML = '<div class="th">AMD $' + price.toFixed(2) + '</div>' + rows;
+  tip.style.opacity = "1";
+  const shell = document.querySelector(".chart-shell");
+  const half = tip.offsetWidth / 2 + 6;
+  const left = (px / VB.w) * shell.clientWidth;
+  tip.style.left = Math.max(half, Math.min(shell.clientWidth - half, left)) + "px";
+  tip.style.top = "18px";
+}
+function hideCrosshair() {
+  tip.style.opacity = "0";
+  tip.style.left = "50%";   // park it inside the shell so a stale position can't widen the page on resize
+  const ch = svg.querySelector("#crosshair");
+  if (ch) ch.setAttribute("opacity", "0");
+}
+svg.addEventListener("pointermove", moveCrosshair);
+svg.addEventListener("pointerleave", hideCrosshair);
+
+/* ============================================================
+   GENERATED SCRIPTS
+   ============================================================ */
+function paintScripts(m) {
+  const per = 100 * m.qty;
+  const z = m.qty === 1 ? "1 zebra" : m.qty + " zebras";
+
+  $("broker-script").textContent =
+"I want to open a defined-risk options position on AMD and I need to confirm how your\n" +
+"risk engine treats it before I fund anything.\n\n" +
+"The core is a 2-by-1 long call back ratio, all in one expiration:\n" +
+"  BUY  " + (2 * m.qty) + " × AMD " + m.K1.toFixed(0) + " call\n" +
+"  SELL " + m.qty + " × AMD " + m.K2.toFixed(0) + " call\n\n" +
+"Then, in a NEARER expiration, one covered overlay per zebra:\n" +
+"  SELL " + m.qty + " × AMD " + m.K3.toFixed(0) + " call\n\n" +
+"Five questions:\n" +
+"1. What approval level do I need for the 2-by-1 back ratio?\n" +
+"2. Will the short " + m.K2.toFixed(0) + " call be paired against one of my long " + m.K1.toFixed(0) + " calls,\n" +
+"   or margined as an uncovered short?\n" +
+"3. Is the nearer-dated " + m.K3.toFixed(0) + " call recognised as a diagonal against my second\n" +
+"   long " + m.K1.toFixed(0) + " call, with a credit buying-power effect?\n" +
+"4. What are the initial and maintenance requirements on the full position?\n" +
+"5. If every leg finishes in the money, what auto-exercises — and do I end up\n" +
+"   holding shares over a weekend?\n\n" +
+"My understanding is that maximum loss is the " + usd0(m.debit * per) + " debit and that no leg\n" +
+"is uncovered at any point. Please confirm or correct that.";
+
+  $("handoff-script").textContent =
+"Picking this up from an earlier chat that moved into a projects folder — here is the\n" +
+"full state so you don't have to ask for it piece by piece.\n\n" +
+"PROJECT: AMD zebra (zero extrinsic back ratio) with an income overlay.\n\n" +
+"STRUCTURE — " + z + ", all calls:\n" +
+"  Core, one expiration:\n" +
+"    long  " + (2 * m.qty) + " × AMD " + m.K1.toFixed(0) + "C  @ " + usd2(num("in-p1")) + "  (" + num("in-d1").toFixed(2) + "Δ each)\n" +
+"    short " + m.qty + " × AMD " + m.K2.toFixed(0) + "C  @ " + usd2(num("in-p2")) + "  (" + num("in-d2").toFixed(2) + "Δ)\n" +
+"  Income overlay, nearer expiration:\n" +
+"    short " + m.qty + " × AMD " + m.K3.toFixed(0) + "C  @ " + usd2(m.C) + " credit, rolled\n\n" +
+"NUMBERS (reference spot $" + m.S.toFixed(2) + "):\n" +
+"  net debit .......... " + usd0(m.debit * per) + "\n" +
+"  net delta .......... " + m.delta.toFixed(2) + "\n" +
+"  net extrinsic ...... " + usd2(m.netExt) + " per share  ← the number that defines the trade\n" +
+"  breakeven .......... $" + m.be.toFixed(2) + "\n" +
+"  max loss ........... " + usd0(m.debit * per) + " if AMD ≤ $" + m.K1.toFixed(0) + " at core expiry\n" +
+"  capital vs shares .. " + Math.round((m.debit * per) / (m.S * per) * 100) + "% of " + usd0(m.S * per) + "\n" +
+"  income per cycle ... " + usd0(m.C * per) + " (" + (m.debit > 0 ? (m.C / m.debit * 100).toFixed(1) : "0") + "% of capital at risk)\n\n" +
+"HARD CONSTRAINTS — flag me if anything I say later violates these:\n" +
+"  · The overlay expiration is NEVER later than the core expiration.\n" +
+"  · The overlay strike is always above the core's short strike.\n" +
+"  · One overlay per zebra. Two longs do not cover three shorts.\n" +
+"  · Max loss is the full debit, not a margin deposit.\n\n" +
+"STILL OPEN:\n" +
+"  · Broker confirmation that the overlay margins as a diagonal, not a naked call.\n" +
+"  · Whether the current overlay cycle spans AMD's next earnings date.\n" +
+"  · Written management rules (roll triggers, and the close-or-hold decision if AMD\n" +
+"    falls toward $" + m.K1.toFixed(0) + ").\n\n" +
+"Start by restating this back to me and naming anything that contradicts itself or\n" +
+"is missing.";
+}
+
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    const text = document.getElementById(btn.getAttribute("data-copy")).textContent;
+    const done = function () { const o = btn.textContent; btn.textContent = "Copied"; setTimeout(function () { btn.textContent = o; }, 1400); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { btn.textContent = "Select manually"; });
+    } else {
+      btn.textContent = "Select manually";
+    }
+  });
+});
+
+/* ============================================================
+   WIRING
+   ============================================================ */
+function refresh() { const m = model(); paintReadouts(m); drawChart(m); paintScripts(m); }
+
+IDS.forEach(function (id) { $(id).addEventListener("input", refresh); });
+
+$("mode-same").addEventListener("click", function () { setMode("same"); });
+$("mode-diag").addEventListener("click", function () { setMode("diag"); });
+function setMode(mode) {
+  overlayMode = mode;
+  $("mode-same").setAttribute("aria-pressed", String(mode === "same"));
+  $("mode-diag").setAttribute("aria-pressed", String(mode === "diag"));
+  refresh();
+}
+
+$("reset-btn").addEventListener("click", function () {
+  IDS.forEach(function (id) { $(id).value = DEFAULTS[id]; });
+  setMode("same");
+});
+
+window.addEventListener("resize", function () { hideCrosshair(); });
+refresh();
+</script>
+</body>
+</html>
