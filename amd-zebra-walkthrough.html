@@ -23,6 +23,7 @@
     --rule:      #D3DCE1;
     --rule-2:    #BFCCD4;
     --accent:    #2B3A67;
+    --on-accent: #FFFFFF;
     --accent-so: #E4E8F3;
     --long:      #2a78d6;
     --short:     #eb6834;
@@ -49,6 +50,7 @@
       --rule:      #263640;
       --rule-2:    #33454F;
       --accent:    #9DB0E0;
+      --on-accent: #0E1519;
       --accent-so: #1C2740;
       --long:      #3987e5;
       --short:     #d95926;
@@ -75,6 +77,7 @@
     --rule:      #263640;
     --rule-2:    #33454F;
     --accent:    #9DB0E0;
+    --on-accent: #0E1519;
     --accent-so: #1C2740;
     --long:      #3987e5;
     --short:     #d95926;
@@ -174,6 +177,15 @@
   .group-label .bar.long { background: var(--long); }
   .group-label .bar.short { background: var(--short); }
   .group-label .bar.neutral { background: var(--ink-3); }
+  .cal-flags { display: grid; gap: 6px; margin-top: 10px; }
+  .flag { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: start; font-size: 12.5px; line-height: 1.45; border-radius: 4px; padding: 8px 10px; border: 1px solid var(--rule); }
+  .flag .ic { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .06em; padding-top: 1px; }
+  .flag.ok   { background: var(--ok-so); border-color: var(--ok); color: var(--ink-2); }
+  .flag.ok .ic { color: var(--ok); }
+  .flag.warn { background: var(--warn-so); border-color: var(--short); color: var(--ink-2); }
+  .flag.warn .ic { color: var(--short); }
+  .flag.bad  { background: var(--danger-so); border-color: var(--danger); color: var(--ink-2); }
+  .flag.bad .ic { color: var(--danger); }
 
   /* ---------- readouts ---------- */
   .readouts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; background: var(--rule); border-top: 1px solid var(--rule); }
@@ -212,9 +224,7 @@
     font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; font-weight: 600;
     letter-spacing: .05em; padding: 6px 12px;
   }
-  .seg-toggle button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
-  :root[data-theme="dark"] .seg-toggle button[aria-pressed="true"],
-  .seg-toggle button[aria-pressed="true"] { color: #fff; }
+  .seg-toggle button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
   .seg-toggle button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
   /* ---------- gates ---------- */
@@ -309,12 +319,12 @@
     <div class="sec-head">
       <span class="eyebrow">The shape</span>
       <h2>Four legs, and every short is covered by a long beneath it</h2>
-      <p class="note">The core is a 2&ndash;1 back ratio in one expiration. The income overlay is a fifth decision layered on top, in a <em>nearer</em> expiration, sold against the second long call.</p>
+      <p class="note">The core is a 2&ndash;1 back ratio, and all three of its legs share <strong>one expiration &mdash; March 2027</strong>. That is not a preference: the short call only cancels the longs&rsquo; time value if it sits in the same cycle. The income overlay is a separate decision layered on top, in a <em>nearer</em> expiration, sold against the second long call.</p>
     </div>
     <div class="legs">
-      <div class="leg buy"><span class="tag">Buy &times;2 &nbsp;/&nbsp; core</span><span class="desc" id="leg-k1">2 &times; AMD 380 C</span><span class="why">Deep ITM, ~70&Delta; each. These two are the engine &mdash; they supply the ~100 deltas.</span></div>
+      <div class="leg buy"><span class="tag">Buy &times;2 &nbsp;/&nbsp; core</span><span class="desc" id="leg-k1">2 &times; AMD 380 C</span><span class="why">Deep ITM, ~70&Delta; each. These two are the engine &mdash; they supply the ~100 deltas, and they carry the position past the late-February close of the window.</span></div>
       <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; core</span><span class="desc" id="leg-k2">1 &times; AMD 455 C</span><span class="why">ATM, ~50&Delta;. Its fat extrinsic pays for the extrinsic in both longs. That is the whole trick.</span></div>
-      <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; income</span><span class="desc" id="leg-k3">1 &times; AMD 520 C</span><span class="why">OTM, ~25&Delta;, nearer expiration. Covered by the second long. Rolled for recurring credit.</span></div>
+      <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; income</span><span class="desc" id="leg-k3">1 &times; AMD 520 C</span><span class="why">OTM, ~25&Delta;, nearer expiration. Covered by the second long. Roll it through the flat stretch, then back off once the window opens.</span></div>
       <div class="leg buy"><span class="tag">Net result</span><span class="desc" id="leg-net">&asymp; 88&Delta; &nbsp;·&nbsp; defined risk</span><span class="why">Behaves like long stock between the strikes, but the loss stops at the debit paid.</span></div>
     </div>
     <p class="note">Naming: <strong>ZEBRA</strong> = <em>Zero Extrinsic Back Ratio</em>, coined on tastytrade. The &ldquo;zero extrinsic&rdquo; is the design target, not a guarantee &mdash; it holds at entry, with the short leg genuinely at the money, and it drifts as soon as AMD moves.</p>
@@ -324,8 +334,8 @@
   <section>
     <div class="sec-head">
       <span class="eyebrow">The bench</span>
-      <h2>Type in your real chain, not these placeholders</h2>
-      <p class="note">Pull the actual marks off the option chain for the expiration you are considering. The two numbers that decide whether this is a zebra at all &mdash; net extrinsic and net delta &mdash; are computed below and will tell you plainly if your strikes are wrong.</p>
+      <h2>Type in your real March 2027 chain, not these placeholders</h2>
+      <p class="note">Pull the actual marks off the March 2027 chain. Three numbers decide whether this works: net extrinsic and net delta say whether the strikes make a zebra at all, and the calendar checks under the dates say whether the expirations make sense against a seasonal window that opens ~29 Oct and closes ~26 Feb. All three are computed live and will tell you plainly when something is wrong.</p>
     </div>
 
     <div class="bench">
@@ -333,10 +343,14 @@
       <div class="panel">
         <div class="panel-head"><h3>Position builder</h3><button class="btn-inline" id="reset-btn" type="button">Reset</button></div>
         <div class="panel-body">
-          <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Underlying</span></div>
+          <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Underlying &amp; calendar</span></div>
           <div class="field-grid">
             <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="456.67"></div>
+            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-08-31"></div>
+            <div class="field wide"><label for="in-exp1">Core expiration &mdash; all three core legs</label><input id="in-exp1" type="date" value="2027-03-19"></div>
+            <div class="field wide"><label for="in-exp0">Overlay expiration &mdash; must not be later</label><input id="in-exp0" type="date" value="2026-10-16"></div>
           </div>
+          <div id="cal-flags" class="cal-flags"></div>
 
           <div class="group-label"><span class="bar long"></span><span class="eyebrow">Long &times;2 &nbsp;&middot;&nbsp; ITM call</span></div>
           <div class="field-grid">
@@ -540,7 +554,7 @@ const GATES = [
     ],
     steps: [
       "One paragraph. Dated. Names the horizon and the invalidation.",
-      "Choose a core expiration comfortably longer than that horizon — never the reverse.",
+      "Choose a core expiration comfortably longer than that horizon — never the reverse. Trading the ~29 Oct to ~26 Feb seasonal window means March 2027, not January: a January expiry cuts off the back half of your own thesis.",
       "Write AMD’s next earnings date on the same page. It is the largest scheduled risk to the overlay."
     ],
     check: "Your core expiration outlasts your thesis horizon with room to spare."
@@ -603,6 +617,7 @@ const GATES = [
     steps: [
       "Expiration: never later than the core’s. This rule has no exceptions — it is the difference between covered and naked.",
       "Strike: above the core’s short strike, around 20–30Δ. Never at or below it.",
+      "Timing: sell overlays freely through the flat stretch before the window opens. Once it does, go further OTM or skip the cycle — an overlay inside the window caps the exact move you entered for.",
       "Quantity: one overlay per zebra. Two long calls do not cover three shorts.",
       "Order type: a diagonal or spread order referencing the long strike — not a standalone sell-to-open.",
       "Confirm buying power moves up by roughly the credit before you accept the fill."
@@ -676,11 +691,16 @@ GATES.forEach((g, i) => {
    MATH
    ============================================================ */
 const $ = function (id) { return document.getElementById(id); };
-const IDS = ["in-spot", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
-const DEFAULTS = { "in-spot": 456.67, "in-k1": 380, "in-p1": 97.70, "in-d1": 0.70, "in-k2": 455, "in-p2": 44.00, "in-d2": 0.52, "in-k3": 520, "in-c3": 12.50, "in-cyc": 1, "in-qty": 1 };
+const IDS = ["in-spot", "in-today", "in-exp1", "in-exp0", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
+// Seasonal window the user is trading: the documented SOXX pattern runs ~29 Oct to ~26 Feb.
+const WINDOW_OPEN = "2026-10-29", WINDOW_CLOSE = "2027-02-26";
+const DEFAULTS = { "in-spot": 456.67, "in-today": "2026-08-31", "in-exp1": "2027-03-19", "in-exp0": "2026-10-16", "in-k1": 380, "in-p1": 97.70, "in-d1": 0.70, "in-k2": 455, "in-p2": 44.00, "in-d2": 0.52, "in-k3": 520, "in-c3": 12.50, "in-cyc": 1, "in-qty": 1 };
 let overlayMode = "same";
 
 const num = function (id) { const v = parseFloat($(id).value); return isFinite(v) ? v : 0; };
+const day = function (id) { return $(id).value || ""; };
+const dte = function (from, to) { return (!from || !to) ? null : Math.round((Date.parse(to + "T00:00:00Z") - Date.parse(from + "T00:00:00Z")) / 86400000); };
+const pretty = function (d) { return !d ? "—" : new Date(d + "T00:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" }); };
 const usd0 = function (v) { return (v < 0 ? "−$" : "$") + Math.abs(Math.round(v)).toLocaleString("en-US"); };
 const usd2 = function (v) { return (v < 0 ? "−$" : "$") + Math.abs(v).toFixed(2); };
 
@@ -774,14 +794,61 @@ function paintReadouts(m) {
         : "You are collecting more time value than you pay. Not fatal, but you are short volatility here — move the long strike <strong>shallower</strong> if you want it neutral.");
 
   // structure strip
-  $("leg-k1").textContent = "2 × AMD " + m.K1.toFixed(0) + " C";
-  $("leg-k2").textContent = "1 × AMD " + m.K2.toFixed(0) + " C";
-  $("leg-k3").textContent = "1 × AMD " + m.K3.toFixed(0) + " C";
+  const mo = function (d) { return !d ? "" : " · " + new Date(d + "T00:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", month: "short", year: "numeric" }); };
+  $("leg-k1").textContent = "2 × AMD " + m.K1.toFixed(0) + " C" + mo(day("in-exp1"));
+  $("leg-k2").textContent = "1 × AMD " + m.K2.toFixed(0) + " C" + mo(day("in-exp1"));
+  $("leg-k3").textContent = "1 × AMD " + m.K3.toFixed(0) + " C" + mo(day("in-exp0"));
   $("leg-net").innerHTML = "≈ " + m.delta.toFixed(2) + "Δ &nbsp;·&nbsp; " + usd0(m.debit * per) + " at risk";
 
   $("mode-note").innerHTML = overlayMode === "same"
     ? "<strong>Same expiry.</strong> The overlay expires with the core, so the diagram is exact: above $" + m.K3.toFixed(0) + " the short call gives back every dollar the core makes, and the orange curve goes flat."
     : "<strong>Diagonal.</strong> The overlay expires before the core, so this is an approximation — the orange curve shows the core lifted by " + usd0(m.credit * per) + " of credit already banked. It is drawn dashed above $" + m.K3.toFixed(0) + " because what happens there depends entirely on where and when you roll, which no static diagram can know.";
+}
+
+/* ============================================================
+   CALENDAR RULES
+   ============================================================ */
+function paintCalendar() {
+  const t = day("in-today"), e1 = day("in-exp1"), e0 = day("in-exp0");
+  const d1 = dte(t, e1), d0 = dte(t, e0);
+  const flags = [];
+
+  // The one rule that turns a covered position into a naked one.
+  if (e0 && e1 && e0 > e1) {
+    flags.push(["bad", "STOP", "The overlay (" + pretty(e0) + ") outlives the core (" + pretty(e1) + "). When the long calls expire you are left outright <strong>naked short AMD calls</strong>. Move the overlay inside the core."]);
+  } else if (e0 && e1) {
+    flags.push(["ok", "OK", "Overlay " + pretty(e0) + " sits inside core " + pretty(e1) + " &mdash; every short stays covered."]);
+  }
+
+  // Does the core outlast the seasonal window the position was entered for?
+  if (e1) {
+    if (e1 >= WINDOW_CLOSE) {
+      flags.push(["ok", "OK", "Core runs " + d1 + " days, past the ~26 Feb close of the seasonal window. The thesis has room to play out before expiration."]);
+    } else {
+      flags.push(["warn", "SHORT", "Core expires " + pretty(e1) + ", <strong>before</strong> the ~26 Feb close of the window you are trading. The expiration cuts off the back half of your own thesis."]);
+    }
+  }
+
+  // An overlay that expires inside the window caps the move you entered for.
+  if (e0) {
+    if (e0 <= WINDOW_OPEN) {
+      flags.push(["ok", "OK", "Overlay expires " + pretty(e0) + ", before the ~29 Oct window opens: it collects premium through the flat stretch and is out of the way for the move."]);
+    } else if (e0 <= WINDOW_CLOSE) {
+      flags.push(["warn", "CAPS", "Overlay expires " + pretty(e0) + ", <strong>inside</strong> the seasonal window. It caps exactly the move you entered for. Go further OTM here, or skip the cycle."]);
+    } else {
+      flags.push(["warn", "CAPS", "Overlay expires " + pretty(e0) + ", <strong>past the close of the window</strong> &mdash; it spans the entire seasonal move and caps all of it. This is the one cycle not to sell."]);
+    }
+  }
+
+  if (d1 !== null && d1 < 60) {
+    flags.push(["warn", "THETA", "Only " + d1 + " days on the core. Below ~60 the zero-extrinsic balance gets fragile and decay starts to matter."]);
+  }
+
+  $("cal-flags").innerHTML = flags.map(function (f) {
+    return '<div class="flag ' + f[0] + '"><span class="ic">' + f[1] + '</span><span>' + f[2] + '</span></div>';
+  }).join("");
+
+  return { d1: d1, d0: d0, e1: e1, e0: e0 };
 }
 
 /* ============================================================
@@ -971,10 +1038,10 @@ function paintScripts(m) {
 "I want to open a defined-risk options position on AMD and I need to confirm how your\n" +
 "risk engine treats it before I fund anything.\n\n" +
 "The core is a 2-by-1 long call back ratio, all in one expiration:\n" +
-"  BUY  " + (2 * m.qty) + " × AMD " + m.K1.toFixed(0) + " call\n" +
-"  SELL " + m.qty + " × AMD " + m.K2.toFixed(0) + " call\n\n" +
+"  BUY  " + (2 * m.qty) + " × AMD " + pretty(day("in-exp1")) + " " + m.K1.toFixed(0) + " call\n" +
+"  SELL " + m.qty + " × AMD " + pretty(day("in-exp1")) + " " + m.K2.toFixed(0) + " call\n\n" +
 "Then, in a NEARER expiration, one covered overlay per zebra:\n" +
-"  SELL " + m.qty + " × AMD " + m.K3.toFixed(0) + " call\n\n" +
+"  SELL " + m.qty + " × AMD " + pretty(day("in-exp0")) + " " + m.K3.toFixed(0) + " call\n\n" +
 "Five questions:\n" +
 "1. What approval level do I need for the 2-by-1 back ratio?\n" +
 "2. Will the short " + m.K2.toFixed(0) + " call be paired against one of my long " + m.K1.toFixed(0) + " calls,\n" +
@@ -992,10 +1059,10 @@ function paintScripts(m) {
 "full state so you don't have to ask for it piece by piece.\n\n" +
 "PROJECT: AMD zebra (zero extrinsic back ratio) with an income overlay.\n\n" +
 "STRUCTURE — " + z + ", all calls:\n" +
-"  Core, one expiration:\n" +
+"  Core — ALL THREE legs expire " + pretty(day("in-exp1")) + ":\n" +
 "    long  " + (2 * m.qty) + " × AMD " + m.K1.toFixed(0) + "C  @ " + usd2(num("in-p1")) + "  (" + num("in-d1").toFixed(2) + "Δ each)\n" +
 "    short " + m.qty + " × AMD " + m.K2.toFixed(0) + "C  @ " + usd2(num("in-p2")) + "  (" + num("in-d2").toFixed(2) + "Δ)\n" +
-"  Income overlay, nearer expiration:\n" +
+"  Income overlay — expires " + pretty(day("in-exp0")) + " (never later than the core):\n" +
 "    short " + m.qty + " × AMD " + m.K3.toFixed(0) + "C  @ " + usd2(m.C) + " credit, rolled\n\n" +
 "NUMBERS (reference spot $" + m.S.toFixed(2) + "):\n" +
 "  net debit .......... " + usd0(m.debit * per) + "\n" +
@@ -1034,7 +1101,7 @@ document.querySelectorAll("[data-copy]").forEach(function (btn) {
 /* ============================================================
    WIRING
    ============================================================ */
-function refresh() { const m = model(); paintReadouts(m); drawChart(m); paintScripts(m); }
+function refresh() { const m = model(); paintCalendar(); paintReadouts(m); drawChart(m); paintScripts(m); }
 
 IDS.forEach(function (id) { $(id).addEventListener("input", refresh); });
 
