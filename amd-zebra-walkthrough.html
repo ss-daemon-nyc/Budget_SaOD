@@ -310,8 +310,8 @@
       <p class="lede" style="margin-top:14px">A back ratio is easy to describe and easy to get wrong at the order ticket. This is the run of conversations and checks that stand between the idea and a position your broker actually margins as defined-risk &mdash; with a live bench so you can test your own strikes before you send anything.</p>
     </div>
     <div class="mast-meta">
-      <div><span class="eyebrow">Reference spot</span><span class="v">$480.93</span></div>
-      <div><span class="eyebrow">As of</span><span class="v">27 Aug 2026, 10:00 ET</span></div>
+      <div><span class="eyebrow">Reference spot</span><span class="v">$476.67</span></div>
+      <div><span class="eyebrow">As of</span><span class="v">28 Aug 2026 close</span></div>
       <div><span class="eyebrow">52-week range</span><span class="v">$149.22 &ndash; $584.73</span></div>
       <div><span class="eyebrow">Dividend</span><span class="v">None</span></div>
     </div>
@@ -350,7 +350,7 @@
         <div class="panel-body">
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Underlying &amp; calendar</span></div>
           <div class="field-grid">
-            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="480.93"></div>
+            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="476.67"></div>
             <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-08-31"></div>
             <div class="field wide"><label for="in-exp1">Core expiration &mdash; all three core legs</label><input id="in-exp1" type="date" value="2027-03-19"></div>
             <div class="field wide"><label for="in-exp0">Overlay expiration &mdash; must not be later</label><input id="in-exp0" type="date" value="2026-10-16"></div>
@@ -367,24 +367,24 @@
 
           <div class="group-label"><span class="bar long"></span><span class="eyebrow">Long &times;2 &nbsp;&middot;&nbsp; ITM call</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="400"></div>
-            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="116.84"></div>
-            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.001" value="0.775"></div>
+            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="395"></div>
+            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="116.65"></div>
+            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.001" value="0.778"></div>
           </div>
           <div class="iv-line" id="iv1">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; ATM call</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="480"></div>
-            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="73.58"></div>
-            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.598"></div>
+            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="475"></div>
+            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="73.20"></div>
+            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.599"></div>
           </div>
           <div class="iv-line" id="iv2">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; income overlay</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="560"></div>
-            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="11.63"></div>
+            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="550"></div>
+            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="12.38"></div>
             <div class="field"><label for="in-cyc">Cycles</label><input id="in-cyc" type="number" step="1" min="0" value="1"></div>
           </div>
           <div class="iv-line" id="iv3">&mdash;</div>
@@ -506,6 +506,11 @@
             <td><strong>Gap through the cap</strong></td><td><span class="sev high">High</span></td>
             <td>AMD prints a number and moves 9% overnight &mdash; it did exactly that on Q2&nbsp;2026 earnings, in the <em>losing</em> direction despite a beat. Your overlay is deep ITM by the open and cannot be rolled for a credit.</td>
             <td>Decide deliberately whether an overlay cycle spans an earnings date. Sizing the overlay at 20&ndash;25&Delta; rather than 35&Delta; buys real room.</td>
+          </tr>
+          <tr>
+            <td><strong>Policy and tariff headlines</strong></td><td><span class="sev high">High</span></td>
+            <td>Semiconductor tariff proposals move the whole complex at once, and the ones under discussion reach past chips into finished goods that contain them &mdash; laptops, consoles, data-centre servers. Unlike earnings, these land on no schedule, so no overlay cycle can be planned around them.</td>
+            <td>Nothing removes it; it is the cost of holding a semi for two quarters. What it argues for is sizing that survives a headline gap, and not treating a quiet tape as low risk just because no catalyst is on the calendar.</td>
           </tr>
           <tr>
             <td><strong>Delta melts on the way down</strong></td><td><span class="sev med">Medium</span></td>
@@ -747,7 +752,7 @@ const $ = function (id) { return document.getElementById(id); };
 const IDS = ["in-spot", "in-today", "in-exp1", "in-exp0", "in-rate", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
 // Seasonal window the user is trading: the documented SOXX pattern runs ~29 Oct to ~26 Feb.
 const WINDOW_OPEN = "2026-10-29", WINDOW_CLOSE = "2027-02-26";
-const DEFAULTS = { "in-spot": 480.93, "in-today": "2026-08-31", "in-exp1": "2027-03-19", "in-exp0": "2026-10-16", "in-rate": 4.0, "in-k1": 400, "in-p1": 116.84, "in-d1": 0.775, "in-k2": 480, "in-p2": 73.58, "in-d2": 0.598, "in-k3": 560, "in-c3": 11.63, "in-cyc": 1, "in-qty": 1 };
+const DEFAULTS = { "in-spot": 476.67, "in-today": "2026-08-31", "in-exp1": "2027-03-19", "in-exp0": "2026-10-16", "in-rate": 4.0, "in-k1": 395, "in-p1": 116.65, "in-d1": 0.778, "in-k2": 475, "in-p2": 73.20, "in-d2": 0.599, "in-k3": 550, "in-c3": 12.38, "in-cyc": 1, "in-qty": 1 };
 let overlayMode = "same";
 let deltaSource = "model";
 
