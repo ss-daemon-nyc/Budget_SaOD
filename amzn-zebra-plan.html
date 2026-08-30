@@ -333,6 +333,50 @@
 
   footer { margin-top: 60px; padding-top: 22px; border-top: 1px solid var(--rule); display: grid; gap: 10px; }
 
+
+  /* ---------- strike selector ---------- */
+  .em-rail { display: grid; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--rule); }
+  .em-bar { position: relative; height: 46px; border-radius: 4px; background: var(--sunken); border: 1px solid var(--rule); overflow: hidden; }
+  .em-band { position: absolute; top: 0; bottom: 0; background: var(--accent-so); }
+  .em-spot { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--ink); }
+  .em-lvl { position: absolute; top: 0; bottom: 15px; width: 1px; background: var(--short); opacity: .8; }
+  .em-lvl::after { content: ""; position: absolute; top: 0; left: -3px; border-left: 3.5px solid transparent; border-right: 3.5px solid transparent; border-top: 5px solid var(--short); }
+  .em-tick { position: absolute; bottom: 3px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 9.5px; font-weight: 600; color: var(--ink-2); transform: translateX(-50%); white-space: nowrap; background: var(--sunken); padding: 0 3px; border-radius: 2px; }
+  .em-legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12px; color: var(--ink-3); }
+
+  .bench.wide { grid-template-columns: minmax(0, 360px) minmax(0, 1fr); }
+  @media (max-width: 900px) { .bench.wide { grid-template-columns: minmax(0, 1fr); } }
+
+  .lvl-rows { display: grid; gap: 8px; }
+  .lvl-row { display: grid; grid-template-columns: 104px 84px auto; gap: 7px; align-items: center; border: 1px solid var(--rule); border-radius: 4px; padding: 7px 8px; background: var(--surface-2); }
+  .lvl-row .lbl { grid-column: 1 / -1; }
+  .lvl-row input, .lvl-row select { width: 100%; padding: 6px 8px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--sunken); color: var(--ink); font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px; font-variant-numeric: tabular-nums; outline: none; }
+  .lvl-row input:focus-visible, .lvl-row select:focus-visible { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-so); }
+  .lvl-row .kill { border: 1px solid var(--rule-2); background: var(--surface); color: var(--ink-3); border-radius: 3px; cursor: pointer; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; font-weight: 600; width: 28px; height: 30px; line-height: 1; }
+  .lvl-row .kill:hover { border-color: var(--danger); color: var(--danger); }
+  .lvl-row .kill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  table.cand { min-width: 580px; }
+  table.cand th:last-child, table.cand td:last-child { text-align: right; white-space: nowrap; }
+  table.cand .chip-row { max-width: 210px; }
+  table.cand tbody tr.best { background: var(--ok-so); }
+  table.cand tbody tr.best td:first-child { box-shadow: inset 3px 0 0 var(--ok); }
+  table.cand td, table.cand th { padding: 10px 9px; }
+  .pill { display: inline-block; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 9.5px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+  .pill.on  { background: var(--ok-so); color: var(--ok); }
+  .pill.mid { background: var(--warn-so); color: var(--short); }
+  .pill.off { background: var(--sunken); color: var(--ink-3); }
+  .score { font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .chip-row { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .pick { display: grid; gap: 14px; border: 1px solid var(--ok); border-left: 3px solid var(--ok); background: var(--ok-so); border-radius: 0 5px 5px 0; padding: 18px 20px; }
+  .pick .hdr { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .pick .tkr { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 21px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+  .pick .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px,1fr)); gap: 2px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+  .pick .cell { background: var(--surface); padding: 11px 13px; display: grid; gap: 2px; }
+  .pick .cell .k { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 9.5px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3); }
+  .pick .cell .v { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .pick ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; font-size: 14px; color: var(--ink-2); }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
@@ -345,33 +389,34 @@
       <span class="eyebrow">Zero Extrinsic Back Ratio &nbsp;&middot;&nbsp; weekly income, earnings skipped</span>
     </div>
     <div>
-      <h1>The AMZN zebra, paid<br>weekly, minus the prints</h1>
-      <p class="lede" style="margin-top:14px">Same structure as the AMD build &mdash; two deep calls, one at the money, all in one expiration &mdash; but the income leg here is a <em>weekly</em>, sold and rolled every Friday. That turns one decision into roughly two dozen, and it puts a hard calendar rule at the centre of the trade: Amazon reports on a Thursday after the close, so the Friday weekly sitting on top of a print is the one you do not sell.</p>
+      <h1>A three-leg zebra,<br>paid by the week</h1>
+      <p class="lede" style="margin-top:14px">Same core as the AMD build &mdash; two deep calls and one at the money, in a single expiration &mdash; but here that zebra stands alone as a three-leg position, and the income comes from a <em>weekly</em> call sold separately against it, which the broker pairs to the spare long overnight. That turns one decision into roughly two dozen, and it puts two calendars at the centre of the trade: the earnings print you never sell across, and the levels that decide which strike you sell this Friday.</p>
     </div>
     <div class="mast-meta">
-      <div><span class="eyebrow">Reference spot</span><span class="v">$261.06</span></div>
-      <div><span class="eyebrow">As of</span><span class="v">25 Aug 2026</span></div>
+      <div><span class="eyebrow">Last close</span><span class="v">$266.43</span></div>
+      <div><span class="eyebrow">As of</span><span class="v">Fri 28 Aug 2026</span></div>
+      <div><span class="eyebrow">Session</span><span class="v">+3.97%</span></div>
+      <div><span class="eyebrow">30-day IV</span><span class="v">30.6%</span></div>
       <div><span class="eyebrow">52-week range</span><span class="v">$196.00 &ndash; $287.20</span></div>
       <div><span class="eyebrow">Next print</span><span class="v">~29 Oct 2026</span></div>
-      <div><span class="eyebrow">Dividend</span><span class="v">None</span></div>
     </div>
-    <p class="note">Prices above are a starting reference, not a live quote &mdash; accurate at the timestamp shown and stale the moment you read them. The 52-week high of $287.20 was set 3&nbsp;Aug&nbsp;2026 and the low of $196.00 on 17&nbsp;Feb&nbsp;2026. The October earnings date is <strong>not confirmed by Amazon</strong>; vendors currently split between 22 and 29 October, which is itself a risk this page handles rather than hides. Everything recomputes from whatever you type into the bench. This is a walkthrough of mechanics and process, not a recommendation to trade AMZN.</p>
+    <p class="note">Reference is the <strong>Friday 28 August 2026 close</strong>: AMZN rose from $256.26 to $266.43 that session, about +3.97% on heavier volume, in a range near $257.00&ndash;$267.56. The 52-week high of $287.20 was set 3&nbsp;Aug&nbsp;2026 (best close $284.02), the low of $196.00 on 17&nbsp;Feb&nbsp;2026, and Amazon pays no dividend. The October earnings date is <strong>not confirmed by Amazon</strong>; vendors split between 22 and 29 October, which is itself a risk this page handles rather than hides. Everything recomputes from whatever you type in. This is a walkthrough of mechanics and process, not a recommendation to trade AMZN, and every quote here is stale the moment you read it.</p>
   </header>
 
   <!-- ============ THE SHAPE ============ -->
   <section style="margin-top:0">
     <div class="sec-head">
       <span class="eyebrow">The shape</span>
-      <h2>Three core legs in one expiration, and one short leg that gets replaced every week</h2>
-      <p class="note">The core is a 2&ndash;1 back ratio and all three of its legs share <strong>one expiration &mdash; March 2027</strong>. That is not a preference: the short call only cancels the longs&rsquo; time value if it sits in the same cycle. The weekly is a separate decision layered on top, sold against the second long call, and re-decided every single Friday.</p>
+      <h2>A three-leg position, plus one short call the broker pairs overnight</h2>
+      <p class="note">The zebra is a <strong>standalone three-leg order</strong> &mdash; a 2&ndash;1 back ratio whose legs all share <strong>one expiration, March 2027</strong>. That single expiration is not a preference: the short call only cancels the longs&rsquo; time value if it sits in the same cycle. The weekly is not a fourth leg of that order. It is sold separately as its own single-leg trade, and at Fidelity the risk engine pairs it against the spare long from the zebra in the <strong>overnight</strong> run &mdash; so the position you send is three legs, and the pairing that covers the fourth happens after the close.</p>
     </div>
     <div class="legs">
-      <div class="leg buy"><span class="tag">Buy &times;2 &nbsp;/&nbsp; core</span><span class="desc" id="leg-k1">2 &times; AMZN 230 C</span><span class="why">Deep ITM. On this chain the zero-extrinsic strike lands near <strong>78&Delta;</strong>, not the folk-rule 70&Delta; &mdash; AMZN&rsquo;s at-the-money time value at this tenor is large enough that two shallower longs cannot absorb it.</span></div>
-      <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; core</span><span class="desc" id="leg-k2">1 &times; AMZN 260 C</span><span class="why">ATM, ~59&Delta;. Its fat extrinsic pays for the extrinsic in both longs. That is the whole trick, and it only works at the money.</span></div>
-      <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; weekly</span><span class="desc" id="leg-kw">1 &times; AMZN 270 C wkly</span><span class="why">OTM, ~20&ndash;25&Delta;, ~7 days out. Covered by the second long. Sold Monday, gone Friday, and <em>skipped entirely</em> on the week the print lands.</span></div>
-      <div class="leg buy"><span class="tag">Net result</span><span class="desc" id="leg-net">&asymp; 97&Delta; &nbsp;&middot;&nbsp; defined risk</span><span class="why">Behaves like long stock between the strikes, loss stops at the debit paid, and the weekly turns a static position into a cash-flowing one.</span></div>
+      <div class="leg buy"><span class="tag">Buy &times;2 &nbsp;/&nbsp; zebra order</span><span class="desc" id="leg-k1">2 &times; AMZN 232.50 C</span><span class="why">Deep ITM. On this chain the zero-extrinsic strike lands near <strong>80&Delta;</strong>, not the folk-rule 70&Delta; &mdash; AMZN&rsquo;s at-the-money time value at this tenor is large enough that two shallower longs cannot absorb it.</span></div>
+      <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; zebra order</span><span class="desc" id="leg-k2">1 &times; AMZN 265 C</span><span class="why">ATM, ~59&Delta;. Its fat extrinsic pays for the extrinsic in both longs. That is the whole trick, and it only works at the money. These three legs go in as one order.</span></div>
+      <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; separate ticket</span><span class="desc" id="leg-kw">1 &times; AMZN 277.50 C wkly</span><span class="why">OTM, ~7 days out, sold on its own ticket. The spare long from the zebra is what covers it &mdash; but the pairing lands <em>overnight</em>, so what you see intraday is not the final margin picture.</span></div>
+      <div class="leg buy"><span class="tag">Net result</span><span class="desc" id="leg-net">&asymp; 1.01&Delta; &nbsp;&middot;&nbsp; defined risk</span><span class="why">Behaves like long stock between the strikes, loss stops at the debit paid, and the weekly turns a static position into a cash-flowing one.</span></div>
     </div>
-    <p class="note">Naming: <strong>ZEBRA</strong> = <em>Zero Extrinsic Back Ratio</em>, coined on tastytrade. Adding a shorter-dated short call against the second long makes that half a diagonal &mdash; what most desks will call a poor man&rsquo;s covered call. The &ldquo;zero extrinsic&rdquo; is a design target for the core only; the weekly deliberately carries extrinsic, because collecting it is the entire point.</p>
+    <p class="note">Naming: <strong>ZEBRA</strong> = <em>Zero Extrinsic Back Ratio</em>, coined on tastytrade. Selling a shorter-dated call against the spare long makes that half a diagonal &mdash; what most desks call a poor man&rsquo;s covered call. The &ldquo;zero extrinsic&rdquo; is a design target for the zebra only; the weekly deliberately carries extrinsic, because collecting it is the entire point. Because the two are separate tickets, they are also separately reversible: you can close the weekly without touching the zebra, and you can stop selling weeklies entirely and still own a perfectly good stock replacement.</p>
   </section>
 
   <!-- ============ BENCH ============ -->
@@ -389,31 +434,31 @@
         <div class="panel-body">
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Underlying &amp; calendar</span></div>
           <div class="field-grid">
-            <div class="field wide"><label for="in-spot">AMZN spot price</label><input id="in-spot" type="number" step="0.01" value="261.06"></div>
+            <div class="field wide"><label for="in-spot">AMZN spot price</label><input id="in-spot" type="number" step="0.01" value="266.43"></div>
             <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-08-31"></div>
             <div class="field wide"><label for="in-exp1">Core expiration &mdash; all three core legs</label><input id="in-exp1" type="date" value="2027-03-19"></div>
           </div>
           <div id="cal-flags" class="cal-flags"></div>
 
-          <div class="group-label"><span class="bar long"></span><span class="eyebrow">Long &times;2 &nbsp;&middot;&nbsp; ITM call</span></div>
+          <div class="group-label"><span class="bar long"></span><span class="eyebrow">Zebra ticket &nbsp;&middot;&nbsp; long &times;2 ITM</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="0.5" value="230"></div>
-            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="44.10"></div>
-            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.01" value="0.78"></div>
+            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="0.5" value="232.5"></div>
+            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="46.60"></div>
+            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.01" value="0.80"></div>
           </div>
 
-          <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; ATM call</span></div>
+          <div class="group-label"><span class="bar short"></span><span class="eyebrow">Zebra ticket &nbsp;&middot;&nbsp; short &times;1 ATM</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="0.5" value="260"></div>
-            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="26.30"></div>
+            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="0.5" value="265"></div>
+            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="27.00"></div>
             <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.01" value="0.59"></div>
           </div>
 
-          <div class="group-label"><span class="bar short"></span><span class="eyebrow">Weekly overlay &nbsp;&middot;&nbsp; one per zebra</span></div>
+          <div class="group-label"><span class="bar short"></span><span class="eyebrow">Weekly ticket &nbsp;&middot;&nbsp; sold separately</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-kw">Strike</label><input id="in-kw" type="number" step="0.5" value="270"></div>
-            <div class="field"><label for="in-cw">Credit</label><input id="in-cw" type="number" step="0.01" value="1.75"></div>
-            <div class="field"><label for="in-dw">Delta</label><input id="in-dw" type="number" step="0.01" value="0.25"></div>
+            <div class="field"><label for="in-kw">Strike</label><input id="in-kw" type="number" step="0.5" value="277.5"></div>
+            <div class="field"><label for="in-cw">Credit</label><input id="in-cw" type="number" step="0.01" value="1.07"></div>
+            <div class="field"><label for="in-dw">Delta</label><input id="in-dw" type="number" step="0.01" value="0.18"></div>
             <div class="field half"><label for="in-real">Realization %</label><input id="in-real" type="number" step="5" min="0" max="100" value="70"></div>
             <div class="field"><label for="in-stop">Stop DTE</label><input id="in-stop" type="number" step="1" min="0" value="30"></div>
           </div>
@@ -532,6 +577,67 @@
     </div>
   </section>
 
+  <!-- ============ STRIKE SELECTOR ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">This Friday&rsquo;s strike</span>
+      <h2>Four factors decide the strike, and they can be made to argue with each other</h2>
+      <p class="note">The ladder says <em>which</em> Fridays you sell. This says <em>what</em> you sell on them. The inputs are the four things that actually drive the choice &mdash; where price has been stopped before, what implied volatility is paying, which Fibonacci levels land on real consolidation, and how far the market itself expects AMZN to travel this week. The table scores every candidate strike against them and shows what each level of safety costs in credit.</p>
+    </div>
+
+    <div class="bench wide">
+      <div class="panel">
+        <div class="panel-head"><h3>Inputs &amp; levels</h3><button class="btn-inline" id="lvl-reset" type="button">Reset</button></div>
+        <div class="panel-body">
+          <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">The week</span></div>
+          <div class="field-grid">
+            <div class="field"><label for="sel-iv">Front IV %</label><input id="sel-iv" type="number" step="0.1" value="30.6"></div>
+            <div class="field"><label for="sel-dte">Days to exp</label><input id="sel-dte" type="number" step="1" min="1" value="7"></div>
+            <div class="field"><label for="sel-inc">Strike step</label><input id="sel-inc" type="number" step="0.5" min="0.5" value="2.5"></div>
+            <div class="field"><label for="sel-dlo">&Delta; band low</label><input id="sel-dlo" type="number" step="0.01" value="0.15"></div>
+            <div class="field"><label for="sel-dhi">&Delta; band high</label><input id="sel-dhi" type="number" step="0.01" value="0.25"></div>
+            <div class="field"><label for="sel-exp">Expiry</label><input id="sel-exp" type="date" value="2026-09-04"></div>
+          </div>
+          <p class="note" style="font-size:11.5px;margin-top:8px">Spot comes from the bench above. Front IV is the implied volatility of the <em>weekly</em> you are selling, not the 30-day figure &mdash; in a quiet week it usually prints a little under it, which lowers every credit in the table.</p>
+          <div id="sel-flags" class="cal-flags"></div>
+
+          <div class="group-label"><span class="bar short"></span><span class="eyebrow">Levels &mdash; resistance above, support below</span></div>
+          <div class="lvl-rows" id="lvl-rows"></div>
+          <button class="btn-inline" id="lvl-add" type="button" style="margin-top:10px">+ Add level</button>
+          <p class="note" style="font-size:11.5px;margin-top:10px">A resistance level only helps a short call if it sits <strong>at or just below</strong> the strike &mdash; price then has to fight through it before your strike is in danger. A level above the strike protects nothing.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Expected move &amp; candidates</h3><span class="eyebrow" id="em-head">&mdash;</span></div>
+
+        <div class="em-rail">
+          <div class="em-bar" id="em-bar"></div>
+          <div class="em-legend">
+            <span>&#9474; spot</span>
+            <span style="color:var(--accent)">&#9608; 1&sigma; expected move</span>
+            <span style="color:var(--short)">&#9474; resistance</span>
+          </div>
+        </div>
+
+        <div style="padding:0 20px 20px">
+          <div class="table-scroll" style="margin-top:18px">
+            <table class="cand">
+              <thead><tr><th>Strike</th><th>OTM</th><th>Credit</th><th>&Delta;</th><th>POP</th><th>Touch</th><th>Reads</th><th>Score</th></tr></thead>
+              <tbody id="cand-rows"></tbody>
+            </table>
+          </div>
+          <p class="note" style="font-size:12px;margin-top:10px">Credit, &Delta;, POP and Touch are Black&ndash;Scholes estimates from the inputs on the left, not chain quotes &mdash; they tell you the <em>shape</em> of the decision. Price every one against the real bid before you send anything. <strong>POP</strong> is the chance the call finishes out of the money; <strong>Touch</strong> is the rough chance price tags the strike at some point during the week, which is what actually forces you to manage.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <div class="group-label"><span class="bar long"></span><span class="eyebrow">What the table picks, and why</span></div>
+      <div class="pick" id="pick"></div>
+    </div>
+  </section>
+
   <!-- ============ TENSIONS ============ -->
   <section>
     <div style="display:grid;gap:14px">
@@ -603,14 +709,19 @@
             <td>Treat vendor dates as estimates until Amazon&rsquo;s IR page confirms them. Run the &plusmn;1&nbsp;week policy while the date is unconfirmed, and re-check it before each of the two Fridays either side.</td>
           </tr>
           <tr>
-            <td><strong>Weekly margined as a naked call</strong></td><td><span class="sev high">Blocking</span></td>
-            <td>You send the fourth leg and buying power drops by tens of thousands instead of rising by the credit. The risk engine did not pair it with your second long.</td>
-            <td>Clear it at Gate&nbsp;3 <em>before</em> funding anything. Send the weekly as a diagonal spread order referencing the long strike, never as a standalone sell.</td>
+            <td><strong>The overnight pairing does not land</strong></td><td><span class="sev high">High</span></td>
+            <td>The weekly is sold on its own ticket and the spare long is matched to it after the close. Anything that breaks the match &mdash; a mismatched quantity, an expiration past the zebra&rsquo;s, the zebra not yet settled, a long already committed elsewhere &mdash; leaves a short call the engine treats as uncovered, and you find out the next morning.</td>
+            <td>Ask Gate&nbsp;3&rsquo;s pairing questions and get the conditions in a list. Then check the position the morning after the first weekly, and after any week where you changed size or expiration.</td>
           </tr>
           <tr>
-            <td><strong>Weekly outlives the core</strong></td><td><span class="sev high">Blocking</span></td>
-            <td>A late roll pushes the short past the core&rsquo;s expiration. The longs expire, the short does not, and you are outright naked short AMZN calls.</td>
-            <td>A hard rule with no exceptions: the weekly&rsquo;s expiration is always earlier than the core&rsquo;s. Stop DTE on the bench exists to keep you well clear of the boundary.</td>
+            <td><strong>Weekly outlives the zebra</strong></td><td><span class="sev high">Blocking</span></td>
+            <td>A late roll pushes the short past the zebra&rsquo;s expiration. The longs expire, the short does not, and you are outright naked short AMZN calls with nothing left to pair against.</td>
+            <td>A hard rule with no exceptions: the weekly&rsquo;s expiration is always earlier than the zebra&rsquo;s. Stop DTE on the bench exists to keep you well clear of the boundary.</td>
+          </tr>
+          <tr>
+            <td><strong>A scheduled macro print on expiration day</strong></td><td><span class="sev med">Medium</span></td>
+            <td>The US jobs report lands on the first Friday of most months, at 8:30&nbsp;ET &mdash; the morning your weekly expires. It does not gap you overnight the way earnings does, but a 2% move on the tape between the print and the open is enough to take a comfortable strike and make it a decision.</td>
+            <td>Know which Fridays those are before you sell them. The selector flags a first-Friday expiry automatically; treat it as a reason to sit a strike further out, not as a reason to skip the week.</td>
           </tr>
           <tr>
             <td><strong>Death by round trips</strong></td><td><span class="sev med">Medium</span></td>
@@ -644,7 +755,7 @@
 
   <footer>
     <span class="eyebrow">Standing assumptions</span>
-    <p class="note">Built for a bullish core view on AMZN over the life of the chosen expiration, using calls throughout. Every figure is per-share unless a dollar total is labelled otherwise; one contract represents 100 shares. The weekly income model assumes a constant credit at a constant strike distance on every sellable Friday, which reality will not honour &mdash; the realization&nbsp;% input is the place to be pessimistic about it. Commissions, assignment fees, and bid&ndash;ask slippage are excluded from the headline figures and are emphatically not trivial across two dozen weekly round trips. Nothing here is personalised advice; the numbers are yours to verify against your own chain and your own account.</p>
+    <p class="note">Built for a bullish core view on AMZN over the life of the chosen expiration, using calls throughout. Every figure is per-share unless a dollar total is labelled otherwise; one contract represents 100 shares. The weekly income model assumes a constant credit at a constant strike distance on every sellable Friday, which reality will not honour &mdash; the realization&nbsp;% input is the place to be pessimistic about it. Credits, deltas and probabilities in the strike selector are Black&ndash;Scholes estimates from the inputs you give it, not chain quotes, and a real chain will disagree with them. Margin behaviour described here is what this account has been told to expect from one broker; confirm it against your own. Commissions, assignment fees, and bid&ndash;ask slippage are excluded from the headline figures and are emphatically not trivial across two dozen weekly round trips. Nothing here is personalised advice; the numbers are yours to verify against your own chain and your own account.</p>
   </footer>
 </div>
 <script>
@@ -659,7 +770,7 @@ const GATES = [
     title: "Reload the context a cold chat dropped",
     say: "A new chat knows nothing about your strikes, your expirations, or your calendar rule. Hand it all back deliberately instead of rebuilding it a question at a time — and make it argue with you before it agrees with you.",
     qs: [
-      { q: "Here are my four legs, the expirations, my sizing, and my earnings-skip rule. Restate the position back to me and tell me what you still need that I haven’t given you.", a: "It repeats the legs correctly <b>and</b> names what’s missing — your risk cap, your thesis horizon, whether the October print is confirmed yet." },
+      { q: "Here is my three-leg zebra, the separate weekly, my sizing, and my earnings-skip rule. Restate the position back to me and tell me what you still need that I haven’t given you.", a: "It repeats the legs correctly, keeps the zebra and the weekly as separate tickets, <b>and</b> names what’s missing — your risk cap, your thesis horizon, whether the October print is confirmed yet." },
       { q: "What in this brief contradicts itself?", a: "A real answer catches things like a weekly dated past the core, or a delta target that can’t coexist with the extrinsic target." },
       { q: "Recompute my weekly income at 60% realization instead of 70% and tell me whether the trade still makes sense.", a: "A number, plus the observation that if the programme only survives at high realization it was never really working." }
     ],
@@ -673,7 +784,7 @@ const GATES = [
   {
     who: "With yourself, in writing, dated",
     title: "Write the thesis before you touch the structure",
-    say: "A zebra is a stock replacement. Its whole reason to exist is that you already want to be long 100 shares of AMZN and would rather not tie up $26k doing it. If that sentence isn’t true, the structure is just leverage on a trade you didn’t actually want — and bolting a weekly income programme onto it does not fix that, it just gives you something to do while being wrong.",
+    say: "A zebra is a stock replacement. Its whole reason to exist is that you already want to be long 100 shares of AMZN and would rather not tie up $27k doing it. If that sentence isn’t true, the structure is just leverage on a trade you didn’t actually want — and bolting a weekly income programme onto it does not fix that, it just gives you something to do while being wrong.",
     qs: [
       { q: "If the only choice were buying 100 shares outright, would I?", a: "If the answer is no, stop here. Cheaper is not a thesis." },
       { q: "Over what horizon does this resolve, and what specific event tells me I’m wrong?", a: "A date and an event — not “if it goes down a lot.”" },
@@ -688,22 +799,23 @@ const GATES = [
   },
   {
     who: "With your broker’s options desk",
-    title: "Clear the account before you price a single strike",
-    say: "This is the gate that stops people — not strike selection. A 2–1 back ratio carrying a fourth short leg in a different expiration is a shape plenty of retail risk engines model badly. A weekly cadence then asks that engine the same question twenty-odd times. Find out on a phone call, not on a funded ticket.",
+    title: "Understand the overnight pairing before you sell the first weekly",
+    say: "The zebra goes in as its own three-leg order, so approval for it is a self-contained question. The weekly is the part worth a phone call: it is sold on a separate ticket, and at Fidelity the spare long is matched to it in the overnight risk run. That gap between selling it and it being recognised as covered is where the surprises live — and a weekly cadence walks into that gap every week.",
     qs: [
-      { q: "What approval level do I need for a 2-by-1 long call back ratio in a single expiration?", a: "A specific tier. If they can’t name one, you’re talking to the wrong desk." },
-      { q: "Will your risk engine pair the short ATM call against one of my two long ITM calls, or margin it as uncovered?", a: "“Paired” or “covered by the long.” Anything vaguer is a no." },
-      { q: "If I then sell a weekly OTM call against my second long, is that recognised as a diagonal — and does the buying-power effect stay a credit?", a: "You want the word <b>diagonal</b> and a named order type you can actually select." },
+      { q: "What approval level do I need for a 2-by-1 long call back ratio, sent as a single three-leg order?", a: "A specific tier. If they can’t name one, you’re talking to the wrong desk." },
+      { q: "Inside that order, is the short ATM call paired against one of my two long calls, or margined as uncovered?", a: "“Paired” or “covered by the long.” Anything vaguer is a no." },
+      { q: "When I then sell a weekly call on a separate ticket, what happens between the fill and the overnight pairing run — what does my buying power look like <i>intraday</i>?", a: "The real answer, in numbers. If it briefly reserves against an uncovered short, you need to know that before it happens with your cash." },
+      { q: "What would stop the overnight run from pairing it — strike, expiration, quantity, an existing assignment?", a: "A list of the conditions. These are the ones you check before every weekly, not once." },
       { q: "Can I roll that weekly as a single order, and what does it cost per contract each way?", a: "A yes and two numbers. A platform that makes you leg every roll will cost you more than the commission line suggests." },
-      { q: "What are the initial and the maintenance requirements on the full four-leg position?", a: "Two figures. Write them down." },
       { q: "At expiration, if every leg finishes in the money, what auto-exercises — and do I hold shares over a weekend?", a: "A description of the settlement path, including whether you wake up on margin." }
     ],
     steps: [
       "Get the answers in writing, or take a ticket number.",
-      "Stage the complete four-leg ticket as a dry run and read the buying-power effect before submitting anything.",
-      "If it shows a naked-call requirement, stop. Do not try to fix it by legging in — that is how you end up genuinely uncovered between fills."
+      "Stage the three-leg zebra as a dry run and read its buying-power effect before submitting anything.",
+      "Sell the first weekly at a size you would be relaxed about if the pairing did not land — then check the position the next morning and confirm it did.",
+      "Never sell a weekly before the zebra is filled and settled. The spare long has to exist for the overnight run to find it."
     ],
-    check: "A staged ticket prices as defined risk, not as an uncovered short."
+    check: "The zebra prices as defined risk, and you have seen one weekly go through a full overnight pairing cycle."
   },
   {
     who: "With the option chain, on the bench above",
@@ -711,7 +823,7 @@ const GATES = [
     say: "The name is the specification. If net extrinsic isn’t close to zero, you don’t own a zebra — you own an expensive back ratio that decays underneath your income programme. The gauge above is the only opinion that matters here.",
     qs: [
       { q: "Is my short leg actually at the money, or just near it?", a: "Genuinely ATM. The offset is doing all the work; a strike or two off and it stops balancing." },
-      { q: "What delta does my zero-extrinsic long strike actually land on?", a: "Whatever the chain says — on this one it was about 78Δ, not the 70Δ you’ll read everywhere. Follow the gauge, not the folklore." }
+      { q: "What delta does my zero-extrinsic long strike actually land on?", a: "Whatever the chain says — on this one it was about 80Δ, not the 70Δ you’ll read everywhere. Follow the gauge, not the folklore." }
     ],
     steps: [
       "Pick the expiration first — far enough out that theta isn’t the story, typically well beyond 60 days.",
@@ -744,7 +856,8 @@ const GATES = [
     qs: [
       { q: "Is the next print date confirmed by Amazon, or is it a vendor estimate?", a: "You know which, and you know where you checked. As of this build the October date was still unconfirmed, with vendors split between the 22nd and the 29th." },
       { q: "What do I do on the Monday of a print week?", a: "Nothing. That is the answer. No weekly goes on." },
-      { q: "What if I’m already short a weekly when the date gets confirmed into my week?", a: "A pre-decided action: close it, or roll it out past the print for whatever it costs. Not “see how it goes.”" }
+      { q: "What if I’m already short a weekly when the date gets confirmed into my week?", a: "A pre-decided action: close it, or roll it out past the print for whatever it costs. Not “see how it goes.”" },
+      { q: "Which Fridays this quarter carry a scheduled macro print rather than an earnings print?", a: "The first Friday of most months, when the jobs report lands at 8:30 ET on expiration morning. Not a reason to skip — a reason to sit a strike further out." }
     ],
     steps: [
       "Put every earnings date into the ladder above and mark it confirmed or estimated honestly.",
@@ -762,12 +875,12 @@ const GATES = [
       { q: "What do I do if AMZN is 4% through my weekly strike on a Thursday afternoon?", a: "An answer you wrote before Thursday. Roll up and out for a net credit, or close it and take the loss against the core’s gain — decided in advance." }
     ],
     steps: [
-      "Strike discipline: the weekly is always above the core’s short strike, around 20–25Δ. Never at or below it.",
+      "Strike discipline: the weekly is always above the zebra’s short strike. Pick it on the four factors — a resistance level at or just under the strike, front IV near 30%, fibs that land on real consolidation, and the edge of the expected move — not on the premium alone.",
       "One weekly per zebra. Two long calls do not cover three shorts.",
       "Close the weekly rather than letting an ITM contract run into the bell — assignment turns a clean options position into an unplanned share position.",
-      "Through the strike: roll up and out only for a net credit. Otherwise close it and let the core keep the move.",
-      "Stop the programme at the stop-DTE boundary. Never be short a weekly while you are closing the core.",
-      "Close or roll the core at 21–30 DTE. Never carry a 2–1 ratio into expiration week.",
+      "Through the strike: roll up and out only for a net credit. Otherwise close it and let the zebra keep the move.",
+      "Stop the programme at the stop-DTE boundary. Never be short a weekly while you are closing the zebra.",
+      "Close or roll the zebra at 21–30 DTE. Never carry a 2–1 ratio into expiration week.",
       "Re-run the zero-extrinsic gauge monthly — the property drifts as AMZN moves away from your short strike."
     ],
     check: "The rules are written, dated, and saved somewhere you will actually open on a Monday morning."
@@ -830,6 +943,8 @@ const pretty = function (d) { return !d ? "—" : new Date(d + "T00:00:00Z").toL
 const shortDay = function (t) { return new Date(t).toLocaleDateString("en-US", { timeZone: "UTC", month: "short", day: "2-digit" }); };
 const usd0 = function (v) { return (v < 0 ? "−$" : "$") + Math.abs(Math.round(v)).toLocaleString("en-US"); };
 const usd2 = function (v) { return (v < 0 ? "−$" : "$") + Math.abs(v).toFixed(2); };
+// strikes print whole when they are whole, and to the cent when they are not ($232.50)
+const strk = function (v) { return Math.abs(v % 1) < 1e-9 ? v.toFixed(0) : v.toFixed(2); };
 const dte = function (from, to) { return (!from || !to) ? null : Math.round((ms(to) - ms(from)) / DAY); };
 
 // The first Friday on or after a timestamp — for a Thursday-after-close print,
@@ -928,7 +1043,7 @@ function buildLadder(pol) {
    MODEL
    ============================================================ */
 const IDS = ["in-spot", "in-today", "in-exp1", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-kw", "in-cw", "in-dw", "in-real", "in-stop", "in-qty"];
-const DEFAULTS = { "in-spot": 261.06, "in-today": "2026-08-31", "in-exp1": "2027-03-19", "in-k1": 230, "in-p1": 44.10, "in-d1": 0.78, "in-k2": 260, "in-p2": 26.30, "in-d2": 0.59, "in-kw": 270, "in-cw": 1.75, "in-dw": 0.25, "in-real": 70, "in-stop": 30, "in-qty": 1 };
+const DEFAULTS = { "in-spot": 266.43, "in-today": "2026-08-31", "in-exp1": "2027-03-19", "in-k1": 232.5, "in-p1": 46.60, "in-d1": 0.80, "in-k2": 265, "in-p2": 27.00, "in-d2": 0.59, "in-kw": 277.5, "in-cw": 1.07, "in-dw": 0.18, "in-real": 70, "in-stop": 30, "in-qty": 1 };
 let chartMode = "bank";
 
 function num(id) { const v = parseFloat($(id).value); return isFinite(v) ? v : 0; }
@@ -987,13 +1102,13 @@ function paintReadouts(m, lad) {
   $("ro-be-s").textContent = (drift >= 0 ? "+" : "−") + "$" + Math.abs(drift).toFixed(2) + " vs spot";
 
   $("ro-maxloss").textContent = usd0(m.debit * per);
-  $("ro-maxloss-s").textContent = "if AMZN ≤ $" + m.K1.toFixed(0) + " at core expiry";
+  $("ro-maxloss-s").textContent = "if AMZN ≤ $" + strk(m.K1) + " at zebra expiry";
 
   const sharesCost = m.S * per;
   $("ro-cap").textContent = sharesCost > 0 ? Math.round((m.debit * per / sharesCost) * 100) + "%" : "—";
   $("ro-cap-s").textContent = "of " + usd0(sharesCost) + " in shares";
 
-  $("ro-capprice").textContent = "$" + m.KW.toFixed(0);
+  $("ro-capprice").textContent = "$" + strk(m.KW);
   $("ro-capprice-s").textContent = "+" + (m.S > 0 ? ((m.KW / m.S - 1) * 100).toFixed(1) : "0") + "% from spot, " + m.DW.toFixed(2) + "Δ";
 
   $("ro-income").textContent = usd0(m.CW * per);
@@ -1021,13 +1136,13 @@ function paintReadouts(m, lad) {
 
   // structure strip
   const mo = function (d) { return !d ? "" : " · " + new Date(d + "T00:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", month: "short", year: "numeric" }); };
-  $("leg-k1").textContent = "2 × AMZN " + m.K1.toFixed(0) + " C" + mo($("in-exp1").value);
-  $("leg-k2").textContent = "1 × AMZN " + m.K2.toFixed(0) + " C" + mo($("in-exp1").value);
-  $("leg-kw").textContent = "1 × AMZN " + m.KW.toFixed(0) + " C wkly";
+  $("leg-k1").textContent = "2 × AMZN " + strk(m.K1) + " C" + mo($("in-exp1").value);
+  $("leg-k2").textContent = "1 × AMZN " + strk(m.K2) + " C" + mo($("in-exp1").value);
+  $("leg-kw").textContent = "1 × AMZN " + strk(m.KW) + " C wkly";
   $("leg-net").innerHTML = "≈ " + m.delta.toFixed(2) + "Δ &nbsp;·&nbsp; " + usd0(m.debit * per) + " at risk";
 
   $("mode-note").innerHTML = chartMode === "bank"
-    ? "<strong>Income banked.</strong> The orange curve is the core lifted by " + usd0(m.netPS * per) + " of weekly credit collected across the programme. It is drawn dashed above $" + m.KW.toFixed(0) + " because what happens up there depends entirely on where and when you roll — no static diagram can know that, and pretending otherwise is how weekly programmes get mis-sold."
+    ? "<strong>Income banked.</strong> The orange curve is the core lifted by " + usd0(m.netPS * per) + " of weekly credit collected across the programme. It is drawn dashed above $" + strk(m.KW) + " because what happens up there depends entirely on where and when you roll — no static diagram can know that, and pretending otherwise is how weekly programmes get mis-sold."
     : "<strong>One capped week.</strong> Same banked credit, minus what a single un-rolled weekly gives back if AMZN sits at that price on its Friday. This is the shape of one bad week, not of the whole programme — but it is the shape you will actually meet, and usually on the week you were most pleased with the premium.";
 }
 
@@ -1338,49 +1453,57 @@ function paintScripts(m, lad) {
   }).join("\n") || "    (none entered)";
 
   $("broker-script").textContent =
-"I want to open a defined-risk options position on AMZN and I need to confirm how your\n" +
-"risk engine treats it before I fund anything.\n\n" +
-"The core is a 2-by-1 long call back ratio, all in one expiration:\n" +
-"  BUY  " + (2 * m.qty) + " × AMZN " + pretty(e1) + " " + m.K1.toFixed(0) + " call\n" +
-"  SELL " + m.qty + " × AMZN " + pretty(e1) + " " + m.K2.toFixed(0) + " call\n\n" +
-"Against the second long call I then want to run a WEEKLY covered overlay — one\n" +
-"contract per zebra, roughly " + m.KW.toFixed(0) + " strike, opened and closed every week:\n" +
-"  SELL " + m.qty + " × AMZN [next Friday] " + m.KW.toFixed(0) + " call, rolled ~" + lad.sell + " times\n\n" +
+"I hold a defined-risk options position on AMZN and I want to confirm exactly how it is\n" +
+"margined, because it goes on as two separate tickets rather than one.\n\n" +
+"TICKET 1 - the zebra, a 2-by-1 long call back ratio, all in one expiration:\n" +
+"  BUY  " + (2 * m.qty) + " x AMZN " + pretty(e1) + " " + m.K1.toFixed(2) + " call\n" +
+"  SELL " + m.qty + " x AMZN " + pretty(e1) + " " + m.K2.toFixed(2) + " call\n" +
+"  Net debit " + usd0(m.debit * per) + ". My understanding is this is my entire maximum loss.\n\n" +
+"TICKET 2 - a weekly covered call, sold on its own, roughly " + m.KW.toFixed(2) + " strike, one\n" +
+"contract per zebra, opened and closed most weeks (about " + lad.sell + " times between now and\n" +
+"the " + pretty(e1) + " expiration). My understanding is that the spare long call from\n" +
+"ticket 1 is matched against it in the overnight run, so it is covered rather than naked.\n\n" +
 "Six questions:\n" +
-"1. What approval level do I need for the 2-by-1 back ratio?\n" +
-"2. Will the short " + m.K2.toFixed(0) + " call be paired against one of my long " + m.K1.toFixed(0) + " calls,\n" +
-"   or margined as an uncovered short?\n" +
-"3. Is the weekly " + m.KW.toFixed(0) + " call recognised as a diagonal against my second long\n" +
-"   " + m.K1.toFixed(0) + " call, with a credit buying-power effect?\n" +
-"4. Can I roll that weekly as a single order, and what does it cost per contract\n" +
-"   each way? I expect to do this about " + lad.sell + " times.\n" +
-"5. What are the initial and maintenance requirements on the full position?\n" +
-"6. If every leg finishes in the money, what auto-exercises — and do I end up\n" +
-"   holding shares over a weekend?\n\n" +
-"My understanding is that maximum loss is the " + usd0(m.debit * per) + " debit and that no leg\n" +
-"is uncovered at any point. Please confirm or correct that.";
+"1. What approval level does ticket 1 need as a single three-leg order?\n" +
+"2. In ticket 1, is the short " + m.K2.toFixed(2) + " call paired against one of my long " + m.K1.toFixed(2) + "\n" +
+"   calls, or margined as an uncovered short?\n" +
+"3. Between the fill on ticket 2 and the overnight pairing run, what does my buying\n" +
+"   power look like intraday? Does it briefly reserve against an uncovered short?\n" +
+"4. What conditions would stop the overnight run from pairing the weekly - quantity,\n" +
+"   expiration, a long already committed, an unsettled zebra? Please list them.\n" +
+"5. Can I roll the weekly as a single order, and what does it cost per contract each\n" +
+"   way at my commission schedule?\n" +
+"6. If every leg finishes in the money at the " + pretty(e1) + " expiration, what\n" +
+"   auto-exercises, and do I end up holding shares over a weekend?\n\n" +
+"Please confirm or correct my understanding that no leg is ever uncovered once the\n" +
+"pairing has run, and that my maximum loss is the " + usd0(m.debit * per) + " debit.";
 
   $("handoff-script").textContent =
 "Picking this up from an earlier chat — here is the full state so you don't have to\n" +
 "ask for it piece by piece.\n\n" +
-"PROJECT: AMZN zebra (zero extrinsic back ratio) with a WEEKLY income overlay and a\n" +
-"hard earnings-skip rule.\n\n" +
+"PROJECT: AMZN zebra (zero extrinsic back ratio) with a WEEKLY income overlay, a hard\n" +
+"earnings-skip rule, and a levels-based rule for picking each week's strike.\n\n" +
+"HOW IT IS HELD — this matters, people get it wrong:\n" +
+"  The zebra is a STANDALONE THREE-LEG position, sent as one order.\n" +
+"  The weekly is a SEPARATE single-leg sale. My broker (Fidelity) pairs it against\n" +
+"  the spare long from the zebra in the overnight run. It is not a fourth leg of\n" +
+"  the zebra order, and intraday it is not yet shown as paired.\n\n" +
 "STRUCTURE — " + z + ", all calls:\n" +
-"  Core — ALL THREE legs expire " + pretty(e1) + ":\n" +
-"    long  " + (2 * m.qty) + " × AMZN " + m.K1.toFixed(0) + "C  @ " + usd2(num("in-p1")) + "  (" + num("in-d1").toFixed(2) + "Δ each)\n" +
-"    short " + m.qty + " × AMZN " + m.K2.toFixed(0) + "C  @ " + usd2(num("in-p2")) + "  (" + num("in-d2").toFixed(2) + "Δ)\n" +
-"  Weekly overlay — never dated later than the core:\n" +
-"    short " + m.qty + " × AMZN " + m.KW.toFixed(0) + "C  @ " + usd2(m.CW) + " credit (" + m.DW.toFixed(2) + "Δ), rolled weekly\n\n" +
-"CORE NUMBERS (reference spot $" + m.S.toFixed(2) + "):\n" +
+"  Zebra — ALL THREE legs expire " + pretty(e1) + ":\n" +
+"    long  " + (2 * m.qty) + " × AMZN " + strk(m.K1) + "C  @ " + usd2(num("in-p1")) + "  (" + num("in-d1").toFixed(2) + "Δ each)\n" +
+"    short " + m.qty + " × AMZN " + strk(m.K2) + "C  @ " + usd2(num("in-p2")) + "  (" + num("in-d2").toFixed(2) + "Δ)\n" +
+"  Weekly — separate ticket, never dated later than the zebra:\n" +
+"    short " + m.qty + " × AMZN " + strk(m.KW) + "C  @ " + usd2(m.CW) + " credit (" + m.DW.toFixed(2) + "Δ), rolled weekly\n\n" +
+"ZEBRA NUMBERS (reference spot $" + m.S.toFixed(2) + ", the Fri 28 Aug 2026 close):\n" +
 "  net debit .......... " + usd0(m.debit * per) + "\n" +
 "  net delta .......... " + m.delta.toFixed(2) + "  (≈ " + (m.delta - m.DW).toFixed(2) + " with a weekly on)\n" +
 "  net extrinsic ...... " + usd2(m.netExt) + " per share  ← the number that defines the trade\n" +
 "  breakeven .......... $" + m.be.toFixed(2) + "\n" +
-"  max loss ........... " + usd0(m.debit * per) + " if AMZN ≤ $" + m.K1.toFixed(0) + " at core expiry\n" +
+"  max loss ........... " + usd0(m.debit * per) + " if AMZN ≤ $" + m.K1.toFixed(2) + " at zebra expiry\n" +
 "  capital vs shares .. " + Math.round((m.debit * per) / (m.S * per) * 100) + "% of " + usd0(m.S * per) + "\n\n" +
 "WEEKLY PROGRAMME:\n" +
-"  Fridays between entry and core expiry ... " + lad.all + "\n" +
-"  removed by the " + Math.max(0, Math.round(num("in-stop"))) + "-day core close window ... " + lad.out + "\n" +
+"  Fridays between entry and zebra expiry .. " + lad.all + "\n" +
+"  removed by the " + Math.max(0, Math.round(num("in-stop"))) + "-day close window ...... " + lad.out + "\n" +
 "  removed by earnings (" + (policy === "tight" ? "print week only" : "print week ±1") + ") ... " + lad.skip + "\n" +
 "  sellable Fridays ....................... " + lad.sell + "\n" +
 "  gross credit ........................... " + usd0(m.grossPS * per) + "\n" +
@@ -1388,19 +1511,26 @@ function paintScripts(m, lad) {
 "  = " + (m.debit > 0 ? (m.netPS / m.debit * 100).toFixed(1) : "0") + "% of capital at risk, but only " + (m.S > 0 ? (m.netPS / m.S * 100).toFixed(1) : "0") + "% of the stock it replaces\n\n" +
 "EARNINGS DATES IN PLAY (Amazon reports Thursday, after the close):\n" +
 earnLines + "\n\n" +
+"HOW I PICK EACH WEEK'S STRIKE — four factors, in this order:\n" +
+"  1. A resistance level sitting AT or JUST BELOW the strike, so price has to fight\n" +
+"     through it first. A level above the strike protects nothing.\n" +
+"  2. Front-week IV near 30%. Much below and I am not being paid; much above and\n" +
+"     something is coming that I should identify before selling it.\n" +
+"  3. Fibonacci levels that coincide with real consolidation, not fibs on their own.\n" +
+"  4. Outside, or at the edge of, the 1-sigma expected move for the week.\n\n" +
 "HARD CONSTRAINTS — flag me if anything I say later violates these:\n" +
 "  · No weekly is sold whose expiration follows an earnings print.\n" +
-"  · The weekly expiration is NEVER later than the core expiration.\n" +
-"  · The weekly strike is always above the core's short strike (" + m.K2.toFixed(0) + ").\n" +
+"  · The weekly expiration is NEVER later than the zebra's expiration.\n" +
+"  · The weekly strike is always above the zebra's short strike (" + strk(m.K2) + ").\n" +
 "  · One weekly per zebra. Two longs do not cover three shorts.\n" +
 "  · Max loss is the full debit, not a margin deposit, and unearned weekly\n" +
 "    credits do not reduce it.\n\n" +
 "STILL OPEN:\n" +
-"  · Broker confirmation that the weekly margins as a diagonal, not a naked call,\n" +
-"    and what a single-order roll costs.\n" +
+"  · Confirming with Fidelity what breaks the overnight pairing, and what buying\n" +
+"    power looks like intraday before it runs.\n" +
 "  · Confirming the October print date with Amazon IR — vendors split 22 vs 29 Oct.\n" +
 "  · Written management rules (roll triggers, and the close-or-hold decision if AMZN\n" +
-"    falls toward $" + m.K1.toFixed(0) + ").\n\n" +
+"    falls toward $" + strk(m.K1) + ").\n\n" +
 "Start by restating this back to me and naming anything that contradicts itself or\n" +
 "is missing.";
 }
@@ -1417,6 +1547,222 @@ document.querySelectorAll("[data-copy]").forEach(function (btn) {
   });
 });
 
+
+/* ============================================================
+   STRIKE SELECTOR — support/resistance, IV, fibs, expected move
+   ============================================================ */
+const SEL_IDS = ["sel-iv", "sel-dte", "sel-inc", "sel-dlo", "sel-dhi", "sel-exp"];
+
+// Levels as of the Fri 28 Aug 2026 close. Fib anchors: the August decline runs
+// from the 3 Aug high ($287.20) to the late-August low near $256; the July-August
+// rally runs from ~$234 pre-earnings to that same high.
+const DEFAULT_LEVELS = [
+  { px: 287.20, label: "52-week high",            side: "R" },
+  { px: 284.02, label: "All-time closing high",   side: "R" },
+  { px: 280.52, label: "78.6% fib of Aug drop",   side: "R" },
+  { px: 277.50, label: "May swing high",          side: "R" },
+  { px: 275.28, label: "61.8% fib of Aug drop",   side: "R" },
+  { px: 271.58, label: "Volume shelf + 50% fib",  side: "R" },
+  { px: 262.91, label: "SMA20",                   side: "S" },
+  { px: 256.00, label: "August swing low",        side: "S" },
+  { px: 253.00, label: "Support zone floor",      side: "S" },
+  { px: 250.14, label: "SMA50",                   side: "S" }
+];
+let levels = DEFAULT_LEVELS.map(function (l) { return { px: l.px, label: l.label, side: l.side }; });
+
+function normCdf(x) { return 0.5 * (1 + erf(x / Math.SQRT2)); }
+function erf(x) {
+  // Abramowitz & Stegun 7.1.26 — plenty for a probability read-out
+  const sgn = x < 0 ? -1 : 1; x = Math.abs(x);
+  const t = 1 / (1 + 0.3275911 * x);
+  const y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+  return sgn * y;
+}
+function bsCall(S, K, T, r, sig) {
+  if (!(S > 0 && K > 0 && T > 0 && sig > 0)) return { price: 0, delta: 0, pop: 1, touch: 0 };
+  const v = sig * Math.sqrt(T);
+  const d1 = (Math.log(S / K) + (r + sig * sig / 2) * T) / v;
+  const d2 = d1 - v;
+  const itm = normCdf(d2);
+  return {
+    price: S * normCdf(d1) - K * Math.exp(-r * T) * normCdf(d2),
+    delta: normCdf(d1),
+    pop: 1 - itm,                       // finishes out of the money
+    touch: Math.min(1, 2 * itm)         // rough reflection-principle estimate
+  };
+}
+
+function renderLevels() {
+  const host = $("lvl-rows");
+  host.innerHTML = "";
+  levels.forEach(function (L, i) {
+    const row = document.createElement("div");
+    row.className = "lvl-row";
+    row.innerHTML =
+      '<input type="number" step="0.01" value="' + L.px + '" aria-label="Level price ' + (i + 1) + '">' +
+      '<select aria-label="Level side ' + (i + 1) + '">' +
+        '<option value="R"' + (L.side === "R" ? " selected" : "") + '>Resist</option>' +
+        '<option value="S"' + (L.side === "S" ? " selected" : "") + '>Support</option>' +
+      '</select>' +
+      '<button class="kill" type="button" aria-label="Remove level ' + (i + 1) + '">&times;</button>' +
+      '<input class="lbl" type="text" value="' + L.label.replace(/"/g, "&quot;") + '" aria-label="Level name ' + (i + 1) + '">';
+    const ins = row.querySelectorAll("input");
+    ins[0].addEventListener("input", function (e) { levels[i].px = parseFloat(e.target.value) || 0; refresh(); });
+    ins[1].addEventListener("input", function (e) { levels[i].label = e.target.value; refresh(); });
+    row.querySelector("select").addEventListener("change", function (e) { levels[i].side = e.target.value; refresh(); });
+    row.querySelector(".kill").addEventListener("click", function () { levels.splice(i, 1); renderLevels(); refresh(); });
+    host.appendChild(row);
+  });
+}
+
+$("lvl-add").addEventListener("click", function () {
+  levels.push({ px: Math.round(num("in-spot")), label: "New level", side: "R" });
+  renderLevels(); refresh();
+});
+$("lvl-reset").addEventListener("click", function () {
+  levels = DEFAULT_LEVELS.map(function (l) { return { px: l.px, label: l.label, side: l.side }; });
+  SEL_DEFAULT_IDS.forEach(function (id) { $(id).value = SEL_DEFAULTS[id]; });
+  renderLevels(); refresh();
+});
+const SEL_DEFAULTS = { "sel-iv": 30.6, "sel-dte": 7, "sel-inc": 2.5, "sel-dlo": 0.15, "sel-dhi": 0.25, "sel-exp": "2026-09-04" };
+const SEL_DEFAULT_IDS = Object.keys(SEL_DEFAULTS);
+
+function isFirstFriday(t) {
+  const d = new Date(t);
+  return d.getUTCDay() === 5 && d.getUTCDate() <= 7;
+}
+
+function paintSelector(m) {
+  const S = m.S;
+  const sig = Math.max(0.01, num("sel-iv") / 100);
+  const dteDays = Math.max(1, Math.round(num("sel-dte")));
+  const T = dteDays / 365;
+  const inc = Math.max(0.5, num("sel-inc"));
+  const dLo = num("sel-dlo"), dHi = num("sel-dhi");
+  const r = 0.04;
+  const em = S * sig * Math.sqrt(T);
+
+  $("em-head").textContent = "1σ ±$" + em.toFixed(2) + " (" + (em / S * 100).toFixed(2) + "%)";
+
+  const res = levels.filter(function (L) { return L.side === "R" && L.px > 0; }).sort(function (a, b) { return a.px - b.px; });
+  const sup = levels.filter(function (L) { return L.side === "S" && L.px > 0; }).sort(function (a, b) { return b.px - a.px; });
+
+  /* ---- expected-move rail ---- */
+  const lo = S - 1.5 * em, hi = S + 2.5 * em;
+  const pct = function (v) { return ((v - lo) / (hi - lo)) * 100; };
+  let rail = '<div class="em-band" style="left:' + pct(S - em) + '%;right:' + (100 - pct(S + em)) + '%"></div>';
+  rail += '<div class="em-spot" style="left:' + pct(S) + '%"></div>';
+  res.forEach(function (L) {
+    if (L.px > lo && L.px < hi) rail += '<div class="em-lvl" style="left:' + pct(L.px) + '%" title="' + L.label + '"></div>';
+  });
+  [[S - em, "−1σ $" + (S - em).toFixed(0)], [S, "spot $" + S.toFixed(0)], [S + em, "+1σ $" + (S + em).toFixed(0)]].forEach(function (t) {
+    rail += '<div class="em-tick" style="left:' + pct(t[0]) + '%">' + t[1] + '</div>';
+  });
+  $("em-bar").innerHTML = rail;
+
+  /* ---- flags ---- */
+  const flags = [];
+  const ivGap = Math.abs(num("sel-iv") - 30);
+  if (ivGap <= 3) flags.push(["ok", "IV", "Front IV " + num("sel-iv").toFixed(1) + "% sits in the band you want to sell in. Premium is fair rather than fat &mdash; which is the normal state, and the one worth selling systematically."]);
+  else if (num("sel-iv") < 27) flags.push(["warn", "IV", "Front IV " + num("sel-iv").toFixed(1) + "% is below your zone. You are being paid thinly for the same cap on your upside; consider skipping the week rather than reaching closer to the money for premium."]);
+  else flags.push(["warn", "IV", "Front IV " + num("sel-iv").toFixed(1) + "% is above your zone. Rich premium is usually rich for a reason &mdash; find out what the market knows before you sell it."]);
+
+  const expT = ms($("sel-exp").value);
+  if (isFinite(expT)) {
+    if (isFirstFriday(expT)) flags.push(["warn", "MACRO", "This expiry is the first Friday of the month, when the US jobs report normally prints at 8:30 ET &mdash; on expiration morning. It will not gap you overnight the way earnings does, but it moves the whole tape on the day the contract dies. Confirm against the BLS calendar."]);
+    const clash = earnings.filter(function (e) { return isFinite(ms(e.date)) && fridayOnOrAfter(ms(e.date)) === expT; });
+    if (clash.length) flags.push(["bad", "STOP", "This expiry is the Friday after the " + pretty(clash[0].date) + " print. Your own ladder rule says do not sell it."]);
+  }
+  if (res.length === 0) flags.push(["warn", "LEVELS", "No resistance levels entered, so no candidate can score on structure. Add the levels off your own chart."]);
+  $("sel-flags").innerHTML = flags.map(function (f) {
+    return '<div class="flag ' + f[0] + '"><span class="ic">' + f[1] + '</span><span>' + f[2] + '</span></div>';
+  }).join("");
+
+  /* ---- candidates ---- */
+  let k0 = Math.ceil(S / inc) * inc;
+  if (k0 <= S) k0 += inc;
+  const cands = [];
+  // reach roughly 2.2 sigma above spot whatever the strike increment, within reason
+  const nCand = Math.max(6, Math.min(12, Math.ceil((2.2 * em) / inc)));
+  for (let i = 0; i < nCand; i++) {
+    const K = +(k0 + i * inc).toFixed(2);
+    const o = bsCall(S, K, T, r, sig);
+
+    // structure: a resistance at or just under the strike is the one that protects it
+    const near = res.filter(function (L) { return L.px <= K && L.px >= K - K * 0.015; });
+    const below = res.filter(function (L) { return L.px < K; });
+    const lvlScore = near.length ? 2 : (below.length ? 1 : 0);
+    const guard = near.length ? near[near.length - 1] : (below.length ? below[below.length - 1] : null);
+    // "on" only when the strike is genuinely sitting on the level, not merely near it
+    const gapPct = guard ? (K - guard.px) / K : null;
+    const prox = guard ? (gapPct <= 0.006 ? "on " : gapPct <= 0.015 ? "just over " : "above ") : "";
+
+    const emScore = K >= S + em ? 2 : (K >= S + 0.8 * em ? 1 : 0);
+    const dScore = (o.delta >= dLo && o.delta <= dHi) ? 1 : 0;
+
+    cands.push({ K: K, o: o, lvlScore: lvlScore, emScore: emScore, dScore: dScore,
+                 guard: guard, prox: prox, score: lvlScore + emScore + dScore, otm: (K / S - 1) * 100 });
+  }
+
+  const ranked = cands.slice().sort(function (a, b) {
+    return b.score - a.score || b.o.price - a.o.price;
+  });
+  const best = ranked[0];
+
+  const pill = function (n, on, mid, txt) { return '<span class="pill ' + (n >= on ? "on" : n >= mid ? "mid" : "off") + '">' + txt + '</span>'; };
+
+  $("cand-rows").innerHTML = cands.map(function (c) {
+    return '<tr' + (best && c.K === best.K ? ' class="best"' : '') + '>' +
+      '<td class="mono"><strong>$' + c.K.toFixed(2) + '</strong></td>' +
+      '<td class="mono">' + c.otm.toFixed(1) + '%</td>' +
+      '<td class="mono">$' + c.o.price.toFixed(2) + '</td>' +
+      '<td class="mono">' + c.o.delta.toFixed(3) + '</td>' +
+      '<td class="mono">' + (c.o.pop * 100).toFixed(0) + '%</td>' +
+      '<td class="mono">' + (c.o.touch * 100).toFixed(0) + '%</td>' +
+      '<td><div class="chip-row">' +
+        pill(c.emScore, 2, 1, c.emScore === 2 ? "outside 1σ" : c.emScore === 1 ? "at 1σ" : "inside 1σ") +
+        pill(c.lvlScore, 2, 1, c.guard ? c.prox + c.guard.label : "no level below") +
+        pill(c.dScore, 1, 1, c.dScore ? "in Δ band" : "off Δ band") +
+      '</div></td>' +
+      '<td class="mono score">' + c.score + '/5</td>' +
+    '</tr>';
+  }).join("");
+
+  /* ---- the pick ---- */
+  if (!best) { $("pick").innerHTML = ""; return; }
+  const expLabel = isFinite(expT) ? pretty($("sel-exp").value) : "the coming Friday";
+  const guardTxt = best.guard
+    ? "It sits " + (best.prox === "on " ? "<strong>right on</strong> " : best.prox === "just over " ? "<strong>just over</strong> " : "above ") + "<strong>" + best.guard.label + " ($" + best.guard.px.toFixed(2) + ")</strong>, so price has to clear that before the strike is even in question."
+    : "No resistance level sits below it, so it is carried by the expected move alone &mdash; the weakest of the four supports.";
+  const emTxt = best.emScore === 2
+    ? "It is <strong>outside</strong> the 1σ expected move, so the market itself is not pricing a typical week that reaches it."
+    : best.emScore === 1
+      ? "It sits <strong>at the edge</strong> of the 1σ expected move &mdash; a normal week ends below it, a strong one tests it."
+      : "It is <strong>inside</strong> the 1σ expected move, which means an ordinary week can reach it. That is a premium decision, not a safety one.";
+  const dTxt = best.dScore
+    ? "Its delta is inside your " + dLo.toFixed(2) + "&ndash;" + dHi.toFixed(2) + " band."
+    : "Its delta of " + best.o.delta.toFixed(2) + " is outside your " + dLo.toFixed(2) + "&ndash;" + dHi.toFixed(2) + " band &mdash; " + (best.o.delta > dHi ? "closer in than your rule allows, so it pays more and caps sooner." : "further out than your rule, so it is safer and pays less. On a week with structure overhead that is often the right trade.");
+
+  $("pick").innerHTML =
+    '<div class="hdr"><span class="tkr">SELL 1 &times; AMZN ' + expLabel + ' &nbsp;$' + best.K.toFixed(2) + ' C</span>' +
+      '<span class="verdict pass">score ' + best.score + '/5</span></div>' +
+    '<div class="grid">' +
+      '<div class="cell"><span class="k">Est. credit</span><span class="v">$' + best.o.price.toFixed(2) + '</span></div>' +
+      '<div class="cell"><span class="k">Per contract</span><span class="v">$' + (best.o.price * 100).toFixed(0) + '</span></div>' +
+      '<div class="cell"><span class="k">Delta</span><span class="v">' + best.o.delta.toFixed(2) + '</span></div>' +
+      '<div class="cell"><span class="k">POP</span><span class="v">' + (best.o.pop * 100).toFixed(0) + '%</span></div>' +
+      '<div class="cell"><span class="k">Chance of touch</span><span class="v">' + (best.o.touch * 100).toFixed(0) + '%</span></div>' +
+      '<div class="cell"><span class="k">Above spot</span><span class="v">' + best.otm.toFixed(1) + '%</span></div>' +
+    '</div>' +
+    '<ul>' +
+      '<li>' + guardTxt + '</li>' +
+      '<li>' + emTxt + '</li>' +
+      '<li>' + dTxt + '</li>' +
+      '<li>It clears the zebra&rsquo;s own short strike at $' + m.K2.toFixed(2) + ', which is the hard rule: the weekly is never sold at or below it.</li>' +
+    '</ul>' +
+    '<p class="note" style="color:var(--ink-2)">Scoring ranks <em>safety</em>, not value &mdash; the credit column is what that safety costs, and choosing between them is yours. Ties go to the larger credit. Everything here is modelled from the inputs on the left; price it against the live bid before you send it.</p>';
+}
+
 /* ============================================================
    WIRING
    ============================================================ */
@@ -1426,11 +1772,13 @@ function refresh() {
   paintCalendar(lad);
   paintReadouts(m, lad);
   paintLadder(m, lad);
+  paintSelector(m);
   drawChart(m);
   paintScripts(m, lad);
 }
 
 IDS.forEach(function (id) { $(id).addEventListener("input", refresh); });
+SEL_IDS.forEach(function (id) { $(id).addEventListener("input", refresh); });
 
 $("mode-bank").addEventListener("click", function () { setMode("bank"); });
 $("mode-cap").addEventListener("click", function () { setMode("cap"); });
@@ -1463,5 +1811,6 @@ $("reset-btn").addEventListener("click", function () {
 window.addEventListener("resize", function () { hideCrosshair(); });
 
 renderEarnings();
+renderLevels();
 refresh();
 </script>
