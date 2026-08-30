@@ -322,13 +322,14 @@
   <section style="margin-top:0">
     <div class="sec-head">
       <span class="eyebrow">The shape</span>
-      <h2>Four legs, and every short is covered by a long beneath it</h2>
-      <p class="note">The core is a 2&ndash;1 back ratio, and all three of its legs share <strong>one expiration &mdash; March 2027</strong>. That is not a preference: the short call only cancels the longs&rsquo; time value if it sits in the same cycle. The income overlay is a separate decision layered on top, in a <em>nearer</em> expiration, sold against the second long call.</p>
+      <h2>A three-leg zebra, and a weekly sold beside it</h2>
+      <p class="note">The zebra is a <strong>standalone three-leg order</strong>: two long calls and one short, all in <strong>March 2027</strong>. Same cycle is not a preference &mdash; the short only cancels the longs&rsquo; time value if it sits in the same expiration.</p>
+      <p class="note" style="margin-top:10px">The weekly is <strong>not part of that order</strong>. It is sold on its own, and the broker pairs it against the zebra&rsquo;s <em>spare</em> long call overnight, which is what turns it into a covered diagonal. So this is a three-leg position plus a separate weekly sale &mdash; not a four-leg spread. The practical consequence lives in the gap: between the sale and the overnight pairing, the weekly can price as an uncovered short.</p>
     </div>
     <div class="legs">
       <div class="leg buy"><span class="tag">Buy &times;2 &nbsp;/&nbsp; core</span><span class="desc" id="leg-k1">2 &times; AMD 380 C</span><span class="why">ITM, ~77&Delta; each. These two are the engine &mdash; they supply the ~100 deltas, and they carry the position past the late-February close of the window.</span></div>
       <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; core</span><span class="desc" id="leg-k2">1 &times; AMD 455 C</span><span class="why">The true ATM strike &mdash; which at this tenor is ~60&Delta;, not 50. Its fat extrinsic pays for the extrinsic in both longs. That is the whole trick.</span></div>
-      <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; income</span><span class="desc" id="leg-k3">1 &times; AMD 520 C</span><span class="why">OTM, ~25&Delta;, nearer expiration. Covered by the second long. Roll it through the flat stretch, then back off once the window opens.</span></div>
+      <div class="leg sell"><span class="tag">Sell &times;1 &nbsp;/&nbsp; weekly, separate</span><span class="desc" id="leg-k3">1 &times; AMD 520 C</span><span class="why">Sold separately each week, then paired to the spare long overnight. Roll it through the flat stretch, then back off once the window opens.</span></div>
       <div class="leg buy"><span class="tag">Net result</span><span class="desc" id="leg-net">&asymp; 88&Delta; &nbsp;·&nbsp; defined risk</span><span class="why">Behaves like long stock between the strikes, but the loss stops at the debit paid.</span></div>
     </div>
     <p class="note">Naming: <strong>ZEBRA</strong> = <em>Zero Extrinsic Back Ratio</em>, coined on tastytrade. The &ldquo;zero extrinsic&rdquo; is the design target, not a guarantee &mdash; it holds at entry, with the short leg genuinely at the money, and it drifts as soon as AMD moves.</p>
@@ -353,7 +354,7 @@
             <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="476.67"></div>
             <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-08-31"></div>
             <div class="field wide"><label for="in-exp1">Core expiration &mdash; all three core legs</label><input id="in-exp1" type="date" value="2027-03-19"></div>
-            <div class="field wide"><label for="in-exp0">Overlay expiration &mdash; must not be later</label><input id="in-exp0" type="date" value="2026-10-16"></div>
+            <div class="field wide"><label for="in-exp0">Weekly expiration &mdash; must not be later</label><input id="in-exp0" type="date" value="2026-09-04"></div>
             <div class="field wide"><label for="in-rate">Risk-free rate %</label><input id="in-rate" type="number" step="0.1" value="4.0"></div>
           </div>
           <div class="delta-src">
@@ -381,10 +382,10 @@
           </div>
           <div class="iv-line" id="iv2">&mdash;</div>
 
-          <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; income overlay</span></div>
+          <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; weekly, sold separately</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="550"></div>
-            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="12.38"></div>
+            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="505"></div>
+            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="1.78"></div>
             <div class="field"><label for="in-cyc">Cycles</label><input id="in-cyc" type="number" step="1" min="0" value="1"></div>
           </div>
           <div class="iv-line" id="iv3">&mdash;</div>
@@ -446,6 +447,48 @@
     </div>
   </section>
 
+
+  <!-- ============ WEEKLY STRIKE SELECTION ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">The weekly decision</span>
+      <h2>Where to sell, and why that level and not the one beside it</h2>
+      <p class="note">The zebra is entered once. The weekly is a decision you make again every Monday, so it needs a method rather than a number. Feed it last week&rsquo;s range and your moving averages; it derives the Fibonacci extensions, the one-sigma move, and shows you where they stack up. <strong>Sell above the confluence, never into it.</strong></p>
+    </div>
+
+    <div class="bench">
+      <div class="panel">
+        <div class="panel-head"><h3>Levels</h3></div>
+        <div class="panel-body">
+          <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Last week&rsquo;s swing</span></div>
+          <div class="field-grid">
+            <div class="field"><label for="lv-hi">High</label><input id="lv-hi" type="number" step="0.01" value="489.47"></div>
+            <div class="field"><label for="lv-lo">Low</label><input id="lv-lo" type="number" step="0.01" value="469.63"></div>
+            <div class="field"><label for="lv-iv">Weekly IV %</label><input id="lv-iv" type="number" step="1" value="50"></div>
+          </div>
+          <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Moving averages</span></div>
+          <div class="field-grid">
+            <div class="field"><label for="lv-ma1">Short MA</label><input id="lv-ma1" type="number" step="0.01" value="471.81"></div>
+            <div class="field"><label for="lv-ma2">Long MA</label><input id="lv-ma2" type="number" step="0.01" value="495.54"></div>
+            <div class="field"><label for="lv-dte">DTE</label><input id="lv-dte" type="number" step="1" value="4"></div>
+          </div>
+          <div class="group-label"><span class="bar short"></span><span class="eyebrow">Verdict</span></div>
+          <div id="lv-verdict" class="cal-flags"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Confluence ladder</h3><span class="eyebrow" id="lv-spot-lbl">&mdash;</span></div>
+        <div class="chart-shell"><svg id="ladder" viewBox="0 0 760 360" role="img" aria-labelledby="ladder-title"><title id="ladder-title">Support and resistance levels for AMD stacked by price, showing where moving averages, Fibonacci extensions and the one-sigma expected move cluster.</title></svg></div>
+        <div class="legend">
+          <span class="item"><span class="swatch" style="background:var(--short)"></span>Resistance &mdash; sell above these</span>
+          <span class="item"><span class="swatch" style="background:var(--long)"></span>Support</span>
+          <span class="item"><span class="swatch" style="background:var(--ink-3)"></span>Spot</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ GATES ============ -->
   <section>
     <div class="sec-head">
@@ -493,9 +536,9 @@
         <thead><tr><th>Risk</th><th>Severity</th><th>How it shows up</th><th>What removes it</th></tr></thead>
         <tbody>
           <tr>
-            <td><strong>Overlay margined as a naked call</strong></td><td><span class="sev high">Blocking</span></td>
-            <td>You send the fourth leg and buying power drops by tens of thousands instead of rising by the credit. The risk engine did not pair it with your second long.</td>
-            <td>Clear it at Gate&nbsp;2 <em>before</em> funding anything. Send the overlay as a diagonal spread order referencing the long strike, never as a standalone sell.</td>
+            <td><strong>The gap before the overnight pairing</strong></td><td><span class="sev high">High</span></td>
+            <td>The weekly is sold standalone, so until the broker pairs it against your spare long it is an uncovered short call. Buying power drops by a lot rather than rising by the credit, and it stays that way until the pairing runs.</td>
+            <td>Expected behaviour, not a malfunction &mdash; but confirm the timing at Gate&nbsp;3 and keep enough buying power to carry the weekly uncovered overnight. The danger is not the pairing; it is touching a long leg while a weekly sits unpaired.</td>
           </tr>
           <tr>
             <td><strong>Overlay outlives the core</strong></td><td><span class="sev high">Blocking</span></td>
@@ -539,7 +582,7 @@
 
   <footer>
     <span class="eyebrow">Standing assumptions</span>
-    <p class="note">Built for a bullish core view on AMD over the life of the chosen expiration, using calls throughout. Every figure is per-share unless a dollar total is labelled otherwise; one contract represents 100 shares. Commissions, assignment fees, and bid&ndash;ask slippage are excluded and are not trivial on a four-leg position &mdash; add roughly four times your per-contract cost, then again on every overlay roll. Nothing here is personalised advice; the numbers are yours to verify against your own chain and your own account.</p>
+    <p class="note">Built for a bullish core view on AMD over the life of the chosen expiration, using calls throughout. Every figure is per-share unless a dollar total is labelled otherwise; one contract represents 100 shares. Commissions, assignment fees, and bid&ndash;ask slippage are excluded and are not trivial &mdash; three legs on entry, then again on every weekly sale and roll, which at a weekly cadence is where they accumulate fastest. Nothing here is personalised advice; the numbers are yours to verify against your own chain and your own account.</p>
   </footer>
 </div>
 <script>
@@ -587,13 +630,15 @@ const GATES = [
     qs: [
       { q: "What approval level do I need for a 2-by-1 long call back ratio in a single expiration?", a: "A specific tier. If they can’t name one, you’re talking to the wrong desk." },
       { q: "Will your risk engine pair the short ATM call against one of my two long ITM calls, or margin it as uncovered?", a: "“Paired” or “covered by the long.” Anything vaguer is a no." },
-      { q: "If I then sell a nearer-dated OTM call against my second long, is that recognised as a diagonal — and does the buying-power effect stay a credit?", a: "You want the word <b>diagonal</b> and a named order type you can actually select." },
-      { q: "What’s the initial and the maintenance requirement on the full four-leg position?", a: "Two figures. Write them down." },
+      { q: "If I sell a weekly call on its own afterwards, when does it get paired against my spare long — and what does it cost me until it does?", a: "A clear answer on the pairing run and the intraday requirement. This is the question, because the weekly is sold standalone and only becomes a covered diagonal after the broker pairs it." },
+      { q: "What happens if I try to close or roll a long leg while an unpaired weekly is open?", a: "You want to know whether the platform blocks it or quietly leaves you uncovered. Never find this out live." },
+      { q: "What are the initial and maintenance requirements on the three-leg zebra by itself?", a: "Two figures. Write them down." },
       { q: "At expiration, if every leg finishes in the money, what auto-exercises — and do I hold shares over a weekend?", a: "A description of the settlement path, including whether you wake up on margin." }
     ],
     steps: [
       "Get the answers in writing, or take a ticket number.",
-      "Stage the complete four-leg ticket as a dry run and read the buying-power effect before submitting anything.",
+      "Stage the three-leg zebra as a dry run and read the buying-power effect before submitting anything.",
+      "Separately, stage a weekly call sale and read what it costs you <em>before</em> the overnight pairing. That number, not the paired one, is what you must be able to carry.",
       "If it shows a naked-call requirement, stop. Do not try to fix it by legging in — that is how you end up genuinely uncovered between fills."
     ],
     check: "A staged ticket prices as defined risk, not as an uncovered short."
@@ -641,7 +686,8 @@ const GATES = [
       "Strike: above the core’s short strike, around 20–30Δ. Never at or below it.",
       "Timing: sell overlays freely through the flat stretch before the window opens. Once it does, go further OTM or skip the cycle — an overlay inside the window caps the exact move you entered for.",
       "Quantity: one overlay per zebra. Two long calls do not cover three shorts.",
-      "Order type: a diagonal or spread order referencing the long strike — not a standalone sell-to-open.",
+      "Order type: a standalone sell-to-open. The pairing to your spare long happens overnight on the broker's side — you do not build it as a spread.",
+      "Because it is unpaired until then, keep enough buying power to carry it uncovered overnight. Size the weekly for that, not for the paired requirement.",
       "Confirm buying power moves up by roughly the credit before you accept the fill."
     ],
     check: "Buying power rose by about the credit received, and nothing was flagged as uncovered."
@@ -752,7 +798,7 @@ const $ = function (id) { return document.getElementById(id); };
 const IDS = ["in-spot", "in-today", "in-exp1", "in-exp0", "in-rate", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
 // Seasonal window the user is trading: the documented SOXX pattern runs ~29 Oct to ~26 Feb.
 const WINDOW_OPEN = "2026-10-29", WINDOW_CLOSE = "2027-02-26";
-const DEFAULTS = { "in-spot": 476.67, "in-today": "2026-08-31", "in-exp1": "2027-03-19", "in-exp0": "2026-10-16", "in-rate": 4.0, "in-k1": 395, "in-p1": 116.65, "in-d1": 0.778, "in-k2": 475, "in-p2": 73.20, "in-d2": 0.599, "in-k3": 550, "in-c3": 12.38, "in-cyc": 1, "in-qty": 1 };
+const DEFAULTS = { "in-spot": 476.67, "in-today": "2026-08-31", "in-exp1": "2027-03-19", "in-exp0": "2026-09-04", "in-rate": 4.0, "in-k1": 395, "in-p1": 116.65, "in-d1": 0.778, "in-k2": 475, "in-p2": 73.20, "in-d2": 0.599, "in-k3": 505, "in-c3": 1.78, "in-cyc": 1, "in-qty": 1 };
 let overlayMode = "same";
 let deltaSource = "model";
 
@@ -898,6 +944,108 @@ function paintIV(legs, deltas) {
                    dLab + " <b>" + deltas[i].toFixed(3) + "</b> &nbsp;·&nbsp; " +
                    Math.round(T * 365) + " DTE";
   });
+}
+
+
+/* ============================================================
+   WEEKLY LEVELS  — Fibonacci extensions, 1-sigma, confluence
+   ============================================================ */
+const LADDER_IDS = ["lv-hi", "lv-lo", "lv-iv", "lv-ma1", "lv-ma2", "lv-dte"];
+
+function buildLevels() {
+  const S = num("in-spot");
+  const hi = num("lv-hi"), lo = num("lv-lo"), rng = hi - lo;
+  const iv = num("lv-iv") / 100, T = Math.max(1, num("lv-dte")) / 365;
+  const ma1 = num("lv-ma1"), ma2 = num("lv-ma2");
+  const sigma = S * iv * Math.sqrt(T);
+
+  const L = [
+    { p: lo,               t: "sup", label: "Week low" },
+    { p: ma1,              t: "sup", label: "Short MA" },
+    { p: S - sigma,        t: "sup", label: "−1σ" },
+    { p: hi,               t: "res", label: "Week high" },
+    { p: ma2,              t: "res", label: "Long MA" },
+    { p: lo + 1.272 * rng, t: "res", label: "1.272 ext" },
+    { p: lo + 1.618 * rng, t: "res", label: "1.618 ext" },
+    { p: S + sigma,        t: "res", label: "+1σ" },
+    { p: Math.round((S + sigma) / 10) * 10, t: "res", label: "Round no." }
+  ].filter(function (x) { return isFinite(x.p) && x.p > 0; });
+
+  return { S: S, sigma: sigma, levels: L };
+}
+
+// A cluster is where independent methods agree — that is the wall worth selling above.
+function clusters(levels, S, tolPct) {
+  const res = levels.filter(function (l) { return l.t === "res" && l.p > S; })
+                    .sort(function (a, b) { return a.p - b.p; });
+  const out = [];
+  res.forEach(function (l) {
+    const last = out[out.length - 1];
+    if (last && (l.p - last.hi) / S <= tolPct) { last.hi = Math.max(last.hi, l.p); last.members.push(l.label); }
+    else out.push({ lo: l.p, hi: l.p, members: [l.label] });
+  });
+  return out;
+}
+
+function drawLadder() {
+  const svg = document.getElementById("ladder");
+  if (!svg) return;
+  const { S, sigma, levels } = buildLevels();
+  const V = { w: 760, h: 360, l: 92, r: 250, t: 22, b: 26 };
+  const PWl = V.w - V.l - V.r, PHl = V.h - V.t - V.b;
+
+  const ps = levels.map(function (l) { return l.p; }).concat([S]);
+  let lo = Math.min.apply(null, ps), hi = Math.max.apply(null, ps);
+  const pad = (hi - lo) * 0.10 || 1; lo -= pad; hi += pad;
+  const Y = function (v) { return V.t + PHl - ((v - lo) / (hi - lo)) * PHl; };
+
+  const cl = clusters(levels, S, 0.006);
+  let g = '<title id="ladder-title">Support and resistance levels for AMD stacked by price, showing where moving averages, Fibonacci extensions and the one-sigma expected move cluster.</title>';
+
+  // shade each confluence band
+  cl.forEach(function (c) {
+    if (c.members.length < 2) return;
+    const y1 = Y(c.hi), y2 = Y(c.lo);
+    g += '<rect x="' + V.l + '" y="' + (y1 - 6) + '" width="' + PWl + '" height="' + (Math.abs(y2 - y1) + 12) + '" fill="var(--short)" opacity="0.16"/>';
+  });
+
+  // spot band
+  g += '<rect x="' + V.l + '" y="' + Y(S + sigma) + '" width="' + PWl + '" height="' + (Y(S - sigma) - Y(S + sigma)) + '" fill="var(--ink-3)" opacity="0.06"/>';
+
+  const rows = levels.slice().sort(function (a, b) { return b.p - a.p; });
+  const placed = [];
+  rows.forEach(function (l) {
+    let y = Y(l.p);
+    while (placed.some(function (q) { return Math.abs(q - y) < 15; })) y += 15;
+    placed.push(y);
+    const col = l.t === "res" ? "var(--short)" : "var(--long)";
+    g += '<line x1="' + V.l + '" y1="' + Y(l.p) + '" x2="' + (V.l + PWl) + '" y2="' + Y(l.p) + '" stroke="' + col + '" stroke-width="2" stroke-linecap="round" opacity="0.9"/>';
+    g += '<line x1="' + (V.l + PWl) + '" y1="' + Y(l.p) + '" x2="' + (V.l + PWl + 14) + '" y2="' + y + '" stroke="var(--rule-2)" stroke-width="1"/>';
+    // price and name travel together on the deconflicted row, so neither can collide
+    g += '<text x="' + (V.l + PWl + 20) + '" y="' + (y + 3.5) + '" font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="600" fill="var(--ink-2)" font-variant-numeric="tabular-nums">$' + l.p.toFixed(2) + '</text>';
+    g += '<text x="' + (V.l + PWl + 84) + '" y="' + (y + 3.5) + '" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="var(--ink-3)">' + l.label + '</text>';
+  });
+
+  // spot
+  g += '<line x1="' + V.l + '" y1="' + Y(S) + '" x2="' + (V.l + PWl) + '" y2="' + Y(S) + '" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="1 4"/>';
+  g += '<text x="' + (V.l - 10) + '" y="' + (Y(S) + 3.5) + '" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="600" fill="var(--ink)">$' + S.toFixed(2) + '</text>';
+
+  svg.innerHTML = g;
+
+  // verdict
+  const wall = cl.filter(function (c) { return c.members.length >= 2; }).pop() ||
+               cl[cl.length - 1] || null;
+  const el = document.getElementById("lv-verdict");
+  document.getElementById("lv-spot-lbl").textContent = "spot $" + S.toFixed(2) + " · ±1σ $" + sigma.toFixed(2);
+  if (!wall) { el.innerHTML = '<div class="flag warn"><span class="ic">—</span><span>No resistance above spot from these inputs. Widen the swing range.</span></div>'; return; }
+  const target = Math.ceil(wall.hi / 5) * 5;
+  el.innerHTML =
+    '<div class="flag ok"><span class="ic">SELL</span><span>Highest confluence sits at <strong>$' + wall.lo.toFixed(2) +
+      (wall.hi > wall.lo ? '&ndash;$' + wall.hi.toFixed(2) : '') + '</strong> (' + wall.members.join(' + ') +
+      '). The first strike clear of it is <strong>$' + target.toFixed(0) + '</strong>.</span></div>' +
+    '<div class="flag ' + (S + sigma >= wall.lo ? 'warn' : 'ok') + '"><span class="ic">1&sigma;</span><span>One-sigma reaches <strong>$' + (S + sigma).toFixed(2) + '</strong>, ' +
+      (S + sigma >= wall.lo ? 'which is <strong>inside</strong> that band &mdash; the market prices a real chance of testing it this week. Sell above it, not at it.'
+                            : 'short of the band, so the wall is outside the expected move.') + '</span></div>';
 }
 
 /* ============================================================
@@ -1132,22 +1280,25 @@ function paintScripts(m) {
   $("broker-script").textContent =
 "I want to open a defined-risk options position on AMD and I need to confirm how your\n" +
 "risk engine treats it before I fund anything.\n\n" +
-"The core is a 2-by-1 long call back ratio, all in one expiration:\n" +
+"STEP 1 — a standalone three-leg order, all in one expiration:\n" +
 "  BUY  " + (2 * m.qty) + " × AMD " + pretty(day("in-exp1")) + " " + m.K1.toFixed(0) + " call\n" +
 "  SELL " + m.qty + " × AMD " + pretty(day("in-exp1")) + " " + m.K2.toFixed(0) + " call\n\n" +
-"Then, in a NEARER expiration, one covered overlay per zebra:\n" +
-"  SELL " + m.qty + " × AMD " + pretty(day("in-exp0")) + " " + m.K3.toFixed(0) + " call\n\n" +
-"Five questions:\n" +
-"1. What approval level do I need for the 2-by-1 back ratio?\n" +
+"STEP 2 — separately, and repeatedly, a weekly call sold on its own:\n" +
+"  SELL " + m.qty + " × AMD " + pretty(day("in-exp0")) + " " + m.K3.toFixed(0) + " call\n" +
+"  My understanding is that this is paired against my spare long " + m.K1.toFixed(0) + " call\n" +
+"  overnight, becoming a covered diagonal. It is NOT submitted as a spread.\n\n" +
+"Questions:\n" +
+"1. What approval level do I need for the 2-by-1 back ratio in step 1?\n" +
 "2. Will the short " + m.K2.toFixed(0) + " call be paired against one of my long " + m.K1.toFixed(0) + " calls,\n" +
 "   or margined as an uncovered short?\n" +
-"3. Is the nearer-dated " + m.K3.toFixed(0) + " call recognised as a diagonal against my second\n" +
-"   long " + m.K1.toFixed(0) + " call, with a credit buying-power effect?\n" +
-"4. What are the initial and maintenance requirements on the full position?\n" +
+"3. When exactly does the step-2 pairing run, and what is the requirement on that\n" +
+"   weekly call BEFORE it pairs? That intraday number is the one I have to carry.\n" +
+"4. What happens if I try to close or roll a long " + m.K1.toFixed(0) + " call while a weekly is\n" +
+"   still unpaired — is it blocked, or am I left uncovered?\n" +
 "5. If every leg finishes in the money, what auto-exercises — and do I end up\n" +
 "   holding shares over a weekend?\n\n" +
-"My understanding is that maximum loss is the " + usd0(m.debit * per) + " debit and that no leg\n" +
-"is uncovered at any point. Please confirm or correct that.";
+"My understanding is that maximum loss on the three-leg zebra is the " + usd0(m.debit * per) + "\n" +
+"debit. Please confirm or correct that.";
 
   $("handoff-script").textContent =
 "Picking this up from an earlier chat that moved into a projects folder — here is the\n" +
@@ -1157,7 +1308,7 @@ function paintScripts(m) {
 "  Core — ALL THREE legs expire " + pretty(day("in-exp1")) + ":\n" +
 "    long  " + (2 * m.qty) + " × AMD " + m.K1.toFixed(0) + "C  @ " + usd2(num("in-p1")) + "  (" + num("in-d1").toFixed(2) + "Δ each)\n" +
 "    short " + m.qty + " × AMD " + m.K2.toFixed(0) + "C  @ " + usd2(num("in-p2")) + "  (" + num("in-d2").toFixed(2) + "Δ)\n" +
-"  Income overlay — expires " + pretty(day("in-exp0")) + " (never later than the core):\n" +
+"  Weekly, sold SEPARATELY and paired to the spare long overnight — expires " + pretty(day("in-exp0")) + ":\n" +
 "    short " + m.qty + " × AMD " + m.K3.toFixed(0) + "C  @ " + usd2(m.C) + " credit, rolled\n\n" +
 "NUMBERS (reference spot $" + m.S.toFixed(2) + "):\n" +
 "  net debit .......... " + usd0(m.debit * per) + "\n" +
@@ -1168,9 +1319,12 @@ function paintScripts(m) {
 "  capital vs shares .. " + Math.round((m.debit * per) / (m.S * per) * 100) + "% of " + usd0(m.S * per) + "\n" +
 "  income per cycle ... " + usd0(m.C * per) + " (" + (m.debit > 0 ? (m.C / m.debit * 100).toFixed(1) : "0") + "% of capital at risk)\n\n" +
 "HARD CONSTRAINTS — flag me if anything I say later violates these:\n" +
-"  · The overlay expiration is NEVER later than the core expiration.\n" +
-"  · The overlay strike is always above the core's short strike.\n" +
-"  · One overlay per zebra. Two longs do not cover three shorts.\n" +
+"  · The zebra is a STANDALONE 3-leg order. The weekly is sold on its own and\n" +
+"    paired to the spare long overnight by the broker — never built as a spread.\n" +
+"  · The weekly expiration is NEVER later than the core expiration.\n" +
+"  · The weekly strike is always above the core's short strike.\n" +
+"  · One weekly per zebra. Two longs do not cover three shorts.\n" +
+"  · Never touch a long leg while a weekly sits unpaired.\n" +
 "  · Max loss is the full debit, not a margin deposit.\n\n" +
 "STILL OPEN:\n" +
 "  · Broker confirmation that the overlay margins as a diagonal, not a naked call.\n" +
@@ -1196,9 +1350,10 @@ document.querySelectorAll("[data-copy]").forEach(function (btn) {
 /* ============================================================
    WIRING
    ============================================================ */
-function refresh() { const m = model(); paintCalendar(); paintReadouts(m); drawChart(m); paintScripts(m); }
+function refresh() { const m = model(); paintCalendar(); paintReadouts(m); drawChart(m); paintScripts(m); drawLadder(); }
 
 IDS.forEach(function (id) { $(id).addEventListener("input", refresh); });
+LADDER_IDS.forEach(function (id) { $(id).addEventListener("input", drawLadder); });
 
 $("mode-same").addEventListener("click", function () { setMode("same"); });
 $("mode-diag").addEventListener("click", function () { setMode("diag"); });
