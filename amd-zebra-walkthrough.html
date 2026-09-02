@@ -310,8 +310,8 @@
       <p class="lede" style="margin-top:14px">A back ratio is easy to describe and easy to get wrong at the order ticket. This is the run of conversations and checks that stand between the idea and a position your broker actually margins as defined-risk &mdash; with a live bench so you can test your own strikes before you send anything.</p>
     </div>
     <div class="mast-meta">
-      <div><span class="eyebrow">Reference spot</span><span class="v">$465.58</span></div>
-      <div><span class="eyebrow">As of</span><span class="v">31 Aug 2026, 15:45 ET</span></div>
+      <div><span class="eyebrow">Reference spot</span><span class="v">$459.61</span></div>
+      <div><span class="eyebrow">As of</span><span class="v">2 Sep 2026, 15:45 ET</span></div>
       <div><span class="eyebrow">52-week range</span><span class="v">$149.22 &ndash; $584.73</span></div>
       <div><span class="eyebrow">Dividend</span><span class="v">None</span></div>
     </div>
@@ -351,10 +351,11 @@
         <div class="panel-body">
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Underlying &amp; calendar</span></div>
           <div class="field-grid">
-            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="465.58"></div>
-            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-09-01"></div>
+            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="459.61"></div>
+            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-09-03"></div>
             <div class="field wide"><label for="in-exp1">Core expiration &mdash; all three core legs</label><input id="in-exp1" type="date" value="2027-03-19"></div>
-            <div class="field wide"><label for="in-exp0">Weekly expiration &mdash; must not be later</label><input id="in-exp0" type="date" value="2026-09-04"></div>
+            <div class="field wide"><label for="in-wsold">Weekly sold on</label><input id="in-wsold" type="date" value="2026-09-08"></div>
+            <div class="field wide"><label for="in-exp0">Weekly expiration &mdash; must not be later</label><input id="in-exp0" type="date" value="2026-09-11"></div>
             <div class="field wide"><label for="in-rate">Risk-free rate %</label><input id="in-rate" type="number" step="0.1" value="4.0"></div>
           </div>
           <div class="delta-src">
@@ -368,24 +369,24 @@
 
           <div class="group-label"><span class="bar long"></span><span class="eyebrow">Long &times;2 &nbsp;&middot;&nbsp; ITM call</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="390"></div>
-            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="111.11"></div>
+            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="385"></div>
+            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="109.38"></div>
             <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.001" value="0.769"></div>
           </div>
           <div class="iv-line" id="iv1">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; ATM call</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="465"></div>
-            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="70.85"></div>
-            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.596"></div>
+            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="460"></div>
+            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="69.15"></div>
+            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.593"></div>
           </div>
           <div class="iv-line" id="iv2">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; weekly, sold separately</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="490"></div>
-            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="1.61"></div>
+            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="485"></div>
+            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="1.25"></div>
             <div class="field"><label for="in-cyc">Cycles</label><input id="in-cyc" type="number" step="1" min="0" value="1"></div>
           </div>
           <div class="iv-line" id="iv3">&mdash;</div>
@@ -463,7 +464,7 @@
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Last week&rsquo;s swing</span></div>
           <div class="field-grid">
             <div class="field"><label for="lv-hi">High</label><input id="lv-hi" type="number" step="0.01" value="478.75"></div>
-            <div class="field"><label for="lv-lo">Low</label><input id="lv-lo" type="number" step="0.01" value="465.29"></div>
+            <div class="field"><label for="lv-lo">Low</label><input id="lv-lo" type="number" step="0.01" value="459.61"></div>
             <div class="field"><label for="lv-iv">Weekly IV %</label><input id="lv-iv" type="number" step="1" value="48"></div>
           </div>
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Moving averages</span></div>
@@ -795,10 +796,10 @@ const impliedVol = function (P, S, K, T, r) {
    MATH
    ============================================================ */
 const $ = function (id) { return document.getElementById(id); };
-const IDS = ["in-spot", "in-today", "in-exp1", "in-exp0", "in-rate", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
+const IDS = ["in-spot", "in-today", "in-exp1", "in-exp0", "in-wsold", "in-rate", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
 // Seasonal window the user is trading: the documented SOXX pattern runs ~29 Oct to ~26 Feb.
 const WINDOW_OPEN = "2026-10-29", WINDOW_CLOSE = "2027-02-26";
-const DEFAULTS = { "in-spot": 465.58, "in-today": "2026-09-01", "in-exp1": "2027-03-19", "in-exp0": "2026-09-04", "in-rate": 4.0, "in-k1": 390, "in-p1": 111.11, "in-d1": 0.769, "in-k2": 465, "in-p2": 70.85, "in-d2": 0.596, "in-k3": 490, "in-c3": 1.61, "in-cyc": 1, "in-qty": 1 };
+const DEFAULTS = { "in-spot": 459.61, "in-today": "2026-09-03", "in-exp1": "2027-03-19", "in-exp0": "2026-09-11", "in-wsold": "2026-09-08", "in-rate": 4.0, "in-k1": 385, "in-p1": 109.38, "in-d1": 0.769, "in-k2": 460, "in-p2": 69.15, "in-d2": 0.593, "in-k3": 485, "in-c3": 1.25, "in-cyc": 1, "in-qty": 1 };
 let overlayMode = "same";
 let deltaSource = "model";
 
@@ -815,7 +816,7 @@ function model() {
   const K3 = num("in-k3"), C = num("in-c3");
   const r = num("in-rate") / 100;
   const T1 = (dte(day("in-today"), day("in-exp1")) || 0) / 365;
-  const T0 = (dte(day("in-today"), day("in-exp0")) || 0) / 365;
+  const T0 = (dte(day("in-wsold") || day("in-today"), day("in-exp0")) || 0) / 365;
 
   // Solve each leg's own implied vol from its price, then read delta off it.
   const v1 = impliedVol(P1, S, K1, T1, r), v2 = impliedVol(P2, S, K2, T1, r), v3 = impliedVol(C, S, K3, T0, r);
@@ -1084,6 +1085,13 @@ function paintCalendar() {
     } else {
       flags.push(["warn", "CAPS", "Overlay expires " + pretty(e0) + ", <strong>past the close of the window</strong> &mdash; it spans the entire seasonal move and caps all of it. This is the one cycle not to sell."]);
     }
+  }
+
+  const ws = day("in-wsold"), e0w = day("in-exp0");
+  if (ws && e0w && ws >= e0w) {
+    flags.push(["bad", "STOP", "The weekly is marked sold on " + pretty(ws) + ", on or after the " + pretty(e0w) + " expiration it is sold into. Fix the dates before reading any delta below."]);
+  } else if (ws && e0w) {
+    flags.push(["ok", "OK", "Weekly sold " + pretty(ws) + " into " + pretty(e0w) + " &mdash; " + dte(ws, e0w) + " days of decay, priced off its own clock rather than the core's."]);
   }
 
   if (d1 !== null && d1 < 60) {
