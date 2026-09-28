@@ -310,9 +310,9 @@
       <p class="lede" style="margin-top:14px">A back ratio is easy to describe and easy to get wrong at the order ticket. This is the run of conversations and checks that stand between the idea and a position your broker actually margins as defined-risk &mdash; with a live bench so you can test your own strikes before you send anything.</p>
     </div>
     <div class="mast-meta">
-      <div><span class="eyebrow">Reference spot</span><span class="v">$615.52</span></div>
-      <div><span class="eyebrow">As of</span><span class="v">21 Sep 2026 close</span></div>
-      <div><span class="eyebrow">52-week range</span><span class="v">$149.22 &ndash; $615.52</span></div>
+      <div><span class="eyebrow">Reference spot</span><span class="v">$598.50</span></div>
+      <div><span class="eyebrow">As of</span><span class="v">28 Sep 2026</span></div>
+      <div><span class="eyebrow">52-week range</span><span class="v">$149.22 &ndash; $630.63</span></div>
       <div><span class="eyebrow">Dividend</span><span class="v">None</span></div>
     </div>
     <p class="note">Prices above are a starting reference, not a live quote &mdash; they were accurate at the timestamp shown and are stale the moment you read them. Everything on this page recomputes from whatever you type into the bench. This is a walkthrough of mechanics and process; it is not a recommendation to trade AMD or a view on where it goes.</p>
@@ -351,8 +351,8 @@
         <div class="panel-body">
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Underlying &amp; calendar</span></div>
           <div class="field-grid">
-            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="615.52"></div>
-            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-09-23"></div>
+            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="598.50"></div>
+            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-09-29"></div>
             <div class="field wide"><label for="in-exp1">Core expiration &mdash; all three core legs</label><input id="in-exp1" type="date" value="2027-03-19"></div>
             <div class="field wide"><label for="in-wsold">Weekly sold on</label><input id="in-wsold" type="date" value="2026-09-28"></div>
             <div class="field wide"><label for="in-exp0">Weekly expiration &mdash; must not be later</label><input id="in-exp0" type="date" value="2026-10-02"></div>
@@ -369,24 +369,24 @@
 
           <div class="group-label"><span class="bar long"></span><span class="eyebrow">Long &times;2 &nbsp;&middot;&nbsp; ITM call</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="520"></div>
-            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="139.69"></div>
-            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.001" value="0.767"></div>
+            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="505"></div>
+            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="136.85"></div>
+            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.001" value="0.765"></div>
           </div>
           <div class="iv-line" id="iv1">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; ATM call</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="615"></div>
-            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="88.29"></div>
-            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.591"></div>
+            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="600"></div>
+            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="85.83"></div>
+            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.587"></div>
           </div>
           <div class="iv-line" id="iv2">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; weekly, sold separately</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="680"></div>
-            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="0.99"></div>
+            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="650"></div>
+            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="1.50"></div>
             <div class="field"><label for="in-cyc">Cycles</label><input id="in-cyc" type="number" step="1" min="0" value="1"></div>
           </div>
           <div class="iv-line" id="iv3">&mdash;</div>
@@ -463,14 +463,14 @@
         <div class="panel-body">
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Last week&rsquo;s swing</span></div>
           <div class="field-grid">
-            <div class="field"><label for="lv-hi">High</label><input id="lv-hi" type="number" step="0.01" value="615.52"></div>
-            <div class="field"><label for="lv-lo">Low</label><input id="lv-lo" type="number" step="0.01" value="559.82"></div>
+            <div class="field"><label for="lv-hi">High</label><input id="lv-hi" type="number" step="0.01" value="630.63"></div>
+            <div class="field"><label for="lv-lo">Low</label><input id="lv-lo" type="number" step="0.01" value="598.50"></div>
             <div class="field"><label for="lv-iv">Weekly IV %</label><input id="lv-iv" type="number" step="1" value="60"></div>
           </div>
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Moving averages</span></div>
           <div class="field-grid">
-            <div class="field"><label for="lv-ma1">Short MA</label><input id="lv-ma1" type="number" step="0.01" value="559.82"></div>
-            <div class="field"><label for="lv-ma2">Long MA</label><input id="lv-ma2" type="number" step="0.01" value="584.73"></div>
+            <div class="field"><label for="lv-ma1">Short MA</label><input id="lv-ma1" type="number" step="0.01" value="584.73"></div>
+            <div class="field"><label for="lv-ma2">Long MA</label><input id="lv-ma2" type="number" step="0.01" value="630.63"></div>
             <div class="field"><label for="lv-dte">DTE</label><input id="lv-dte" type="number" step="1" value="3"></div>
           </div>
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Verdict</span></div>
@@ -488,6 +488,23 @@
         </div>
       </div>
     </div>
+  </section>
+
+
+  <!-- ============ DOWNSIDE ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">If it keeps falling</span>
+      <h2>What the structure does on the way down</h2>
+      <p class="note">A zebra is a bullish structure, and no choice of strikes changes that. What it offers against a decline is a floor and a shrinking delta &mdash; it loses less than the shares would, and progressively less the further it falls. What it does <em>not</em> keep on the way down is the zero-extrinsic property: that holds near entry, and a fall back toward the long strike is precisely what breaks it.</p>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>AMD</th><th>Move</th><th>This position</th><th>100 shares</th><th>Cushion</th><th>Net &Delta;</th><th>Extrinsic</th></tr></thead>
+        <tbody id="down-rows"></tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:12px" id="down-note"></p>
   </section>
 
   <!-- ============ GATES ============ -->
@@ -799,7 +816,7 @@ const $ = function (id) { return document.getElementById(id); };
 const IDS = ["in-spot", "in-today", "in-exp1", "in-exp0", "in-wsold", "in-rate", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
 // Seasonal window the user is trading: the documented SOXX pattern runs ~29 Oct to ~26 Feb.
 const WINDOW_OPEN = "2026-10-29", WINDOW_CLOSE = "2027-02-26";
-const DEFAULTS = { "in-spot": 615.52, "in-today": "2026-09-23", "in-exp1": "2027-03-19", "in-exp0": "2026-10-02", "in-wsold": "2026-09-28", "in-rate": 4.0, "in-k1": 520, "in-p1": 139.69, "in-d1": 0.767, "in-k2": 615, "in-p2": 88.29, "in-d2": 0.591, "in-k3": 680, "in-c3": 0.99, "in-cyc": 1, "in-qty": 1 };
+const DEFAULTS = { "in-spot": 598.50, "in-today": "2026-09-29", "in-exp1": "2027-03-19", "in-exp0": "2026-10-02", "in-wsold": "2026-09-28", "in-rate": 4.0, "in-k1": 505, "in-p1": 136.85, "in-d1": 0.765, "in-k2": 600, "in-p2": 85.83, "in-d2": 0.587, "in-k3": 650, "in-c3": 1.50, "in-cyc": 1, "in-qty": 1 };
 let overlayMode = "same";
 let deltaSource = "model";
 
@@ -947,6 +964,50 @@ function paintIV(legs, deltas) {
   });
 }
 
+
+
+/* ============================================================
+   DOWNSIDE LADDER — what a decline actually costs
+   ============================================================ */
+function paintDownside(m) {
+  const body = document.getElementById("down-rows");
+  if (!body) return;
+  const per = 100 * m.qty, S0 = m.S, T1 = m.T1, r = m.r;
+  const iv1 = impliedVol(num("in-p1"), S0, m.K1, T1, r) || 0.5;
+  const iv2 = impliedVol(num("in-p2"), S0, m.K2, T1, r) || 0.5;
+
+  const rows = [0, -0.05, -0.10, -0.15, -0.20, -0.25].map(function (pct) { return S0 * (1 + pct); });
+  // the long strike is the level that decides max loss, so it always earns a row
+  if (!rows.some(function (x) { return Math.abs(x - m.K1) < S0 * 0.012; })) rows.push(m.K1);
+  rows.sort(function (a, b) { return b - a; });
+
+  body.innerHTML = rows.map(function (S) {
+    const mtm = (2 * bsCall(S, m.K1, T1, r, iv1) - bsCall(S, m.K2, T1, r, iv2) - m.debit) * per;
+    const stock = (S - S0) * per;
+    const nd = 2 * bsDelta(S, m.K1, T1, r, iv1) - bsDelta(S, m.K2, T1, r, iv2);
+    const ext = function (K, v) { return bsCall(S, K, T1, r, v) - Math.max(0, S - K); };
+    const ne = 2 * ext(m.K1, iv1) - ext(m.K2, iv2);
+    const tol = Math.max(1, S * 0.004);
+    const v = Math.abs(ne) <= tol ? ["low", "Pass"] : Math.abs(ne) <= tol * 3 ? ["med", "Close"] : ["high", "Fail"];
+    const atStrike = Math.abs(S - m.K1) < S0 * 0.012;
+    return '<tr' + (atStrike ? ' style="background:var(--warn-so)"' : '') + '>' +
+      '<td class="mono"><strong>$' + S.toFixed(0) + '</strong>' + (atStrike ? ' <span class="sev med">long strike</span>' : '') + '</td>' +
+      '<td class="mono">' + (((S / S0) - 1) * 100).toFixed(1) + '%</td>' +
+      '<td class="mono">' + usd0(mtm) + '</td>' +
+      '<td class="mono">' + usd0(stock) + '</td>' +
+      '<td class="mono">' + (mtm > stock ? usd0(mtm - stock) + ' better' : "\u2014") + '</td>' +
+      '<td class="mono">' + nd.toFixed(3) + '</td>' +
+      '<td><span class="sev ' + v[0] + '">' + v[1] + '</span></td>' +
+      '</tr>';
+  }).join("");
+
+  document.getElementById("down-note").innerHTML =
+    'Losing the whole ' + usd0(m.debit * per) + ' debit needs AMD at or below <strong>$' + m.K1.toFixed(0) +
+    '</strong> on ' + pretty(day("in-exp1")) + ' &mdash; ' + (((m.K1 / S0) - 1) * 100).toFixed(1) +
+    '% from here, and only <em>at expiration</em>. Before then it is always worth more than that. ' +
+    'Read the extrinsic column as the real warning: it fails at every level below entry. The floor survives a decline; ' +
+    'theta-neutrality does not, so waiting one out carries a cost the structure was chosen to avoid.';
+}
 
 /* ============================================================
    WEEKLY LEVELS  — Fibonacci extensions, 1-sigma, confluence
@@ -1361,7 +1422,7 @@ document.querySelectorAll("[data-copy]").forEach(function (btn) {
 /* ============================================================
    WIRING
    ============================================================ */
-function refresh() { const m = model(); paintCalendar(); paintReadouts(m); drawChart(m); paintScripts(m); drawLadder(); }
+function refresh() { const m = model(); paintCalendar(); paintReadouts(m); drawChart(m); paintScripts(m); drawLadder(); paintDownside(m); }
 
 IDS.forEach(function (id) { $(id).addEventListener("input", refresh); });
 LADDER_IDS.forEach(function (id) { $(id).addEventListener("input", drawLadder); });
