@@ -310,9 +310,9 @@
       <p class="lede" style="margin-top:14px">A back ratio is easy to describe and easy to get wrong at the order ticket. This is the run of conversations and checks that stand between the idea and a position your broker actually margins as defined-risk &mdash; with a live bench so you can test your own strikes before you send anything.</p>
     </div>
     <div class="mast-meta">
-      <div><span class="eyebrow">Reference spot</span><span class="v">$613.85</span></div>
-      <div><span class="eyebrow">As of</span><span class="v">1 Oct 2026, 15:45 ET</span></div>
-      <div><span class="eyebrow">52-week range</span><span class="v">$149.22 &ndash; $630.63</span></div>
+      <div><span class="eyebrow">Reference spot</span><span class="v">$635.66</span></div>
+      <div><span class="eyebrow">As of</span><span class="v">2 Oct 2026, 15:45 ET</span></div>
+      <div><span class="eyebrow">52-week range</span><span class="v">$149.22 &ndash; $635.66</span></div>
       <div><span class="eyebrow">Dividend</span><span class="v">None</span></div>
     </div>
     <p class="note">Prices above are a starting reference, not a live quote &mdash; they were accurate at the timestamp shown and are stale the moment you read them. Everything on this page recomputes from whatever you type into the bench. This is a walkthrough of mechanics and process; it is not a recommendation to trade AMD or a view on where it goes. <strong>Record correction:</strong> an earlier build of this page carried 28 Sep at $598.50. The close was $607.87 &mdash; $630.63 less $22.76, or &minus;3.61%, corroborated by the $608.38 after-hours print quoted at +0.08% and by 29 Sep opening $616.74 and marking $606.45 (&minus;$1.42, &minus;0.23%) against it. The $598.50 figure tied to a &minus;5.09% move that nothing else supports. A second correction, same cause: 30 Sep was first logged at ~$605 on a 15:45 ET mark and closed near $611.8 on quarter-end buying &mdash; up ~0.7%, not down. Pre-close marks are not closes.</p>
@@ -351,8 +351,8 @@
         <div class="panel-body">
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Underlying &amp; calendar</span></div>
           <div class="field-grid">
-            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="613.85"></div>
-            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-10-01"></div>
+            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="635.66"></div>
+            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-10-02"></div>
             <div class="field wide"><label for="in-exp1">Core expiration &mdash; all three core legs</label><input id="in-exp1" type="date" value="2027-03-19"></div>
             <div class="field wide"><label for="in-wsold">Weekly sold on</label><input id="in-wsold" type="date" value="2026-10-05"></div>
             <div class="field wide"><label for="in-exp0">Weekly expiration &mdash; must not be later</label><input id="in-exp0" type="date" value="2026-10-09"></div>
@@ -369,24 +369,24 @@
 
           <div class="group-label"><span class="bar long"></span><span class="eyebrow">Long &times;2 &nbsp;&middot;&nbsp; ITM call</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="505"></div>
-            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="148.11"></div>
-            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.001" value="0.788"></div>
+            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="535"></div>
+            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="145.28"></div>
+            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.001" value="0.768"></div>
           </div>
           <div class="iv-line" id="iv1">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; ATM call</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="600"></div>
-            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="94.26"></div>
-            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.615"></div>
+            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="635"></div>
+            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="91.05"></div>
+            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.590"></div>
           </div>
           <div class="iv-line" id="iv2">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; weekly, sold separately</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="655"></div>
-            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="3.27"></div>
+            <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="680"></div>
+            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="3.21"></div>
             <div class="field"><label for="in-cyc">Cycles</label><input id="in-cyc" type="number" step="1" min="0" value="1"></div>
           </div>
           <div class="iv-line" id="iv3">&mdash;</div>
@@ -463,14 +463,14 @@
         <div class="panel-body">
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Last week&rsquo;s swing</span></div>
           <div class="field-grid">
-            <div class="field"><label for="lv-hi">High</label><input id="lv-hi" type="number" step="0.01" value="630.63"></div>
+            <div class="field"><label for="lv-hi">High</label><input id="lv-hi" type="number" step="0.01" value="635.66"></div>
             <div class="field"><label for="lv-lo">Low</label><input id="lv-lo" type="number" step="0.01" value="607.87"></div>
             <div class="field"><label for="lv-iv">Weekly IV %</label><input id="lv-iv" type="number" step="1" value="60"></div>
           </div>
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Moving averages</span></div>
           <div class="field-grid">
-            <div class="field"><label for="lv-ma1">Short MA</label><input id="lv-ma1" type="number" step="0.01" value="584.73"></div>
-            <div class="field"><label for="lv-ma2">Long MA</label><input id="lv-ma2" type="number" step="0.01" value="630.63"></div>
+            <div class="field"><label for="lv-ma1">Short MA</label><input id="lv-ma1" type="number" step="0.01" value="607.87"></div>
+            <div class="field"><label for="lv-ma2">Long MA</label><input id="lv-ma2" type="number" step="0.01" value="615.73"></div>
             <div class="field"><label for="lv-dte">DTE</label><input id="lv-dte" type="number" step="1" value="3"></div>
           </div>
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Verdict</span></div>
@@ -580,8 +580,8 @@
           </tr>
           <tr>
             <td><strong>Extrinsic creeps back in</strong></td><td><span class="sev med">Medium</span></td>
-            <td>The short leg stops being at the money, the offset stops balancing, and the position starts carrying real theta in one direction or the other.</td>
-            <td>Re-check the gauge periodically. Adjusting the core mid-life is usually worse than closing and rebuilding it cleanly.</td>
+            <td>The short leg stops being at the money, the offset stops balancing, and the position starts carrying real theta in one direction or the other. <strong>Which side it drifts from tells you which leg to fix, and the two are not symmetric.</strong> On a decline the longs regain extrinsic faster than the short loses it, net extrinsic swings positive, and you pay theta. On a rally the longs go deep ITM and <em>shed</em> extrinsic &mdash; at a 0.82 delta long there is no longer enough long extrinsic for the short to offset, and net extrinsic goes negative.</td>
+            <td>Re-check the gauge periodically. Adjusting the core mid-life is usually worse than closing and rebuilding it cleanly. If you do rebuild after a rally, raise the <em>long</em> strike &mdash; moving the short up toward the new at-the-money makes it worse, because extrinsic peaks at the money and a bigger short extrinsic is the wrong direction. Raise the long back to ~0.75 delta, then put the short at the money.</td>
           </tr>
           <tr>
             <td><strong>Expiration-week assignment scramble</strong></td><td><span class="sev med">Medium</span></td>
@@ -816,7 +816,7 @@ const $ = function (id) { return document.getElementById(id); };
 const IDS = ["in-spot", "in-today", "in-exp1", "in-exp0", "in-wsold", "in-rate", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
 // Seasonal window the user is trading: the documented SOXX pattern runs ~29 Oct to ~26 Feb.
 const WINDOW_OPEN = "2026-10-29", WINDOW_CLOSE = "2027-02-26";
-const DEFAULTS = { "in-spot": 613.85, "in-today": "2026-10-01", "in-exp1": "2027-03-19", "in-exp0": "2026-10-09", "in-wsold": "2026-10-05", "in-rate": 4.0, "in-k1": 505, "in-p1": 148.11, "in-d1": 0.788, "in-k2": 600, "in-p2": 94.26, "in-d2": 0.615, "in-k3": 655, "in-c3": 3.27, "in-cyc": 1, "in-qty": 1 };
+const DEFAULTS = { "in-spot": 635.66, "in-today": "2026-10-02", "in-exp1": "2027-03-19", "in-exp0": "2026-10-09", "in-wsold": "2026-10-05", "in-rate": 4.0, "in-k1": 535, "in-p1": 145.28, "in-d1": 0.768, "in-k2": 635, "in-p2": 91.05, "in-d2": 0.590, "in-k3": 680, "in-c3": 3.21, "in-cyc": 1, "in-qty": 1 };
 let overlayMode = "same";
 let deltaSource = "model";
 
@@ -977,8 +977,11 @@ function paintDownside(m) {
   const iv2 = impliedVol(num("in-p2"), S0, m.K2, T1, r) || 0.5;
 
   const rows = [0, -0.05, -0.10, -0.15, -0.20, -0.25].map(function (pct) { return S0 * (1 + pct); });
-  // the long strike is the level that decides max loss, so it always earns a row
-  if (!rows.some(function (x) { return Math.abs(x - m.K1) < S0 * 0.012; })) rows.push(m.K1);
+  // the long strike is the level that decides max loss, so it always earns a row. when a
+  // percentage row lands near it, take the strike over the percentage rather than labelling
+  // the percentage row as the strike -- the label has to name the price it is printed beside.
+  const near = rows.findIndex(function (x) { return Math.abs(x - m.K1) < S0 * 0.012; });
+  if (near === -1) rows.push(m.K1); else rows[near] = m.K1;
   rows.sort(function (a, b) { return b - a; });
 
   body.innerHTML = rows.map(function (S) {
@@ -989,7 +992,7 @@ function paintDownside(m) {
     const ne = 2 * ext(m.K1, iv1) - ext(m.K2, iv2);
     const tol = Math.max(1, S * 0.004);
     const v = Math.abs(ne) <= tol ? ["low", "Pass"] : Math.abs(ne) <= tol * 3 ? ["med", "Close"] : ["high", "Fail"];
-    const atStrike = Math.abs(S - m.K1) < S0 * 0.012;
+    const atStrike = S === m.K1;
     return '<tr' + (atStrike ? ' style="background:var(--warn-so)"' : '') + '>' +
       '<td class="mono"><strong>$' + S.toFixed(0) + '</strong>' + (atStrike ? ' <span class="sev med">long strike</span>' : '') + '</td>' +
       '<td class="mono">' + (((S / S0) - 1) * 100).toFixed(1) + '%</td>' +
