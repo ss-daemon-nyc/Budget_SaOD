@@ -310,8 +310,8 @@
       <p class="lede" style="margin-top:14px">A back ratio is easy to describe and easy to get wrong at the order ticket. This is the run of conversations and checks that stand between the idea and a position your broker actually margins as defined-risk &mdash; with a live bench so you can test your own strikes before you send anything.</p>
     </div>
     <div class="mast-meta">
-      <div><span class="eyebrow">Reference spot</span><span class="v">$655.30</span></div>
-      <div><span class="eyebrow">As of</span><span class="v">6 Oct 2026, 15:45 ET</span></div>
+      <div><span class="eyebrow">Reference spot</span><span class="v">$643.43</span></div>
+      <div><span class="eyebrow">As of</span><span class="v">7 Oct 2026, 15:45 ET</span></div>
       <div><span class="eyebrow">52-week range</span><span class="v">$149.22 &ndash; $658.52</span></div>
       <div><span class="eyebrow">Dividend</span><span class="v">None</span></div>
     </div>
@@ -351,8 +351,8 @@
         <div class="panel-body">
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Underlying &amp; calendar</span></div>
           <div class="field-grid">
-            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="655.30"></div>
-            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-10-06"></div>
+            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="643.43"></div>
+            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-10-07"></div>
             <div class="field wide"><label for="in-exp1">Core expiration &mdash; all three core legs</label><input id="in-exp1" type="date" value="2027-03-19"></div>
             <div class="field wide"><label for="in-wsold">Weekly sold on</label><input id="in-wsold" type="date" value="2026-10-06"></div>
             <div class="field wide"><label for="in-exp0">Weekly expiration &mdash; must not be later</label><input id="in-exp0" type="date" value="2026-10-09"></div>
@@ -369,17 +369,17 @@
 
           <div class="group-label"><span class="bar long"></span><span class="eyebrow">Long &times;2 &nbsp;&middot;&nbsp; ITM call</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="555"></div>
-            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="146.58"></div>
+            <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="545"></div>
+            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="143.65"></div>
             <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.001" value="0.763"></div>
           </div>
           <div class="iv-line" id="iv1">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; ATM call</span></div>
           <div class="field-grid">
-            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="655"></div>
-            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="92.53"></div>
-            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.588"></div>
+            <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="645"></div>
+            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="89.73"></div>
+            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.584"></div>
           </div>
           <div class="iv-line" id="iv2">&mdash;</div>
 
@@ -566,7 +566,7 @@
           <tr>
             <td><strong>Gap through the cap</strong></td><td><span class="sev high">High</span></td>
             <td>AMD prints a number and moves 9% overnight &mdash; it did exactly that on Q2&nbsp;2026 earnings, in the <em>losing</em> direction despite a beat. Your overlay is deep ITM by the open and cannot be rolled for a credit.</td>
-            <td>Decide deliberately whether an overlay cycle spans an earnings date. Sizing the overlay at 20&ndash;25&Delta; rather than 35&Delta; buys real room.</td>
+            <td>Decide deliberately whether an overlay cycle spans an earnings date &mdash; the next report is <strong>3 November 2026</strong>, inside the life of a March 2027 core. Sizing the overlay at 20&ndash;25&Delta; rather than 35&Delta; buys real room.</td>
           </tr>
           <tr>
             <td><strong>Share issuance you are not watching</strong></td><td><span class="sev med">Medium</span></td>
@@ -585,7 +585,7 @@
           </tr>
           <tr>
             <td><strong>Extrinsic creeps back in</strong></td><td><span class="sev med">Medium</span></td>
-            <td>The short leg stops being at the money, the offset stops balancing, and the position starts carrying real theta in one direction or the other. <strong>Which side it drifts from tells you which leg to fix, and the two are not symmetric.</strong> On a decline the longs regain extrinsic faster than the short loses it, net extrinsic swings positive, and you pay theta. On a rally the longs go deep ITM and <em>shed</em> extrinsic &mdash; at a 0.82 delta long there is no longer enough long extrinsic for the short to offset, and net extrinsic goes negative.</td>
+            <td>The short leg stops being at the money, the offset stops balancing, and the position starts carrying real theta in one direction or the other. <strong>Which side it drifts from tells you which leg to fix, the two are not symmetric, and a decline breaks it several times faster.</strong> The reason is that the short sits at the extrinsic peak, so <em>its</em> extrinsic falls whichever way the stock goes; only the long&rsquo;s extrinsic changes sign. On a rally both terms fall and partly cancel &mdash; <span class="mono">2&times;(fall) &minus; (fall)</span> &mdash; so the gauge creeps. On a decline the longs regain extrinsic while the short loses it, so both push the same way &mdash; <span class="mono">2&times;(rise) &minus; (fall)</span> &mdash; and the gauge runs. Measured on this position: a $20 rally moved net extrinsic about &minus;2.7, while a $12 decline moved it +12.5.</td>
             <td>Re-check the gauge periodically. Adjusting the core mid-life is usually worse than closing and rebuilding it cleanly. If you do rebuild after a rally, raise the <em>long</em> strike &mdash; moving the short up toward the new at-the-money makes it worse, because extrinsic peaks at the money and a bigger short extrinsic is the wrong direction. Raise the long back to ~0.75 delta, then put the short at the money.</td>
           </tr>
           <tr>
@@ -821,7 +821,7 @@ const $ = function (id) { return document.getElementById(id); };
 const IDS = ["in-spot", "in-today", "in-exp1", "in-exp0", "in-wsold", "in-rate", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
 // Seasonal window the user is trading: the documented SOXX pattern runs ~29 Oct to ~26 Feb.
 const WINDOW_OPEN = "2026-10-29", WINDOW_CLOSE = "2027-02-26";
-const DEFAULTS = { "in-spot": 655.30, "in-today": "2026-10-06", "in-exp1": "2027-03-19", "in-exp0": "2026-10-09", "in-wsold": "2026-10-06", "in-rate": 4.0, "in-k1": 555, "in-p1": 146.58, "in-d1": 0.763, "in-k2": 655, "in-p2": 92.53, "in-d2": 0.588, "in-k3": 695, "in-c3": 2.60, "in-cyc": 1, "in-qty": 1 };
+const DEFAULTS = { "in-spot": 643.43, "in-today": "2026-10-07", "in-exp1": "2027-03-19", "in-exp0": "2026-10-09", "in-wsold": "2026-10-06", "in-rate": 4.0, "in-k1": 545, "in-p1": 143.65, "in-d1": 0.763, "in-k2": 645, "in-p2": 89.73, "in-d2": 0.584, "in-k3": 695, "in-c3": 2.60, "in-cyc": 1, "in-qty": 1 };
 let overlayMode = "same";
 let deltaSource = "model";
 
