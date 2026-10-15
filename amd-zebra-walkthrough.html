@@ -310,8 +310,8 @@
       <p class="lede" style="margin-top:14px">A back ratio is easy to describe and easy to get wrong at the order ticket. This is the run of conversations and checks that stand between the idea and a position your broker actually margins as defined-risk &mdash; with a live bench so you can test your own strikes before you send anything.</p>
     </div>
     <div class="mast-meta">
-      <div><span class="eyebrow">Reference spot</span><span class="v">$571.01</span></div>
-      <div><span class="eyebrow">As of</span><span class="v">14 Oct 2026, 15:45 ET</span></div>
+      <div><span class="eyebrow">Reference spot</span><span class="v">$566.22</span></div>
+      <div><span class="eyebrow">As of</span><span class="v">15 Oct 2026, 15:45 ET</span></div>
       <div><span class="eyebrow">52-week range</span><span class="v">$188.22 &ndash; $658.52</span></div>
       <div><span class="eyebrow">Dividend</span><span class="v">None</span></div>
     </div>
@@ -351,8 +351,8 @@
         <div class="panel-body">
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Underlying &amp; calendar</span></div>
           <div class="field-grid">
-            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="571.01"></div>
-            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-10-14"></div>
+            <div class="field wide"><label for="in-spot">AMD spot price</label><input id="in-spot" type="number" step="0.01" value="566.22"></div>
+            <div class="field wide"><label for="in-today">Entry date</label><input id="in-today" type="date" value="2026-10-15"></div>
             <div class="field wide"><label for="in-exp1">Core expiration &mdash; all three core legs</label><input id="in-exp1" type="date" value="2027-03-19"></div>
             <div class="field wide"><label for="in-wsold">Weekly sold on</label><input id="in-wsold" type="date" value="2026-10-19"></div>
             <div class="field wide"><label for="in-exp0">Weekly expiration &mdash; must not be later</label><input id="in-exp0" type="date" value="2026-10-23"></div>
@@ -370,23 +370,23 @@
           <div class="group-label"><span class="bar long"></span><span class="eyebrow">Long &times;2 &nbsp;&middot;&nbsp; ITM call</span></div>
           <div class="field-grid">
             <div class="field"><label for="in-k1">Strike</label><input id="in-k1" type="number" step="1" value="480"></div>
-            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="128.34"></div>
-            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.001" value="0.772"></div>
+            <div class="field"><label for="in-p1">Ask</label><input id="in-p1" type="number" step="0.01" value="124.44"></div>
+            <div class="field"><label for="in-d1">Delta</label><input id="in-d1" type="number" step="0.001" value="0.765"></div>
           </div>
           <div class="iv-line" id="iv1">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; ATM call</span></div>
           <div class="field-grid">
             <div class="field"><label for="in-k2">Strike</label><input id="in-k2" type="number" step="1" value="565"></div>
-            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="81.17"></div>
-            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.598"></div>
+            <div class="field"><label for="in-p2">Bid</label><input id="in-p2" type="number" step="0.01" value="78.07"></div>
+            <div class="field"><label for="in-d2">Delta</label><input id="in-d2" type="number" step="0.001" value="0.588"></div>
           </div>
           <div class="iv-line" id="iv2">&mdash;</div>
 
           <div class="group-label"><span class="bar short"></span><span class="eyebrow">Short &times;1 &nbsp;&middot;&nbsp; weekly, sold separately</span></div>
           <div class="field-grid">
             <div class="field"><label for="in-k3">Strike</label><input id="in-k3" type="number" step="1" value="610"></div>
-            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="2.97"></div>
+            <div class="field"><label for="in-c3">Credit</label><input id="in-c3" type="number" step="0.01" value="2.46"></div>
             <div class="field"><label for="in-cyc">Cycles</label><input id="in-cyc" type="number" step="1" min="0" value="1"></div>
           </div>
           <div class="iv-line" id="iv3">&mdash;</div>
@@ -447,6 +447,8 @@
       <p><strong>Zero extrinsic and 100 deltas pull against each other.</strong> Driving net extrinsic to zero wants your long strike shallower; driving net delta to 1.00 wants it deeper. You cannot always have both, and chasing delta by going deeper ITM quietly raises your debit &mdash; which is your max loss. When they conflict, hold the zero-extrinsic line and accept 0.88&ndash;0.95 deltas. Extrinsic is the thing that bleeds; a few deltas are not.</p>
       <p style="margin-top:12px"><strong>Breakeven has two branches, and the familiar formula only covers one.</strong> The payoff is flat at &minus;debit below K&#8321;, climbs at 2:1 between the strikes, then climbs at 1:1 above K&#8322;. So breakeven is <span class="mono">K&#8321; + debit/2</span> only while that root lands at or below K&#8322;. Once the debit is large enough to push it past the short strike &mdash; which is what happens as the short goes in the money &mdash; the upper segment governs and breakeven is <span class="mono">2K&#8321; &minus; K&#8322; + debit</span>, sitting <em>twice</em> as far above K&#8322; as the simple formula implies.</p>
       <p style="margin-top:12px">Substitute <span class="mono">debit = S &minus; 2K&#8321; + K&#8322; + net&nbsp;extrinsic</span> and that upper root collapses to something worth remembering: <strong>breakeven = spot + net extrinsic</strong>. Drive net extrinsic to zero and your breakeven is today&rsquo;s price, exactly; every dollar of time value you are still paying moves it a dollar higher. That is the real argument for the zero-extrinsic condition &mdash; not a property of where the strikes sit, but the gap between spot and the price you have to be right about.</p>
+      <p style="margin-top:12px"><strong>There is a cliff in the gauge, and it sits exactly at the short strike.</strong> The short&rsquo;s extrinsic peaks at the money, so while spot stays above K&#8322; both legs&rsquo; extrinsic moves the same direction as the stock moves and the <span class="mono">2&times;(x) &minus; (x)</span> partially cancels &mdash; the gauge barely stirs. Drop below K&#8322; and the short starts shedding extrinsic while the longs keep gaining it, the two terms reinforce, and the reading runs. Measured on a 480/565 core at a spot of 566.22: flat between &minus;0.35 and &minus;0.88 anywhere from 565 up, then +2.30 at 562.50 and +4.96 at 560. That is why every failure in this project has come from a decline and none from a rally.</p>
+      <p style="margin-top:12px">Which gives the short strike a second job. An at-the-money short puts you on the lip of that cliff, with no room for an ordinary down day. Setting it a few dollars <em>below</em> spot moves the cliff away from you &mdash; and the cost is exactly what the breakeven identity says it must be, since <span class="mono">B/E &minus; spot = net extrinsic</span>. On the same day, 475/555 held its reading down to 554.98, three times the cushion, for 1.45 of net extrinsic and therefore $1.45 of breakeven above spot. Cushion is bought with breakeven, dollar for dollar, and nothing else.</p>
     </div>
   </section>
 
@@ -466,7 +468,7 @@
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Last week&rsquo;s swing</span></div>
           <div class="field-grid">
             <div class="field"><label for="lv-hi">High</label><input id="lv-hi" type="number" step="0.01" value="658.52"></div>
-            <div class="field"><label for="lv-lo">Low</label><input id="lv-lo" type="number" step="0.01" value="567.00"></div>
+            <div class="field"><label for="lv-lo">Low</label><input id="lv-lo" type="number" step="0.01" value="530.09"></div>
             <div class="field"><label for="lv-iv">Weekly IV %</label><input id="lv-iv" type="number" step="1" value="60"></div>
           </div>
           <div class="group-label"><span class="bar neutral"></span><span class="eyebrow">Moving averages</span></div>
@@ -823,7 +825,7 @@ const $ = function (id) { return document.getElementById(id); };
 const IDS = ["in-spot", "in-today", "in-exp1", "in-exp0", "in-wsold", "in-rate", "in-k1", "in-p1", "in-d1", "in-k2", "in-p2", "in-d2", "in-k3", "in-c3", "in-cyc", "in-qty"];
 // Seasonal window the user is trading: the documented SOXX pattern runs ~29 Oct to ~26 Feb.
 const WINDOW_OPEN = "2026-10-29", WINDOW_CLOSE = "2027-02-26";
-const DEFAULTS = { "in-spot": 571.01, "in-today": "2026-10-14", "in-exp1": "2027-03-19", "in-exp0": "2026-10-23", "in-wsold": "2026-10-19", "in-rate": 4.0, "in-k1": 480, "in-p1": 128.34, "in-d1": 0.772, "in-k2": 565, "in-p2": 81.17, "in-d2": 0.598, "in-k3": 610, "in-c3": 2.97, "in-cyc": 1, "in-qty": 1 };
+const DEFAULTS = { "in-spot": 566.22, "in-today": "2026-10-15", "in-exp1": "2027-03-19", "in-exp0": "2026-10-23", "in-wsold": "2026-10-19", "in-rate": 4.0, "in-k1": 480, "in-p1": 124.44, "in-d1": 0.765, "in-k2": 565, "in-p2": 78.07, "in-d2": 0.588, "in-k3": 610, "in-c3": 2.46, "in-cyc": 1, "in-qty": 1 };
 let overlayMode = "same";
 let deltaSource = "model";
 
